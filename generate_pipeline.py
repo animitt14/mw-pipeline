@@ -1481,7 +1481,7 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
         f'<div id="pw-err"></div>',
         f'<button id="pw-btn" onclick="checkPw()">Enter</button>',
         f'</div></div>',
-        f'<script>(function(){{var PW={repr(password)};var SK="pw_ok_ov";',
+        f'<script>(function(){{var PW={repr(password)};var SK="pw_ok";',
         f'if(sessionStorage.getItem(SK)==="1")document.getElementById("pw-gate").classList.add("hidden");',
         f'window.checkPw=function(){{if(document.getElementById("pw-input").value===PW){{',
         f'sessionStorage.setItem(SK,"1");document.getElementById("pw-gate").classList.add("hidden");',
