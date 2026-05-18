@@ -1,0 +1,6 @@
+.env
+pipeline.html
+pipeline_erik.html
+__pycache__/
+*.pyc
+amount_review_data.json
