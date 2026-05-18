@@ -1025,9 +1025,9 @@ def main():
     for owner_cfg in OWNERS:
         print(f'\n=== {owner_cfg["name"]} ===', flush=True)
         nav_html = '<div class="nav">' + ''.join(
-            f'<a href="{o["out"]}" class="active">{o["name"]}</a>'
+            f'<a href="{Path(o["out"]).name}" class="active">{o["name"]}</a>'
             if o is owner_cfg else
-            f'<a href="{o["out"]}">{o["name"]}</a>'
+            f'<a href="{Path(o["out"]).name}">{o["name"]}</a>'
             for o in OWNERS
         ) + '</div>'
 
