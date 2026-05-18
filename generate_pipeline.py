@@ -62,8 +62,8 @@ GALLERY_LEADS_PIPELINE = '880355706'
 ANI_OWNER_ID = '77771452'
 
 OWNERS = [
-    {'name': 'Ani',  'id': '77771452', 'out': 'docs/index.html',    'cache': 'pipeline_deal_cache.json'},
-    {'name': 'Erik', 'id': '73613833', 'out': 'docs/erik.html',     'cache': 'pipeline_deal_cache_erik.json'},
+    {'name': 'Ani',  'id': '77771452', 'out': 'docs/index.html'},
+    {'name': 'Erik', 'id': '73613833', 'out': 'docs/erik.html'},
 ]
 
 
@@ -100,17 +100,30 @@ def fetch_all_contacts(owner_id):
     return contacts
 
 
-def load_deals_from_cache(cache_name='pipeline_deal_cache.json'):
-    """Load deals from cache file (populated via MCP each session)."""
-    cache_path = Path(__file__).parent / cache_name
-    if not cache_path.exists():
-        print('WARNING: pipeline_deal_cache.json not found — no deal data', flush=True)
-        return []
-    with open(cache_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    deals = data.get('results', [])
-    fetched = data.get('fetched_at', 'unknown')
-    print(f'Loaded {len(deals)} deals from cache (fetched {fetched})', flush=True)
+def fetch_deals_live():
+    """Fetch all Gallery Leads deals live from HubSpot API."""
+    url = 'https://api.hubapi.com/crm/v3/objects/deals/search'
+    deals = []
+    after = None
+    while True:
+        body = {
+            'filterGroups': [{'filters': [
+                {'propertyName': 'pipeline', 'operator': 'EQ', 'value': GALLERY_LEADS_PIPELINE}
+            ]}],
+            'properties': ['dealname', 'dealstage', 'amount', 'num_contacted_notes'],
+            'limit': 200,
+        }
+        if after:
+            body['after'] = after
+        r = requests.post(url, headers=HEADERS, json=body)
+        r.raise_for_status()
+        data = r.json()
+        deals.extend(data.get('results', []))
+        after = data.get('paging', {}).get('next', {}).get('after')
+        if not after:
+            break
+        time.sleep(0.2)
+    print(f'Fetched {len(deals)} deals live', flush=True)
     return deals
 
 
@@ -1022,6 +1035,9 @@ def main():
         print('ERROR: HUBSPOT_API_KEY not set', file=sys.stderr)
         sys.exit(1)
 
+    print('\nFetching deals...', flush=True)
+    deals = fetch_deals_live()
+
     for owner_cfg in OWNERS:
         print(f'\n=== {owner_cfg["name"]} ===', flush=True)
         nav_html = '<div class="nav">' + ''.join(
@@ -1043,8 +1059,6 @@ def main():
         meetings, daily_meetings = fetch_contact_meetings(contact_ids)
         print(f'  {len(meetings)} contacts have upcoming meetings', flush=True)
 
-        print('Loading deals from cache...', flush=True)
-        deals = load_deals_from_cache(owner_cfg['cache'])
         records, by_name, by_last_name = build_deal_index(deals)
 
         # Pre-pass: find Contacted-stage contacts so we can fetch their notes
