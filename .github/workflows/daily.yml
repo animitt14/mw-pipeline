@@ -3,6 +3,8 @@ name: Rebuild Pipeline
 on:
   schedule:
     - cron: '0 12 * * 1-5'   # 8 AM ET Mon–Fri
+    - cron: '0 16 * * 1-5'   # 12 PM ET Mon–Fri
+    - cron: '0 20 * * 1-5'   # 4 PM ET Mon–Fri
   workflow_dispatch:
 
 jobs:
