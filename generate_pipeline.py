@@ -12,7 +12,7 @@ import re
 import sys
 import time
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta, date as date_type
 from html import escape
 from pathlib import Path
 
@@ -65,6 +65,16 @@ OWNERS = [
     {'name': 'Ani',  'id': '77771452', 'out': 'docs/index.html', 'pw': 'banksy'},
     {'name': 'Erik', 'id': '73613833', 'out': 'docs/erik.html',  'pw': 'banksy'},
 ]
+OVERVIEW_CFG = {'name': 'Overview', 'out': 'docs/overview.html', 'pw': 'banksy'}
+ALL_PAGES = OWNERS + [OVERVIEW_CFG]
+
+OVERVIEW_OWNER_IDS = {'77771452', '73613833'}
+OVERVIEW_OWNER_NAMES = {'77771452': 'Mittal', '73613833': 'Bringsjord'}
+MONTHLY_GOAL = 700_000
+CLOSED_WON_STAGE  = '1321369499'
+CLOSED_LOST_STAGE = '1321369501'
+DQ_STAGE          = '1341309466'
+TERMINAL_STAGES   = {CLOSED_WON_STAGE, CLOSED_LOST_STAGE, DQ_STAGE}
 
 
 def fetch_all_contacts(owner_id):
@@ -110,7 +120,8 @@ def fetch_deals_live():
             'filterGroups': [{'filters': [
                 {'propertyName': 'pipeline', 'operator': 'EQ', 'value': GALLERY_LEADS_PIPELINE}
             ]}],
-            'properties': ['dealname', 'dealstage', 'amount', 'num_contacted_notes'],
+            'properties': ['dealname', 'dealstage', 'amount', 'num_contacted_notes',
+                           'hubspot_owner_id', 'closedate', 'createdate', 'notes_last_updated'],
             'limit': 200,
         }
         if after:
@@ -125,6 +136,70 @@ def fetch_deals_live():
         time.sleep(0.2)
     print(f'Fetched {len(deals)} deals live', flush=True)
     return deals
+
+
+def fetch_advisor_activity():
+    """Fetch call and email counts for Ani + Erik, last 30 days."""
+    today = datetime.now(timezone.utc)
+    ts_30d = int((today - timedelta(days=30)).timestamp() * 1000)
+
+    # Last 5 working days start
+    d_iter = today.date() - timedelta(days=1)
+    wd = 0
+    while wd < 5:
+        if d_iter.weekday() < 5:
+            wd += 1
+        if wd < 5:
+            d_iter -= timedelta(days=1)
+    ts_5wd = int(datetime(d_iter.year, d_iter.month, d_iter.day, 0, 0, 0, tzinfo=timezone.utc).timestamp() * 1000)
+    n_5wd_days = max((today.date() - d_iter).days, 1)
+
+    counts = {oid: {'calls_30': 0, 'emails_30': 0, 'calls_5wd': 0, 'emails_5wd': 0}
+              for oid in OVERVIEW_OWNER_IDS}
+
+    for obj_type, key in [('calls', 'calls'), ('emails', 'emails')]:
+        url = f'https://api.hubapi.com/crm/v3/objects/{obj_type}/search'
+        after = None
+        while True:
+            body = {
+                'filterGroups': [
+                    {'filters': [
+                        {'propertyName': 'hubspot_owner_id', 'operator': 'EQ', 'value': oid},
+                        {'propertyName': 'hs_timestamp', 'operator': 'GTE', 'value': str(ts_30d)},
+                    ]}
+                    for oid in OVERVIEW_OWNER_IDS
+                ],
+                'properties': ['hubspot_owner_id', 'hs_timestamp'],
+                'limit': 200,
+            }
+            if after:
+                body['after'] = after
+            r = requests.post(url, headers=HEADERS, json=body, timeout=30)
+            if not r.ok:
+                print(f'  Activity fetch error {obj_type}: {r.status_code}', file=sys.stderr)
+                break
+            data = r.json()
+            for item in data.get('results', []):
+                p = item.get('properties', {})
+                owner = p.get('hubspot_owner_id', '')
+                if owner not in counts:
+                    continue
+                counts[owner][f'{key}_30'] += 1
+                ts_val = p.get('hs_timestamp')
+                if ts_val:
+                    try:
+                        if int(float(ts_val)) >= ts_5wd:
+                            counts[owner][f'{key}_5wd'] += 1
+                    except (ValueError, TypeError):
+                        pass
+            after = data.get('paging', {}).get('next', {}).get('after')
+            if not after:
+                break
+            time.sleep(0.1)
+
+    print(f'  Activity: Ani calls={counts["77771452"]["calls_30"]} emails={counts["77771452"]["emails_30"]} '
+          f'| Erik calls={counts["73613833"]["calls_30"]} emails={counts["73613833"]["emails_30"]}', flush=True)
+    return counts, n_5wd_days
 
 
 def normalize(s):
@@ -1030,6 +1105,523 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 </html>'''
 
 
+_OVERVIEW_CSS = '''
+:root{--bg:#141420;--surface:#1E1E30;--surface2:#252538;--border:#2E2E45;--border2:#3A3A55;
+--text:#F0F0F8;--text2:#8888AA;--text3:#555570;--purple:#7B6FD4;--green:#5BBF7A;
+--red:#E05A5A;--amber:#E8A84C;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);padding:24px;font-size:13px;}
+.dash{max-width:1100px;margin:0 auto;}
+.hdr{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1.5px solid var(--purple);padding-bottom:12px;margin-bottom:20px;}
+.hdr h1{font-size:20px;font-weight:500;}
+.slabel{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);border-bottom:.5px solid var(--border);padding-bottom:4px;margin:0 0 10px;}
+.g6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:18px;}
+.kc{background:var(--surface);border-radius:10px;padding:12px;border:.5px solid var(--border);border-top:2px solid var(--purple);}
+.kv{font-size:22px;font-weight:500;line-height:1.1;}
+.kl{font-size:11px;color:var(--text2);margin-top:4px;}
+.ks{font-size:10px;color:var(--text3);font-style:italic;margin-top:2px;}
+.frow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:18px;}
+.fc{background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.fc-bw{flex:1;}
+.fc-lbl{font-size:11px;color:var(--text2);margin-bottom:5px;}
+.fc-bg{height:4px;background:var(--border);border-radius:2px;}
+.fc-fill{height:4px;border-radius:2px;}
+.fc-nums{text-align:right;white-space:nowrap;}
+.fc-pct{font-size:17px;font-weight:500;line-height:1;}
+.fc-cnt{font-size:10px;color:var(--text3);margin-top:2px;}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.card{background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:14px;}
+.ctitle{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:9px;}
+.sbig{font-size:24px;font-weight:500;color:var(--purple);text-align:center;}
+.ssub{font-size:10px;color:var(--text3);text-align:center;margin-top:3px;border-bottom:.5px solid var(--border);padding-bottom:9px;margin-bottom:11px;}
+table{width:100%;border-collapse:collapse;font-size:11px;}
+th{font-size:10px;color:var(--text2);text-align:left;padding:4px 6px;border-bottom:.5px solid var(--border);background:var(--surface2);font-weight:500;}
+td{padding:5px 6px;border-bottom:.5px solid var(--border);color:var(--text);}
+tr:last-child td{border-bottom:none;}
+tr:nth-child(even) td{background:var(--surface2);}
+.badge{display:inline-block;font-size:9px;font-weight:600;padding:2px 6px;border-radius:6px;}
+.bp{background:#1E1A35;color:#9B8FE4;}
+.ba{background:#261E10;color:#E8A84C;}
+.br{background:#2A1A1A;color:#E05A5A;}
+.bg{background:#152515;color:#5BBF7A;}
+.fg{background:var(--surface2);border-radius:8px;padding:9px 11px;display:flex;justify-content:space-between;align-items:center;margin:7px 0;}
+.goal-bar-bg{height:7px;background:var(--border);border-radius:4px;margin-bottom:4px;}
+.goal-bar-fill{height:7px;border-radius:4px;background:var(--purple);}
+.g4s{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:12px;}
+.stat{background:var(--surface2);border-radius:8px;padding:9px 6px;text-align:center;}
+.sv{font-size:18px;font-weight:500;}
+.sl{font-size:10px;color:var(--text2);margin-top:3px;line-height:1.3;}
+.brow{display:grid;grid-template-columns:1fr 32px 74px 44px;align-items:center;padding:5px 0;border-bottom:.5px solid var(--border);font-size:11px;}
+.brow:last-child{border-bottom:none;}
+.or{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:.5px solid var(--border);font-size:11px;}
+.or:last-child{border-bottom:none;}
+.mb{height:3px;border-radius:2px;margin-top:3px;}
+.note{font-size:10px;color:var(--text3);font-style:italic;margin-top:6px;line-height:1.5;}
+.stale-note{font-size:10px;color:var(--amber);font-style:italic;margin-bottom:8px;padding:5px 8px;background:#261E10;border-radius:6px;border-left:2px solid var(--amber);}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:.5px solid var(--border);font-size:11px;gap:9px;}
+.sr:last-child{border-bottom:none;}
+.sbar{height:5px;border-radius:3px;margin-top:3px;}
+.act3{display:grid;grid-template-columns:1fr 150px 1fr;gap:12px;margin-bottom:16px;}
+.act-card{background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:13px;}
+.act-rep{display:grid;grid-template-columns:80px 1fr 70px;align-items:center;gap:8px;padding:7px 0;border-bottom:.5px solid var(--border);}
+.act-rep:last-of-type{border-bottom:none;}
+.act-bb{height:6px;background:var(--border);border-radius:3px;}
+.act-bf{height:6px;border-radius:3px;}
+.act-v{font-size:16px;font-weight:500;text-align:right;line-height:1;}
+.act-s{font-size:10px;color:var(--text2);margin-top:2px;text-align:right;}
+.mid-card{background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.footer{margin-top:16px;padding-top:10px;border-top:.5px solid var(--border);display:flex;justify-content:space-between;font-size:10px;color:var(--text3);font-style:italic;}
+.nav{display:flex;gap:0;margin-bottom:20px;border-bottom:1px solid var(--border);}
+.nav a{padding:8px 18px;font-size:12px;color:var(--text2);text-decoration:none;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.nav a.active{color:var(--purple);border-bottom-color:var(--purple);}
+.nav a:hover{color:var(--text);}
+#pw-gate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;}
+#pw-gate.hidden{display:none;}
+#pw-box{background:var(--surface);border:.5px solid var(--border);border-radius:14px;padding:32px 28px;display:flex;flex-direction:column;gap:12px;min-width:260px;}
+#pw-box h2{font-size:15px;font-weight:500;color:var(--text);text-align:center;}
+#pw-input{background:var(--surface2);border:.5px solid var(--border2);color:var(--text);border-radius:7px;padding:9px 12px;font-size:13px;outline:none;}
+#pw-btn{background:var(--purple);color:#fff;border:none;border-radius:7px;padding:9px;font-size:13px;cursor:pointer;}
+#pw-err{font-size:11px;color:var(--red);text-align:center;min-height:14px;}
+'''
+
+_STATIC_STAGE_PROGRESSION = '''
+<div class="stale-note">Last updated: May 13, 2026 — stage progression history is not available via the HubSpot API.</div>
+<div class="g2">
+  <div class="card">
+    <div class="ctitle">Daily advances by advisor</div>
+    <div style="display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)"><div style="width:10px;height:10px;border-radius:2px;background:#534AB7"></div>Bringsjord</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)"><div style="width:10px;height:10px;border-radius:2px;background:#3B6D11"></div>Mittal</div>
+    </div>
+    <div style="display:grid;grid-template-columns:76px repeat(10,minmax(0,1fr));gap:3px;align-items:center;">
+      <div></div>
+      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">Apr 28</div>
+      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">Apr 30</div>
+      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 1</div>
+      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 4</div>
+      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 5</div>
+      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 6</div>
+      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 7</div>
+      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 8</div>
+      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 11</div>
+      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 12 ⚠</div>
+      <div style="font-size:11px;font-weight:500;padding:3px 0;color:var(--text)">Bringsjord</div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:10%;background:#534AB7">1</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="height:0%"></div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:10%;background:#534AB7">1</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="height:0%"></div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="height:0%"></div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="height:0%"></div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:18%;background:#534AB7">3</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:10%;background:#534AB7">1</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:20%;background:#534AB7">4</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:98%;background:#534AB7">92</div></div>
+      <div style="font-size:11px;font-weight:500;padding:3px 0;color:var(--text)">Mittal</div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:14%;background:#3B6D11">2</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:18%;background:#3B6D11">3</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:18%;background:#3B6D11">3</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:20%;background:#3B6D11">4</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:25%;background:#3B6D11">6</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:14%;background:#3B6D11">2</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:31%;background:#3B6D11">9</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:20%;background:#3B6D11">4</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:20%;background:#3B6D11">4</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"></div>
+    </div>
+    <div class="note">Deals moved into a new forward stage · excl. new deal creation · ⚠ May 12 includes a bulk CRM stage update</div>
+  </div>
+  <div class="card">
+    <div class="ctitle" style="margin-bottom:11px">Last 5 working days (May 6–12)</div>
+    <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px">Advances by advisor</div>
+    <div style="display:grid;grid-template-columns:76px 1fr 26px 28px;gap:5px;align-items:center;padding:5px 0;border-bottom:.5px solid var(--border);font-size:11px;font-size:10px;color:var(--text3)"><span>Advisor</span><span></span><span style="text-align:right">Wk</span><span style="text-align:right">Prev</span></div>
+    <div style="display:grid;grid-template-columns:76px 1fr 26px 28px;gap:5px;align-items:center;padding:5px 0;border-bottom:.5px solid var(--border);font-size:11px"><span style="font-weight:500">Mittal</span><div><div style="height:5px;background:var(--green);border-radius:3px;width:100%"></div></div><span style="text-align:right;font-weight:500;color:var(--green)">25</span><span style="text-align:right;color:var(--text3)">—</span></div>
+    <div style="display:grid;grid-template-columns:76px 1fr 26px 28px;gap:5px;align-items:center;padding:5px 0;border-bottom:.5px solid var(--border);font-size:11px"><span style="font-weight:500">Bringsjord</span><div><div style="height:5px;background:var(--purple);border-radius:3px;width:100%"></div></div><span style="text-align:right;font-weight:500;color:var(--purple)">100</span><span style="text-align:right;color:var(--text3)">—</span></div>
+    <div style="margin-top:14px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px">Where deals moved to</div>
+    <div class="sr"><div style="flex:1"><span>Attem. to Contact</span><div class="sbar" style="width:100%;background:var(--amber)"></div></div><span style="font-weight:500;white-space:nowrap">106</span></div>
+    <div class="sr"><div style="flex:1"><span>Contacted</span><div class="sbar" style="width:16%;background:var(--purple)"></div></div><span style="font-weight:500;white-space:nowrap">17</span></div>
+    <div class="sr"><div style="flex:1"><span>Meeting Scheduled</span><div class="sbar" style="width:7%;background:var(--purple)"></div></div><span style="font-weight:500;white-space:nowrap">7</span></div>
+    <div class="sr"><div style="flex:1"><span>Nurture</span><div class="sbar" style="width:4%;background:#888"></div></div><span style="font-weight:500;white-space:nowrap">4</span></div>
+    <div class="sr"><div style="flex:1"><span>Rec. Made</span><div class="sbar" style="width:2%;background:var(--green)"></div></div><span style="font-weight:500;white-space:nowrap">2</span></div>
+    <div style="margin-top:11px;padding-top:9px;border-top:.5px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <div><div style="font-size:12px;color:var(--text2)">Total advances (last 5 days)</div><div style="font-size:10px;color:var(--text3);font-style:italic;margin-top:2px">Includes May 12 bulk stage update (92 deals)</div></div>
+      <span style="font-size:24px;font-weight:500;color:var(--purple)">135</span>
+    </div>
+  </div>
+</div>
+'''
+
+
+def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password='banksy'):
+    today = datetime.now(timezone.utc)
+    today_d = today.date()
+    month_start  = today_d.replace(day=1)
+    year_start   = today_d.replace(month=1, day=1)
+    days30_ago   = today_d - timedelta(days=30)
+
+    def amt(d):
+        try: return float(d['properties'].get('amount') or 0)
+        except: return 0.0
+
+    def pd(s):
+        if not s: return None
+        try: return datetime.fromisoformat(s[:10]).date()
+        except: return None
+
+    def fmtamt(n):
+        if n >= 1_000_000: return f'${n/1_000_000:.1f}M'
+        if n >= 1_000:     return f'${n/1_000:.0f}k'
+        return f'${int(n):,}'
+
+    def deal_name(d):
+        raw = (d['properties'].get('dealname') or '').strip()
+        name = re.sub(r'[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}', '', raw, flags=re.IGNORECASE).strip()
+        name = re.split(r'\s+-\s+', name)[0].strip()
+        return name or raw
+
+    def deal_age_days(d):
+        cr = pd(d['properties'].get('createdate', ''))
+        return (today_d - cr).days if cr else 0
+
+    team  = [d for d in deals if d['properties'].get('hubspot_owner_id', '') in OVERVIEW_OWNER_IDS]
+    active = [d for d in team if d['properties'].get('dealstage', '') not in TERMINAL_STAGES]
+    won   = [d for d in team if d['properties'].get('dealstage', '') == CLOSED_WON_STAGE]
+    lost  = [d for d in team if d['properties'].get('dealstage', '') == CLOSED_LOST_STAGE]
+
+    # ── Section 1: Pipeline Health ──
+    total_active    = len(active)
+    pipeline_value  = sum(amt(d) for d in active if amt(d) > 0)
+    no_value_count  = sum(1 for d in active if amt(d) == 0)
+    pct_no_value    = no_value_count / total_active * 100 if total_active else 0
+    decided         = len(won) + len(lost)
+    close_rate      = len(won) / decided * 100 if decided else 0
+    funnel_rate     = len(won) / len(team) * 100 if team else 0
+    close_times = []
+    for d in won:
+        p = d['properties']
+        cd, cr = pd(p.get('closedate')), pd(p.get('createdate'))
+        if cd and cr and cd > cr:
+            close_times.append((cd - cr).days)
+    avg_close = sum(close_times) / len(close_times) if close_times else 0
+
+    # ── Section 2: Funnel ──
+    ACTIVE_STAGES = [
+        ('1321369495', 'Event Attended'),
+        ('1339121714', 'Attempted'),
+        ('1321369496', 'Contacted'),
+        ('1321369497', 'Meeting Scheduled'),
+        ('1321369500', 'Nurture'),
+        ('1321369502', 'Rec. Made'),
+    ]
+    stage_counts = {sid: sum(1 for d in active if d['properties'].get('dealstage') == sid)
+                    for sid, _ in ACTIVE_STAGES}
+    max_stage_ct = max(stage_counts.values()) or 1
+    total_active_funnel = sum(stage_counts.values())
+
+    # ── Section 3: Sales Closed ──
+    def won_in(ds, since):
+        return [d for d in ds if pd(d['properties'].get('closedate', '')) and
+                pd(d['properties'].get('closedate', '')) >= since]
+
+    w_month = won_in(won, month_start)
+    w_30d   = won_in(won, days30_ago)
+    w_ytd   = won_in(won, year_start)
+    rev_month = sum(amt(d) for d in w_month)
+    rev_30d   = sum(amt(d) for d in w_30d)
+    rev_ytd   = sum(amt(d) for d in w_ytd)
+    goal_pct  = min(rev_month / MONTHLY_GOAL * 100, 100)
+
+    ytd_by_owner = {oid: sum(amt(d) for d in w_ytd if d['properties'].get('hubspot_owner_id') == oid)
+                    for oid in OVERVIEW_OWNER_IDS}
+    w_30d_sorted = sorted(w_30d, key=amt, reverse=True)
+
+    # ── Section 5: Whales ──
+    whales = sorted([d for d in active if amt(d) >= 100_000], key=amt, reverse=True)
+
+    # ── Section 6: Hygiene ──
+    days30_ts = (today - timedelta(days=30)).timestamp() * 1000
+    stale = []
+    for d in active:
+        p = d['properties']
+        nc = int(p.get('num_contacted_notes') or 0)
+        nlu = p.get('notes_last_updated')
+        def _to_ts(v):
+            if not v:
+                return None
+            try:
+                return float(v)
+            except (ValueError, TypeError):
+                pass
+            try:
+                return datetime.fromisoformat(v.replace('Z', '+00:00')).timestamp() * 1000
+            except Exception:
+                return None
+        nlu_ts = _to_ts(nlu)
+        if nc == 0 or (nlu_ts and nlu_ts < days30_ts):
+            stale.append(d)
+
+    BANDS = [('$100k+', 100_000, 9e9), ('$25k–$99k', 25_000, 99_999),
+             ('$10k–$24k', 10_000, 24_999), ('$5k–$9k', 5_000, 9_999), ('No value', 0, 4_999)]
+    band_rows = ''
+    stale_val = 0.0
+    for label, lo, hi in BANDS:
+        bucket = [d for d in stale if lo <= amt(d) <= hi]
+        if not bucket:
+            continue
+        bval = sum(amt(d) for d in bucket)
+        stale_val += bval
+        ages = [deal_age_days(d) for d in bucket]
+        avg_age = int(sum(ages) / len(ages)) if ages else 0
+        val_str = fmtamt(bval) if bval > 0 else '—'
+        band_rows += (f'<div class="brow"><span>{label}</span>'
+                      f'<span style="font-weight:600;color:var(--red);text-align:right">{len(bucket)}</span>'
+                      f'<span style="color:var(--text2);text-align:right">{val_str}</span>'
+                      f'<span style="color:var(--text3);text-align:right">{avg_age}d</span></div>')
+
+    no_val_rows = ''
+    total_no_val = sum(1 for d in active if amt(d) == 0)
+    for oid in ['77771452', '73613833']:
+        cnt = sum(1 for d in active if amt(d) == 0 and d['properties'].get('hubspot_owner_id') == oid)
+        if cnt == 0:
+            continue
+        pct = cnt / total_no_val * 100 if total_no_val else 0
+        bar_w = int(pct)
+        color = 'var(--red)' if pct > 25 else 'var(--amber)'
+        name = OVERVIEW_OWNER_NAMES.get(oid, oid)
+        no_val_rows += (f'<div class="or"><div style="flex:1"><span>{name}</span>'
+                        f'<div class="mb" style="width:{bar_w}%;background:{color}"></div></div>'
+                        f'<span style="font-weight:600;color:{color};width:24px;text-align:right">{cnt}</span>'
+                        f'<span style="color:var(--text3);font-size:10px;width:30px;text-align:right">{pct:.0f}%</span></div>')
+
+    # ── Section 7: Lower Pipeline ──
+    lower = [d for d in active if 10_000 <= amt(d) <= 25_000]
+    lower_val = sum(amt(d) for d in lower)
+    closes_needed = int(MONTHLY_GOAL / 5_000) if MONTHLY_GOAL else 0
+
+    # ── Section 8: Activity ──
+    ani  = activity.get('77771452', {})
+    erik = activity.get('73613833', {})
+    ani_c30  = ani.get('calls_30', 0);  ani_e30  = ani.get('emails_30', 0)
+    erik_c30 = erik.get('calls_30', 0); erik_e30 = erik.get('emails_30', 0)
+    ani_c5   = ani.get('calls_5wd', 0); ani_e5   = ani.get('emails_5wd', 0)
+    erik_c5  = erik.get('calls_5wd', 0);erik_e5  = erik.get('emails_5wd', 0)
+    max_c30  = max(ani_c30, erik_c30) or 1
+    max_e30  = max(ani_e30, erik_e30) or 1
+    max_c5   = max(ani_c5, erik_c5)   or 1
+    max_e5   = max(ani_e5, erik_e5)   or 1
+    total_touches = ani_c30 + ani_e30 + erik_c30 + erik_e30
+    total_rev_pipeline = rev_ytd
+    roi = total_rev_pipeline / total_touches if total_touches else 0
+
+    # ── Whale rows ──
+    STAGE_BADGE = {
+        '1321369495': ('br', 'Event Attended'),
+        '1339121714': ('ba', 'Attem. Contact'),
+        '1321369496': ('bp', 'Contacted'),
+        '1321369497': ('bp', 'Mtg Scheduled'),
+        '1321369500': ('bp', 'Nurture'),
+        '1321369502': ('bg', 'Rec. Made'),
+    }
+    whale_rows = ''
+    for d in whales:
+        p = d['properties']
+        cls, lbl = STAGE_BADGE.get(p.get('dealstage', ''), ('bp', p.get('dealstage', '')))
+        age = deal_age_days(d)
+        nc  = p.get('num_contacted_notes') or '0'
+        owner = OVERVIEW_OWNER_NAMES.get(p.get('hubspot_owner_id', ''), '')
+        whale_rows += (f'<tr><td><strong>{escape(deal_name(d))}</strong>'
+                       f'<small style="color:var(--text3);margin-left:5px">{owner}</small></td>'
+                       f'<td>{fmtamt(amt(d))}</td>'
+                       f'<td><span class="badge {cls}">{lbl}</span></td>'
+                       f'<td>{age}d</td><td>{nc}</td>'
+                       f'<td style="color:var(--text3)">—</td></tr>')
+
+    # ── Last 30d closed rows ──
+    closed_30d_rows = ''
+    for d in w_30d_sorted[:8]:
+        p = d['properties']
+        owner = OVERVIEW_OWNER_NAMES.get(p.get('hubspot_owner_id', ''), '')
+        a = amt(d)
+        a_str = fmtamt(a) if a > 0 else '<span style="color:var(--text3)">—</span>'
+        closed_30d_rows += (f'<tr><td>{escape(deal_name(d))}</td>'
+                            f'<td style="color:var(--text2)">{owner}</td>'
+                            f'<td style="text-align:right;font-weight:500">{a_str}</td></tr>')
+
+    # ── Funnel bars ──
+    funnel_bars = ''
+    FUNNEL_COLORS = ['var(--red)', 'var(--amber)', 'var(--purple)',
+                     'var(--purple)', 'var(--purple)', 'var(--green)']
+    for i, (sid, label) in enumerate(ACTIVE_STAGES):
+        cnt = stage_counts[sid]
+        pct_of_total = cnt / total_active_funnel * 100 if total_active_funnel else 0
+        bar_pct = cnt / max_stage_ct * 100
+        color = FUNNEL_COLORS[i]
+        funnel_bars += (
+            f'<div class="fc"><div class="fc-bw">'
+            f'<div class="fc-lbl">{label}</div>'
+            f'<div class="fc-bg"><div class="fc-fill" style="width:{bar_pct:.0f}%;background:{color}"></div></div>'
+            f'</div><div class="fc-nums">'
+            f'<div class="fc-pct" style="color:{color}">{pct_of_total:.0f}%</div>'
+            f'<div class="fc-cnt">{cnt}</div>'
+            f'</div></div>'
+        )
+
+    month_name = today_d.strftime('%B')
+
+    html_parts = [
+        '<!DOCTYPE html><html lang="en"><head>',
+        '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">',
+        '<title>Pipeline Overview</title>',
+        f'<style>{_OVERVIEW_CSS}</style></head><body>',
+
+        # password gate
+        f'<div id="pw-gate"><div id="pw-box">',
+        f'<h2>PIPELINE OVERVIEW</h2>',
+        f'<input id="pw-input" type="password" placeholder="Password" autofocus/>',
+        f'<div id="pw-err"></div>',
+        f'<button id="pw-btn" onclick="checkPw()">Enter</button>',
+        f'</div></div>',
+        f'<script>(function(){{var PW={repr(password)};var SK="pw_ok_ov";',
+        f'if(sessionStorage.getItem(SK)==="1")document.getElementById("pw-gate").classList.add("hidden");',
+        f'window.checkPw=function(){{if(document.getElementById("pw-input").value===PW){{',
+        f'sessionStorage.setItem(SK,"1");document.getElementById("pw-gate").classList.add("hidden");',
+        f'}}else{{document.getElementById("pw-err").textContent="Incorrect password";',
+        f'document.getElementById("pw-input").value="";}}}}; ',
+        f'document.getElementById("pw-input").addEventListener("keydown",function(e){{if(e.key==="Enter")checkPw();}});',
+        f'}})();</script>',
+
+        nav_html,
+
+        f'<div class="dash">',
+        f'<div class="hdr"><div><h1>Gallery Leads — Pipeline Overview</h1>',
+        f'<p style="font-size:12px;color:var(--text2);margin-top:3px">Outbound · Ani + Erik · {now_str}</p></div>',
+        f'<div style="font-size:10px;color:var(--text3);text-align:right">Goal: ${MONTHLY_GOAL:,} / month<br>{now_str}</div></div>',
+
+        # 1. Pipeline Health
+        '<p class="slabel">1 · pipeline health</p>',
+        '<div class="g6">',
+        f'<div class="kc"><div class="kv" style="color:var(--purple)">{total_active}</div><div class="kl">Total active deals</div><div class="ks">excl. closed/DQ</div></div>',
+        f'<div class="kc"><div class="kv" style="color:var(--green)">{fmtamt(pipeline_value)}</div><div class="kl">Pipeline value</div><div class="ks">open w/ amounts</div></div>',
+        f'<div class="kc"><div class="kv" style="color:var(--red)">{pct_no_value:.0f}%</div><div class="kl">No value</div><div class="ks">{no_value_count} of {total_active} active</div></div>',
+        f'<div class="kc"><div class="kv" style="color:var(--purple)">{close_rate:.1f}%</div><div class="kl">Close rate</div><div class="ks">won ÷ decided</div></div>',
+        f'<div class="kc"><div class="kv" style="color:var(--amber)">{funnel_rate:.1f}%</div><div class="kl">Funnel close rate</div><div class="ks">won ÷ all assigned</div></div>',
+        f'<div class="kc"><div class="kv" style="color:var(--purple)">{avg_close:.1f}d</div><div class="kl">Avg time to close</div><div class="ks">create → close · {len(close_times)} deals</div></div>',
+        '</div>',
+
+        # 2. Active Deal Funnel
+        '<p class="slabel">2 · active deal funnel</p>',
+        '<div class="frow">', funnel_bars, '</div>',
+
+        # 3. Sales Closed
+        '<p class="slabel">3 · sales closed</p>',
+        '<div class="g3">',
+        # Current month card
+        f'<div class="card"><div class="ctitle">Current month — {month_name}</div>',
+        f'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px">',
+        f'<span style="font-size:13px;color:var(--text2)">Closed so far</span>',
+        f'<span style="font-size:24px;font-weight:500;color:var(--purple)">{fmtamt(rev_month)}</span></div>',
+        f'<div class="goal-bar-bg"><div class="goal-bar-fill" style="width:{goal_pct:.1f}%"></div></div>',
+        f'<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:13px"><span>$0</span><span>${MONTHLY_GOAL//1000}k goal</span></div>',
+        f'<div class="fg"><span style="font-size:12px;color:var(--text2)">Gap to goal</span>',
+        f'<span style="font-size:18px;font-weight:500;color:var(--red)">{fmtamt(max(0, MONTHLY_GOAL - rev_month))}</span></div>',
+        f'<div class="note">{len(w_month)} deals closed this month</div></div>',
+        # Last 30d card
+        f'<div class="card">',
+        f'<div class="sbig">{fmtamt(rev_30d)}</div><div class="ssub">{len(w_30d)} deals · last 30 days</div>',
+        f'<div class="ctitle">Last 30 days</div>',
+        f'<table><thead><tr><th>Client</th><th>Advisor</th><th style="text-align:right">Amount</th></tr></thead><tbody>',
+        closed_30d_rows,
+        f'</tbody></table></div>',
+        # YTD card
+        f'<div class="card">',
+        f'<div class="sbig">{fmtamt(rev_ytd)}</div><div class="ssub">{len(w_ytd)} deals · Jan 1–today</div>',
+        f'<div class="ctitle">YTD — by advisor</div>',
+        f'<table><thead><tr><th>Advisor</th><th style="text-align:right">Closed</th></tr></thead><tbody>',
+    ]
+    for oid in ['77771452', '73613833']:
+        name = OVERVIEW_OWNER_NAMES.get(oid, oid)
+        v = ytd_by_owner.get(oid, 0)
+        html_parts.append(f'<tr><td>{name}</td><td style="text-align:right;font-weight:500">{fmtamt(v)}</td></tr>')
+    html_parts += [
+        f'</tbody></table></div>',
+        '</div>',
+
+        # 4. Stage Progression (static)
+        '<p class="slabel">4 · stage progression — deals advancing</p>',
+        _STATIC_STAGE_PROGRESSION,
+
+        # 5. Whale Tracker
+        '<p class="slabel">5 · whale tracker — $100k+ deals</p>',
+        '<div class="card" style="margin-bottom:16px">',
+        '<div class="g4s">',
+        f'<div class="stat"><div class="sv" style="color:var(--purple)">{len(whales)}</div><div class="sl">active at $100k+</div></div>',
+        f'<div class="stat"><div class="sv" style="color:var(--green)">{fmtamt(sum(amt(d) for d in whales))}</div><div class="sl">combined potential</div></div>',
+        f'<div class="stat"><div class="sv" style="color:var(--red)">{sum(1 for d in whales if deal_age_days(d) > 30)} of {len(whales)}</div><div class="sl">over 30 days old</div></div>',
+        f'<div class="stat"><div class="sv" style="color:var(--amber)">—</div><div class="sl">inbound reply</div></div>',
+        '</div>',
+        '<div class="stale-note">Reply column: not available via HubSpot API — last updated May 13, 2026.</div>',
+        '<table><thead><tr><th>Deal</th><th>Value</th><th>Stage</th><th>Age</th><th>Contacts</th><th>Reply</th></tr></thead><tbody>',
+        whale_rows,
+        '</tbody></table></div>',
+
+        # 6. Pipeline Hygiene
+        '<p class="slabel">6 · pipeline hygiene — decisions needed</p>',
+        '<div class="g2">',
+        f'<div class="card"><div class="ctitle">Uncontacted 30+ days — by value band</div>',
+        f'<div class="note" style="margin-bottom:9px">{len(stale)} deals · {fmtamt(stale_val)} at-risk</div>',
+        '<div style="display:grid;grid-template-columns:1fr 32px 74px 44px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;padding-bottom:4px;border-bottom:.5px solid var(--border);margin-bottom:4px">',
+        '<span>Band</span><span style="text-align:right">Deals</span><span style="text-align:right">Value</span><span style="text-align:right">Avg age</span></div>',
+        band_rows or '<div style="color:var(--text3);font-size:11px;padding:8px 0">None — pipeline is healthy</div>',
+        '<div class="note" style="margin-top:8px">Contact this week or DQ</div></div>',
+        f'<div class="card"><div class="ctitle">Deals with no value — by rep</div>',
+        f'<div class="note" style="margin-bottom:9px">{total_no_val} total · assign $10k floor or DQ</div>',
+        no_val_rows,
+        '</div></div>',
+
+        # 7. Lower Pipeline
+        '<p class="slabel">7 · lower pipeline ($10k–$25k) — capacity review</p>',
+        '<div class="card" style="margin-bottom:16px"><div class="g4s">',
+        f'<div class="stat"><div class="sv" style="color:var(--purple)">{len(lower)}</div><div class="sl">deals in $10k–$25k band</div></div>',
+        f'<div class="stat"><div class="sv" style="color:var(--amber)">{fmtamt(lower_val)}</div><div class="sl">combined face value</div></div>',
+        f'<div class="stat"><div class="sv" style="color:var(--red)">{closes_needed}</div><div class="sl">closes at $5k avg to hit goal</div></div>',
+        f'<div class="stat"><div class="sv" style="color:var(--green)">?</div><div class="sl">deals with capacity above $25k</div></div>',
+        '</div><div class="note">Key question: can any rep identify a deal where the investor has capacity beyond the current value? If yes — upgrade the band. If no story — DQ it.</div></div>',
+
+        # 8. Advisor Activity
+        '<p class="slabel">8 · advisor activity — calls &amp; emails</p>',
+        '<div class="act3">',
+        # Calls card
+        '<div class="act-card"><div class="ctitle">Calls</div>',
+        '<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Last 30 days</div>',
+        f'<div class="act-rep"><span style="font-size:12px;font-weight:500">Bringsjord</span><div><div class="act-bb"><div class="act-bf" style="width:{int(erik_c30/max_c30*100)}%;background:#534AB7"></div></div></div><div><div class="act-v" style="color:#534AB7">{erik_c30/30:.1f}<span style="font-size:10px;font-weight:400">/day</span></div><div class="act-s">{erik_c30} total</div></div></div>',
+        f'<div class="act-rep" style="border-bottom:.5px solid var(--border);padding-bottom:10px"><span style="font-size:12px;font-weight:500">Mittal</span><div><div class="act-bb"><div class="act-bf" style="width:{int(ani_c30/max_c30*100)}%;background:#3B6D11"></div></div></div><div><div class="act-v" style="color:#3B6D11">{ani_c30/30:.1f}<span style="font-size:10px;font-weight:400">/day</span></div><div class="act-s">{ani_c30} total</div></div></div>',
+        f'<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-top:10px;margin-bottom:6px">Last {n_5wd_days} days</div>',
+        f'<div class="act-rep"><span style="font-size:12px;font-weight:500">Bringsjord</span><div><div class="act-bb"><div class="act-bf" style="width:{int(erik_c5/max_c5*100)}%;background:#534AB7"></div></div></div><div><div class="act-v" style="color:#534AB7">{erik_c5/n_5wd_days:.1f}<span style="font-size:10px;font-weight:400">/day</span></div><div class="act-s">{erik_c5} total</div></div></div>',
+        f'<div class="act-rep"><span style="font-size:12px;font-weight:500">Mittal</span><div><div class="act-bb"><div class="act-bf" style="width:{int(ani_c5/max_c5*100)}%;background:#3B6D11"></div></div></div><div><div class="act-v" style="color:#3B6D11">{ani_c5/n_5wd_days:.1f}<span style="font-size:10px;font-weight:400">/day</span></div><div class="act-s">{ani_c5} total</div></div></div>',
+        '<div class="note">HubSpot logged outbound calls only</div></div>',
+        # ROI card
+        f'<div class="mid-card"><div style="font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:14px">Outreach ROI</div>',
+        f'<div style="font-size:56px;font-weight:500;color:#7B6FD4;line-height:1">{fmtamt(roi)}</div>',
+        f'<div style="font-size:12px;color:var(--text2);margin-top:6px">per touch</div>',
+        f'<div style="width:100%;border-top:.5px solid var(--border);margin:16px 0"></div>',
+        f'<div style="font-size:10px;color:var(--text2);line-height:1.7">~{total_touches:,} logged touches<br>{fmtamt(rev_ytd)} confirmed YTD revenue</div></div>',
+        # Emails card
+        '<div class="act-card"><div class="ctitle">Emails</div>',
+        '<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Last 30 days</div>',
+        f'<div class="act-rep"><span style="font-size:12px;font-weight:500">Bringsjord</span><div><div class="act-bb"><div class="act-bf" style="width:{int(erik_e30/max_e30*100)}%;background:#534AB7"></div></div></div><div><div class="act-v" style="color:#534AB7">{erik_e30/30:.1f}<span style="font-size:10px;font-weight:400">/day</span></div><div class="act-s">{erik_e30} total</div></div></div>',
+        f'<div class="act-rep" style="border-bottom:.5px solid var(--border);padding-bottom:10px"><span style="font-size:12px;font-weight:500">Mittal</span><div><div class="act-bb"><div class="act-bf" style="width:{int(ani_e30/max_e30*100)}%;background:#3B6D11"></div></div></div><div><div class="act-v" style="color:#3B6D11">{ani_e30/30:.1f}<span style="font-size:10px;font-weight:400">/day</span></div><div class="act-s">{ani_e30} total</div></div></div>',
+        f'<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-top:10px;margin-bottom:6px">Last {n_5wd_days} days</div>',
+        f'<div class="act-rep"><span style="font-size:12px;font-weight:500">Bringsjord</span><div><div class="act-bb"><div class="act-bf" style="width:{int(erik_e5/max_e5*100)}%;background:#534AB7"></div></div></div><div><div class="act-v" style="color:#534AB7">{erik_e5/n_5wd_days:.1f}<span style="font-size:10px;font-weight:400">/day</span></div><div class="act-s">{erik_e5} total</div></div></div>',
+        f'<div class="act-rep"><span style="font-size:12px;font-weight:500">Mittal</span><div><div class="act-bb"><div class="act-bf" style="width:{int(ani_e5/max_e5*100)}%;background:#3B6D11"></div></div></div><div><div class="act-v" style="color:#3B6D11">{ani_e5/n_5wd_days:.1f}<span style="font-size:10px;font-weight:400">/day</span></div><div class="act-s">{ani_e5} total</div></div></div>',
+        '</div>',
+        '</div>',
+
+        f'<div class="footer"><span>Masterworks · Outbound · Gallery Leads · Confidential</span><span>{now_str}</span></div>',
+        '</div></body></html>',
+    ]
+    return ''.join(html_parts)
+
+
 def main():
     if not HUBSPOT_TOKEN:
         print('ERROR: HUBSPOT_API_KEY not set', file=sys.stderr)
@@ -1044,7 +1636,7 @@ def main():
             f'<a href="{Path(o["out"]).name}" class="active">{o["name"]}</a>'
             if o is owner_cfg else
             f'<a href="{Path(o["out"]).name}">{o["name"]}</a>'
-            for o in OWNERS
+            for o in ALL_PAGES
         ) + '</div>'
 
         print('Fetching contacts...', flush=True)
@@ -1080,6 +1672,27 @@ def main():
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(html, encoding='utf-8')
         print(f'Written: {out}', flush=True)
+
+    # Overview page
+    print('\n=== Overview ===', flush=True)
+    ov_nav = '<div class="nav">' + ''.join(
+        f'<a href="{Path(o["out"]).name}" class="active">{o["name"]}</a>'
+        if o is OVERVIEW_CFG else
+        f'<a href="{Path(o["out"]).name}">{o["name"]}</a>'
+        for o in ALL_PAGES
+    ) + '</div>'
+
+    print('Fetching advisor activity...', flush=True)
+    activity, n_5wd_days = fetch_advisor_activity()
+
+    now_str = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
+    print('Building Overview HTML...', flush=True)
+    ov_html = build_overview_html(deals, activity, n_5wd_days, now_str, ov_nav, password=OVERVIEW_CFG['pw'])
+
+    ov_out = Path(__file__).parent / OVERVIEW_CFG['out']
+    ov_out.parent.mkdir(parents=True, exist_ok=True)
+    ov_out.write_text(ov_html, encoding='utf-8')
+    print(f'Written: {ov_out}', flush=True)
 
 
 if __name__ == '__main__':
