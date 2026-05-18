@@ -62,8 +62,8 @@ GALLERY_LEADS_PIPELINE = '880355706'
 ANI_OWNER_ID = '77771452'
 
 OWNERS = [
-    {'name': 'Ani',  'id': '77771452', 'out': 'docs/index.html'},
-    {'name': 'Erik', 'id': '73613833', 'out': 'docs/erik.html'},
+    {'name': 'Ani',  'id': '77771452', 'out': 'docs/index.html', 'pw': 'banksy'},
+    {'name': 'Erik', 'id': '73613833', 'out': 'docs/erik.html',  'pw': 'anisha'},
 ]
 
 
@@ -527,7 +527,7 @@ PIE_PALETTE = [
 
 
 def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetings=None, notes=None,
-               daily_tasks=None, daily_meetings=None, owner_name='Ani', nav_html=''):
+               daily_tasks=None, daily_meetings=None, owner_name='Ani', nav_html='', password='anisha'):
     now_dt = datetime.now(timezone.utc)
     now = now_dt.strftime('%B %-d, %Y %H:%M UTC') if sys.platform != 'win32' \
         else now_dt.strftime('%B %#d, %Y %H:%M UTC')
@@ -879,7 +879,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 </div>
 <script>
 (function(){{
-  var PW='anisha';
+  var PW='{password}';
   var SK='pw_ok';
   if(sessionStorage.getItem(SK)==='1')document.getElementById('pw-gate').classList.add('hidden');
   window.checkPw=function(){{
@@ -1074,7 +1074,7 @@ def main():
         print('Building HTML...', flush=True)
         html = build_html(contacts, records, by_name, by_last_name=by_last_name, tasks=tasks, meetings=meetings,
                           notes=notes, daily_tasks=daily_tasks, daily_meetings=daily_meetings,
-                          owner_name=owner_cfg['name'], nav_html=nav_html)
+                          owner_name=owner_cfg['name'], nav_html=nav_html, password=owner_cfg['pw'])
 
         out = Path(__file__).parent / owner_cfg['out']
         out.parent.mkdir(parents=True, exist_ok=True)
