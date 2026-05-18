@@ -63,7 +63,7 @@ ANI_OWNER_ID = '77771452'
 
 OWNERS = [
     {'name': 'Ani',  'id': '77771452', 'out': 'docs/index.html', 'pw': 'banksy'},
-    {'name': 'Erik', 'id': '73613833', 'out': 'docs/erik.html',  'pw': 'anisha'},
+    {'name': 'Erik', 'id': '73613833', 'out': 'docs/erik.html',  'pw': 'banksy'},
 ]
 
 
