@@ -215,8 +215,13 @@ def normalize(s):
     return re.sub(r'[^a-z0-9]', '', (s or '').lower())
 
 
+def _stage_priority(record):
+    return STAGE_SORT_ORDER.get(record.get('stage', ''), 12)
+
+
 def build_deal_index(deals):
-    """Pre-process deals for fast matching. Returns (records, by_name, by_last_name)."""
+    """Pre-process deals for fast matching. Returns (records, by_name, by_last_name).
+    When a contact has multiple deals, the highest-priority stage is preferred."""
     records = []
     by_name = {}
     by_last_name = {}  # last_name_key -> [(first_name_key, record)]
@@ -234,8 +239,9 @@ def build_deal_index(deals):
         name_part = re.sub(r'[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}', '', raw, flags=re.IGNORECASE).strip()
         name_part = re.split(r'\s+-\s+', name_part)[0].strip()
         key = normalize(name_part)
-        if key and key not in by_name:
-            by_name[key] = record
+        if key:
+            if key not in by_name or _stage_priority(record) < _stage_priority(by_name[key]):
+                by_name[key] = record
         # Last-name index for nickname/shortened first-name matching (e.g. "Ed" vs "Edward")
         parts = name_part.split()
         if len(parts) >= 2:
@@ -253,28 +259,31 @@ def match_deal(contact_props, records, by_name, by_last_name=None):
 
     # Primary: contact email appears as a substring of the deal name
     # (handles "FirstLastemail@domain.com" format where email is embedded)
+    # When multiple deals match, return the highest-priority stage.
     if email:
-        for r in records:
-            if email in r['raw_lower']:
-                return r
+        matches = [r for r in records if email in r['raw_lower']]
+        if matches:
+            return min(matches, key=_stage_priority)
 
-    # Fallback: normalized name match
+    # Fallback: normalized name match (by_name already stores best stage per name)
     if name_key in by_name:
         return by_name[name_key]
 
     # Partial name match (catches "Justin Holder - Placeholder..." etc.)
-    for dkey, dval in by_name.items():
-        if dkey.startswith(name_key) and len(name_key) >= 4:
-            return dval
+    partial = [dval for dkey, dval in by_name.items()
+               if dkey.startswith(name_key) and len(name_key) >= 4]
+    if partial:
+        return min(partial, key=_stage_priority)
 
     # Nickname/shortened first name match (e.g. deal "Ed Sonderling" vs contact "Edward Sonderling")
     if by_last_name and last:
         last_key = normalize(last)
         first_key = normalize(first)
-        for d_first, dval in by_last_name.get(last_key, []):
-            if len(d_first) >= 2 and len(first_key) >= 2:
-                if first_key.startswith(d_first) or d_first.startswith(first_key):
-                    return dval
+        matches = [dval for d_first, dval in by_last_name.get(last_key, [])
+                   if len(d_first) >= 2 and len(first_key) >= 2
+                   and (first_key.startswith(d_first) or d_first.startswith(first_key))]
+        if matches:
+            return min(matches, key=_stage_priority)
 
     return None
 
