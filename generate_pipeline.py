@@ -16,7 +16,7 @@ from datetime import datetime, timezone, timedelta, date as date_type
 from html import escape
 from pathlib import Path
 
-HUBSPOT_TOKEN = os.environ.get('HUBSPOT_API_KEY', '').strip()
+HUBSPOT_TOKEN = os.environ.get('HUBSPOT_API_KEY', '').strip().replace('﻿', '')
 PORTAL_ID = '5454671'
 HEADERS = {'Authorization': f'Bearer {HUBSPOT_TOKEN}', 'Content-Type': 'application/json'}
 SEARCH_URL = 'https://api.hubapi.com/crm/v3/objects/contacts/search'
