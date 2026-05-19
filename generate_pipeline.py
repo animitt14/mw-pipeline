@@ -23,39 +23,48 @@ SEARCH_URL = 'https://api.hubapi.com/crm/v3/objects/contacts/search'
 
 DEAL_STAGES = {
     '1321369495': 'Event Attended',
-    '1339121714': 'Attempted',
-    '1321369496': 'Contacted',
+    '1339121714': 'Advisor Assigned',
+    '1321369496': 'Active Relationship',
+    '1363474599': 'Long Term Relationship',
     '1321369497': 'Meeting Scheduled',
     '1321369500': 'Nurture',
     '1321369502': 'Recommendation Made',
     '1321369499': 'Closed Won',
     '1321369501': 'Closed Lost',
-    '1341309466': 'Disqualified',
+    '1341309466': 'Self Serve',
+    '1363474966': 'Collector',
+    '1363467915': 'Financial Advisor',
 }
 
 STAGE_SORT_ORDER = {
     '1321369502': 0,  # Recommendation Made
     '1321369500': 1,  # Nurture
     '1321369497': 2,  # Meeting Scheduled
-    '1321369496': 3,  # Contacted
-    '1339121714': 4,  # Attempted
-    '1321369495': 5,  # Event Attended
-    '1321369499': 6,  # Closed Won
-    '1321369501': 7,  # Closed Lost
-    '1341309466': 8,  # Disqualified
-    '':            9,  # No deal
+    '1363474599': 3,  # Long Term Relationship
+    '1321369496': 4,  # Active Relationship
+    '1339121714': 5,  # Advisor Assigned
+    '1321369495': 6,  # Event Attended
+    '1321369499': 7,  # Closed Won
+    '1321369501': 8,  # Closed Lost
+    '1341309466': 9,  # Self Serve
+    '1363474966': 10, # Collector
+    '1363467915': 11, # Financial Advisor
+    '':            12, # No deal
 }
 
 STAGE_CSS = {
     '1321369495': 'stage-event',
-    '1339121714': 'stage-attempted',
-    '1321369496': 'stage-contacted',
+    '1339121714': 'stage-advisor',
+    '1321369496': 'stage-active',
+    '1363474599': 'stage-longterm',
     '1321369497': 'stage-meeting',
     '1321369500': 'stage-nurture',
     '1321369502': 'stage-rec',
     '1321369499': 'stage-won',
     '1321369501': 'stage-lost',
     '1341309466': 'stage-disq',
+    '1363474966': 'stage-disq',
+    '1363467915': 'stage-disq',
 }
 
 GALLERY_LEADS_PIPELINE = '880355706'
@@ -74,7 +83,7 @@ MONTHLY_GOAL = 700_000
 CLOSED_WON_STAGE  = '1321369499'
 CLOSED_LOST_STAGE = '1321369501'
 DQ_STAGE          = '1341309466'
-TERMINAL_STAGES   = {CLOSED_WON_STAGE, CLOSED_LOST_STAGE, DQ_STAGE}
+TERMINAL_STAGES   = {CLOSED_WON_STAGE, CLOSED_LOST_STAGE, DQ_STAGE, '1363474966', '1363467915'}
 
 
 def fetch_all_contacts(owner_id):
@@ -545,8 +554,9 @@ def fmt_amount(amount_str):
 
 
 FUNNEL_STAGES = [
-    ('1339121714', 'Attempted'),
-    ('1321369496', 'Contacted'),
+    ('1339121714', 'Advisor Assigned'),
+    ('1321369496', 'Active Rel.'),
+    ('1363474599', 'Long Term Rel.'),
     ('1321369497', 'Mtg Scheduled'),
     ('1321369500', 'Nurture'),
     ('1321369502', 'Rec Made'),
@@ -701,7 +711,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         _task_ms = tasks.get(cid, {}).get('due_ms', 0)
         _, _rsvp_ms = fmt_date_ms(rsvp_raw)
         _, _cont_ms = fmt_date_ms(contacted_raw)
-        if stage_id in ('1339121714', '1321369501'):  # Attempted + Closed Lost always dormant
+        if stage_id in TERMINAL_STAGES:
             _status, _status_order = 'Dormant', 2
         elif _mtg_ms > 0:
             _status, _status_order = 'Upcoming', 0
@@ -717,7 +727,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         row_data[-1]['status_order'] = _status_order
 
     # Remove disqualified and closed won
-    row_data = [r for r in row_data if r['stage_id'] not in ('1341309466', '1321369499')]
+    row_data = [r for r in row_data if r['stage_id'] not in TERMINAL_STAGES]
 
     # Default sort: stage priority order, then amount descending within group
     row_data.sort(key=lambda r: (r['status_order'], STAGE_SORT_ORDER.get(r['stage_id'], 9), r['meeting_ms'] if (r['status_order'] == 0 and r['meeting_ms'] > 0) else 0, -r['amount_val']))
@@ -909,8 +919,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   .links a:hover {{ color: #c9a96e; border-color: #c9a96e; text-decoration: none; }}
   .badge {{ display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.72rem; font-weight: 500; white-space: nowrap; }}
   .stage-event     {{ background: #1a3a1a; color: #7dd87d; }}
-  .stage-attempted {{ background: #363618; color: #d9d97d; }}
-  .stage-contacted {{ background: #182a3a; color: #7dbedd; }}
+  .stage-advisor   {{ background: #363618; color: #d9d97d; }}
+  .stage-active    {{ background: #182a3a; color: #7dbedd; }}
+  .stage-longterm  {{ background: #1e2a3a; color: #7daedd; }}
   .stage-meeting   {{ background: #222236; color: #adadee; }}
   .stage-nurture   {{ background: #3a2418; color: #dd9a7d; }}
   .stage-rec       {{ background: #183030; color: #7ddcdc; }}
@@ -1310,8 +1321,9 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
     # ── Section 2: Funnel ──
     ACTIVE_STAGES = [
         ('1321369495', 'Event Attended'),
-        ('1339121714', 'Attempted'),
-        ('1321369496', 'Contacted'),
+        ('1339121714', 'Advisor Assigned'),
+        ('1321369496', 'Active Relationship'),
+        ('1363474599', 'Long Term Relationship'),
         ('1321369497', 'Meeting Scheduled'),
         ('1321369500', 'Nurture'),
         ('1321369502', 'Rec. Made'),
@@ -1419,8 +1431,9 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
     # ── Whale rows ──
     STAGE_BADGE = {
         '1321369495': ('br', 'Event Attended'),
-        '1339121714': ('ba', 'Attem. Contact'),
-        '1321369496': ('bp', 'Contacted'),
+        '1339121714': ('ba', 'Adv. Assigned'),
+        '1321369496': ('bp', 'Active Rel.'),
+        '1363474599': ('bp', 'Long Term Rel.'),
         '1321369497': ('bp', 'Mtg Scheduled'),
         '1321369500': ('bp', 'Nurture'),
         '1321369502': ('bg', 'Rec. Made'),
@@ -1453,7 +1466,7 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
     # ── Funnel bars ──
     funnel_bars = ''
     FUNNEL_COLORS = ['var(--red)', 'var(--amber)', 'var(--purple)',
-                     'var(--purple)', 'var(--purple)', 'var(--green)']
+                     'var(--purple)', 'var(--purple)', 'var(--purple)', 'var(--green)']
     for i, (sid, label) in enumerate(ACTIVE_STAGES):
         cnt = stage_counts[sid]
         pct_of_total = cnt / total_active_funnel * 100 if total_active_funnel else 0
