@@ -611,6 +611,41 @@ PIE_PALETTE = [
 ]
 
 
+_TITLE_ABBREVS = [
+    ('senior vice president', 'SVP'),
+    ('executive vice president', 'EVP'),
+    ('assistant vice president', 'AVP'),
+    ('associate vice president', 'AVP'),
+    ('vice president', 'VP'),
+    ('managing director', 'MD'),
+    ('managing partner', 'MP'),
+    ('managing member', 'MM'),
+    ('general partner', 'GP'),
+    ('founding partner', 'Founding Partner'),
+    ('chief executive officer', 'CEO'),
+    ('chief financial officer', 'CFO'),
+    ('chief operating officer', 'COO'),
+    ('chief technology officer', 'CTO'),
+    ('chief information officer', 'CIO'),
+    ('chief marketing officer', 'CMO'),
+    ('chief revenue officer', 'CRO'),
+    ('chief investment officer', 'CIO'),
+    ('chief people officer', 'CPO'),
+    ('chief product officer', 'CPO'),
+    ('portfolio manager', 'PM'),
+    ('fund manager', 'FM'),
+    ('senior director', 'Sr. Dir'),
+    ('associate director', 'Assoc. Dir'),
+    ('senior manager', 'Sr. Mgr'),
+]
+
+def shorten_title(title):
+    t = title
+    for long, short in _TITLE_ABBREVS:
+        t = re.sub(re.escape(long), short, t, flags=re.IGNORECASE)
+    return t
+
+
 def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetings=None, notes=None,
                daily_tasks=None, daily_meetings=None, owner_name='Ani', nav_html='', password='anisha'):
     now_dt = datetime.now(timezone.utc)
@@ -887,7 +922,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
             except Exception:
                 pass
         row_class = ' class="contacted-today"' if contacted_today else ''
-        tc_parts = [r['title'][:28] if r['title'] else '', r['company'][:24] if r['company'] else '']
+        tc_parts = [shorten_title(r['title'])[:28] if r['title'] else '', r['company'][:24] if r['company'] else '']
         tc_str = ', '.join(p for p in tc_parts if p)
         li_bit = f'<a href="{escape(r["li_url"])}" target="_blank" class="li-inline">LI</a> ' if r['li_url'] else ''
         tc_cell = f'{li_bit}<span class="tc-text">{escape(tc_str)}</span>' if tc_str else (li_bit.strip() or '—')
