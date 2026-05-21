@@ -732,6 +732,37 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     # Default sort: stage priority order, then amount descending within group
     row_data.sort(key=lambda r: (r['status_order'], STAGE_SORT_ORDER.get(r['stage_id'], 9), r['meeting_ms'] if (r['status_order'] == 0 and r['meeting_ms'] > 0) else 0, -r['amount_val']))
 
+    # --- Today / Whale subsets ---
+    today_start_ms = int(datetime.combine(today_date, datetime.min.time()).replace(tzinfo=timezone.utc).timestamp() * 1000)
+    today_end_ms   = today_start_ms + 86_400_000
+    today_rows = [r for r in row_data if
+        (r['meeting_ms'] > 0 and today_start_ms <= r['meeting_ms'] < today_end_ms) or
+        (r['task_due_ms'] > 0 and today_start_ms <= r['task_due_ms'] < today_end_ms)]
+    today_rows.sort(key=lambda r: (r['meeting_ms'] if r['meeting_ms'] > 0 else 9e15, r['task_due_ms'] if r['task_due_ms'] > 0 else 9e15))
+
+    whale_rows = sorted([r for r in row_data if r['amount_val'] >= 50_000], key=lambda r: -r['amount_val'])
+
+    def mini_row(r):
+        hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
+        inv_badge = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
+        stage_cell = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else '—'
+        amt_cell = f'<span class="whale-amt">{escape(r["amount_fmt"])}</span>' if r['amount_val'] >= 50_000 else escape(r['amount_fmt']) or '—'
+        mtg_title = escape(r['meeting_title']) if r['meeting_title'] else ''
+        mtg_cell = f'<span title="{mtg_title}">{r["meeting_start"]}</span>' if r['meeting_start'] else '—'
+        task_title = escape(r['task_subject']) if r['task_subject'] else ''
+        task_cell = f'<span title="{task_title}">{r["task_due"]}</span>' if r['task_due'] else '—'
+        return (f'<tr>'
+                f'<td>{hs_badge}{r["name"]}{inv_badge}</td>'
+                f'<td>{stage_cell}</td>'
+                f'<td>{amt_cell}</td>'
+                f'<td>{r["last_contact"]}</td>'
+                f'<td>{mtg_cell}</td>'
+                f'<td>{task_cell}</td>'
+                f'</tr>')
+
+    today_rows_html  = '\n'.join(mini_row(r) for r in today_rows)  if today_rows  else '<tr><td colspan="6" style="color:#555;text-align:center;padding:18px">No meetings or tasks due today</td></tr>'
+    whale_rows_html  = '\n'.join(mini_row(r) for r in whale_rows)  if whale_rows  else '<tr><td colspan="6" style="color:#555;text-align:center;padding:18px">No deals at $50k+</td></tr>'
+
     # --- Chart data ---
     funnel_counts = [sum(1 for r in row_data if r['stage_id'] == sid) for sid, _ in FUNNEL_STAGES]
 
@@ -941,6 +972,20 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   .nav a {{ font-size: 0.78rem; padding: 4px 14px; border-radius: 4px; border: 1px solid #3a3a3a; color: #888; text-decoration: none; }}
   .nav a.active {{ border-color: #c9a96e; color: #c9a96e; }}
   .nav a:hover {{ border-color: #c9a96e; color: #c9a96e; }}
+  .section-header {{ font-size: 0.72rem; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin: 26px 0 8px; display: flex; align-items: center; gap: 10px; }}
+  .section-header .section-count {{ background: #2a2a2a; color: #aaa; border-radius: 10px; padding: 1px 8px; font-size: 0.68rem; font-weight: 500; text-transform: none; letter-spacing: 0; }}
+  .section-header .section-dot {{ width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }}
+  .dot-today {{ background: #adadee; }}
+  .dot-whale {{ background: #c9a96e; }}
+  .dot-all   {{ background: #555; }}
+  .mini-table {{ width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-bottom: 6px; }}
+  .mini-table th {{ text-align: left; padding: 7px 12px; background: #1a1a1a; color: #999; font-weight: 500; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid #333; white-space: nowrap; }}
+  .mini-table td {{ padding: 7px 12px; border-bottom: 1px solid #222; vertical-align: middle; }}
+  .mini-table tr:hover td {{ background: #1c1c1c; }}
+  .mini-table th:nth-child(n+2) {{ text-align: center; }}
+  .mini-table td:nth-child(n+2) {{ text-align: center; }}
+  .mini-table td:nth-child(3) {{ font-variant-numeric: tabular-nums; color: #c9a96e; }}
+  .whale-amt {{ color: #c9a96e; font-weight: 700; font-size: 0.88rem; }}
 </style>
 <style>
 #pw-gate{{position:fixed;inset:0;background:#141414;display:flex;align-items:center;justify-content:center;z-index:9999}}
@@ -996,6 +1041,19 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     <div class="cal-cards">{cal_cards_html}</div>
   </div>
 </div>
+<div class="section-header"><span class="section-dot dot-today"></span>Today<span class="section-count">{len(today_rows)}</span></div>
+<table class="mini-table">
+  <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
+  <tbody>{today_rows_html}</tbody>
+</table>
+
+<div class="section-header" style="margin-top:22px"><span class="section-dot dot-whale"></span>Whale Tracker &mdash; $50k+<span class="section-count">{len(whale_rows)}</span></div>
+<table class="mini-table">
+  <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
+  <tbody>{whale_rows_html}</tbody>
+</table>
+
+<div class="section-header" style="margin-top:22px"><span class="section-dot dot-all"></span>All Contacts<span class="section-count">{count}</span></div>
 <div class="controls">
   <button id="btn-default" onclick="resetSort()">Default Sort</button>
   <span class="sort-hint">deal stage &rarr; amount</span>
