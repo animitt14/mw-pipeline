@@ -64,7 +64,12 @@
   .note-toggle { cursor: pointer; color: #aaa; font-size: 0.75rem; margin-left: 5px; user-select: none; }
   .note-toggle:hover { color: #eee; }
   .note-snippet { font-size: 0.72rem; color: #aaa; font-style: italic; margin-top: 4px; line-height: 1.4; white-space: normal; }
-  td:first-child { max-width: 170px; }
+  td:first-child { max-width: 220px; }
+  .name-meta { margin-top: 3px; display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+  .name-sub { font-size: 0.69rem; color: #666; font-style: italic; }
+  .name-meta .links { display: inline; }
+  .name-meta .links a { font-size: 0.68rem; font-weight: 600; color: #555; border: 1px solid #333; border-radius: 3px; padding: 0px 4px; }
+  .name-meta .links a:hover { color: #c9a96e; border-color: #c9a96e; text-decoration: none; }
   .links a { font-size: 0.72rem; font-weight: 600; color: #999; border: 1px solid #3a3a3a; border-radius: 3px; padding: 1px 5px; }
   .links a:hover { color: #c9a96e; border-color: #c9a96e; text-decoration: none; }
   .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.72rem; font-weight: 500; white-space: nowrap; }
@@ -148,7 +153,7 @@
 <h1>Pipeline &mdash; Erik</h1>
 <div class="meta">
   <span>205 contacts</span>
-  <span>Updated May 21, 2026 23:00 UTC</span>
+  <span>Updated May 21, 2026 23:09 UTC</span>
 </div>
 <div class="charts-row">
   <div class="chart-box">
@@ -195,25 +200,28 @@
 <div class="section-header"><span class="section-dot dot-today"></span>Today<span class="section-count">2</span></div>
 <table class="mini-table">
   <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
-  <tbody><tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/26789760408" target="_blank" class="hs-badge">HS</a>Philip Lo</td><td><span class="badge stage-active">Active Relationship</span></td><td><span class="whale-amt">$50,000</span></td><td>5/14/26</td><td>—</td><td><span title="check on phil lo">5/21/26</span></td></tr>
-<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209025878105" target="_blank" class="hs-badge">HS</a>Andrew Pearce</td><td><span class="badge stage-active">Active Relationship</span></td><td><span class="whale-amt">$50,000</span></td><td>5/21/26</td><td>—</td><td><span title="try and get this guy to lunch or something">5/21/26</span></td></tr></tbody>
+  <tbody><tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/26789760408" target="_blank" class="hs-badge">HS</a>Philip Lo</td><td><span class="badge stage-active">Active Relationship</span></td><td>$50,000</td><td>5/14/26</td><td>—</td><td><span title="check on phil lo">5/21/26</span></td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209025878105" target="_blank" class="hs-badge">HS</a>Andrew Pearce</td><td><span class="badge stage-active">Active Relationship</span></td><td>$50,000</td><td>5/21/26</td><td>—</td><td><span title="try and get this guy to lunch or something">5/21/26</span></td></tr></tbody>
 </table>
 
-<div class="section-header" style="margin-top:22px"><span class="section-dot dot-whale"></span>Whale Tracker &mdash; $50k+<span class="section-count">12</span></div>
+<div class="section-header" style="margin-top:22px"><span class="section-dot dot-whale"></span>Whale Tracker &mdash; $50k+<span class="section-count">15</span></div>
 <table class="mini-table">
   <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
-  <tbody><tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/27475330418" target="_blank" class="hs-badge">HS</a>Joshua Feldman<span class="inv-badge">INV</span></td><td><span class="badge stage-rec">Recommendation Made</span></td><td><span class="whale-amt">$250,000</span></td><td>5/21/26</td><td>—</td><td><span title="Check in on Josh Feldman- should be fine">5/26/26</span></td></tr>
-<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215773114113" target="_blank" class="hs-badge">HS</a>Priam Sen</td><td><span class="badge stage-nurture">Nurture</span></td><td><span class="whale-amt">$250,000</span></td><td>5/14/26</td><td>—</td><td>—</td></tr>
-<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/212494350198" target="_blank" class="hs-badge">HS</a>Michael O&#x27;Hara</td><td><span class="badge stage-active">Active Relationship</span></td><td><span class="whale-amt">$100,000</span></td><td>5/13/26</td><td>—</td><td>—</td></tr>
-<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156723240971" target="_blank" class="hs-badge">HS</a>Josh Goldberg</td><td><span class="badge stage-advisor">Advisor Assigned</span></td><td><span class="whale-amt">$100,000</span></td><td>4/23/26</td><td>—</td><td>—</td></tr>
-<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/23161908032" target="_blank" class="hs-badge">HS</a>Nelson Garcez</td><td><span class="badge stage-nurture">Nurture</span></td><td><span class="whale-amt">$50,000</span></td><td>5/19/26</td><td>—</td><td>—</td></tr>
-<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/530278362" target="_blank" class="hs-badge">HS</a>Bachir Karam</td><td><span class="badge stage-active">Active Relationship</span></td><td><span class="whale-amt">$50,000</span></td><td>5/14/26</td><td>—</td><td>—</td></tr>
-<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/26789760408" target="_blank" class="hs-badge">HS</a>Philip Lo</td><td><span class="badge stage-active">Active Relationship</span></td><td><span class="whale-amt">$50,000</span></td><td>5/14/26</td><td>—</td><td><span title="check on phil lo">5/21/26</span></td></tr>
-<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128195234951" target="_blank" class="hs-badge">HS</a>Chris Rousseau</td><td><span class="badge stage-active">Active Relationship</span></td><td><span class="whale-amt">$50,000</span></td><td>5/21/26</td><td>—</td><td><span title="try and get chris rousseau to office">5/26/26</span></td></tr>
-<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/213494115674" target="_blank" class="hs-badge">HS</a>Christopher Burke</td><td><span class="badge stage-active">Active Relationship</span></td><td><span class="whale-amt">$50,000</span></td><td>5/12/26</td><td>—</td><td>—</td></tr>
-<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209025878105" target="_blank" class="hs-badge">HS</a>Andrew Pearce</td><td><span class="badge stage-active">Active Relationship</span></td><td><span class="whale-amt">$50,000</span></td><td>5/21/26</td><td>—</td><td><span title="try and get this guy to lunch or something">5/21/26</span></td></tr>
-<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/32863805762" target="_blank" class="hs-badge">HS</a>Michael Hansen</td><td><span class="badge stage-advisor">Advisor Assigned</span></td><td><span class="whale-amt">$50,000</span></td><td>5/13/26</td><td>—</td><td>—</td></tr>
-<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128225396369" target="_blank" class="hs-badge">HS</a>Sombit Mishra</td><td><span class="badge stage-advisor">Advisor Assigned</span></td><td><span class="whale-amt">$50,000</span></td><td>4/23/26</td><td>—</td><td>—</td></tr></tbody>
+  <tbody><tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/21621046106" target="_blank" class="hs-badge">HS</a>Paul Muoio<span class="inv-badge">INV</span></td><td><span class="badge stage-won">Closed Won</span></td><td>$620,000</td><td>5/20/26</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/27475330418" target="_blank" class="hs-badge">HS</a>Joshua Feldman<span class="inv-badge">INV</span></td><td><span class="badge stage-rec">Recommendation Made</span></td><td>$250,000</td><td>5/21/26</td><td>—</td><td><span title="Check in on Josh Feldman- should be fine">5/26/26</span></td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215773114113" target="_blank" class="hs-badge">HS</a>Priam Sen</td><td><span class="badge stage-nurture">Nurture</span></td><td>$250,000</td><td>5/14/26</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/212494350198" target="_blank" class="hs-badge">HS</a>Michael O&#x27;Hara</td><td><span class="badge stage-active">Active Relationship</span></td><td>$100,000</td><td>5/13/26</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156723240971" target="_blank" class="hs-badge">HS</a>Josh Goldberg</td><td><span class="badge stage-advisor">Advisor Assigned</span></td><td>$100,000</td><td>4/23/26</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215538653065" target="_blank" class="hs-badge">HS</a>Bruce Nierenberg</td><td><span class="badge stage-lost">Closed Lost</span></td><td>$100,000</td><td>4/30/26</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/530278362" target="_blank" class="hs-badge">HS</a>Bachir Karam</td><td><span class="badge stage-active">Active Relationship</span></td><td>$50,000</td><td>5/14/26</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/23161908032" target="_blank" class="hs-badge">HS</a>Nelson Garcez</td><td><span class="badge stage-nurture">Nurture</span></td><td>$50,000</td><td>5/19/26</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/26789760408" target="_blank" class="hs-badge">HS</a>Philip Lo</td><td><span class="badge stage-active">Active Relationship</span></td><td>$50,000</td><td>5/14/26</td><td>—</td><td><span title="check on phil lo">5/21/26</span></td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/32863805762" target="_blank" class="hs-badge">HS</a>Michael Hansen</td><td><span class="badge stage-advisor">Advisor Assigned</span></td><td>$50,000</td><td>5/13/26</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128225396369" target="_blank" class="hs-badge">HS</a>Sombit Mishra</td><td><span class="badge stage-advisor">Advisor Assigned</span></td><td>$50,000</td><td>4/23/26</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128195234951" target="_blank" class="hs-badge">HS</a>Chris Rousseau</td><td><span class="badge stage-active">Active Relationship</span></td><td>$50,000</td><td>5/21/26</td><td>—</td><td><span title="try and get chris rousseau to office">5/26/26</span></td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/213494115674" target="_blank" class="hs-badge">HS</a>Christopher Burke</td><td><span class="badge stage-active">Active Relationship</span></td><td>$50,000</td><td>5/12/26</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209025878105" target="_blank" class="hs-badge">HS</a>Andrew Pearce</td><td><span class="badge stage-active">Active Relationship</span></td><td>$50,000</td><td>5/21/26</td><td>—</td><td><span title="try and get this guy to lunch or something">5/21/26</span></td></tr>
+<tr><td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209592215098" target="_blank" class="hs-badge">HS</a>Thorsten Meier</td><td><span class="badge stage-disq">Collector</span></td><td>$50,000</td><td>5/21/26</td><td>—</td><td>—</td></tr></tbody>
 </table>
 
 <div class="section-header" style="margin-top:22px"><span class="section-dot dot-all"></span>All Contacts<span class="section-count">205</span></div>
@@ -245,12 +253,11 @@
       <th onclick="sortTable(7,'date')">Upcoming Mtg</th>
       <th onclick="sortTable(6,'number')">Task</th>
       <th onclick="sortTable(5,'number')"># Contacted</th>
-      <th>LI</th>
     </tr>
   </thead>
   <tbody id="pipeline-body">
     <tr data-default-order="0" data-stage-order="2" data-amount="25000.0" data-rsvp="2026-04-28" data-contacted="2026-05-15T19:37:40.834Z" data-times="3" data-task-ms="0" data-meeting-ms="1779807600000" data-status-order="0" data-stage-label="Meeting Scheduled">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128217387319" target="_blank" class="hs-badge">HS</a>Benjamin Wallace</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128217387319" target="_blank" class="hs-badge">HS</a>Benjamin Wallace<div class="name-meta"><a href="https://www.linkedin.com/in/benjamin-wallace-799a411" target="_blank">LI</a>&nbsp;<span class="name-sub">Partner, Goldman Sachs</span></div></td>
       <td><span class="badge status-upcoming">Upcoming</span></td>
       <td><span class="badge stage-meeting">Meeting Scheduled</span></td>
       <td>$25,000</td>
@@ -259,10 +266,9 @@
       <td><span title="Masterworks w/Ben Wallace &amp; Erik Bringsjord">5/26/26</span></td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/benjamin-wallace-799a411" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="1" data-stage-order="4" data-amount="5000.0" data-rsvp="2026-05-08" data-contacted="2026-05-12T17:59:11.950Z" data-times="2" data-task-ms="0" data-meeting-ms="1781703000000" data-status-order="0" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/42878701" target="_blank" class="hs-badge">HS</a>Saad Iqbal<span class="inv-badge">INV</span><span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">Existing investor. Not investing more but has interest in collection</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/42878701" target="_blank" class="hs-badge">HS</a>Saad Iqbal<span class="inv-badge">INV</span><span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">Existing investor. Not investing more but has interest in collection</div><div class="name-meta"><a href="https://linkedin.com/in/saad-iqbal-09649b" target="_blank">LI</a>&nbsp;<span class="name-sub">Managing Director - Project Fina, Mitsubishi UFJ Financial Gro</span></div></td>
       <td><span class="badge status-upcoming">Upcoming</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$5,000</td>
@@ -271,10 +277,9 @@
       <td><span title="Masterworks -- Follow up with Evan McMann">6/17/26</span></td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://linkedin.com/in/saad-iqbal-09649b" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="2" data-stage-order="0" data-amount="250000.0" data-rsvp="2026-04-24" data-contacted="2026-05-21T00:43:27.205Z" data-times="28" data-task-ms="1779796800000" data-meeting-ms="0" data-status-order="1" data-stage-label="Recommendation Made">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/27475330418" target="_blank" class="hs-badge">HS</a>Joshua Feldman<span class="inv-badge">INV</span></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/27475330418" target="_blank" class="hs-badge">HS</a>Joshua Feldman<span class="inv-badge">INV</span><div class="name-meta"><a href="https://www.linkedin.com/in/joshua-feldman-17375846" target="_blank">LI</a>&nbsp;<span class="name-sub">General Counsel &amp; Chief Operatin, Energy Impact Partners</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-rec">Recommendation Made</span></td>
       <td>$250,000</td>
@@ -283,10 +288,9 @@
       <td>—</td>
       <td><span title="Check in on Josh Feldman- should be fine">5/26/26</span></td>
       <td>28</td>
-      <td class="links"><a href="https://www.linkedin.com/in/joshua-feldman-17375846" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="3" data-stage-order="0" data-amount="25000.0" data-rsvp="2026-04-24" data-contacted="2026-05-21T17:39:50.566Z" data-times="80" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Recommendation Made">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/218969167984" target="_blank" class="hs-badge">HS</a>Jerry Szilagyi<span class="inv-badge">INV</span></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/218969167984" target="_blank" class="hs-badge">HS</a>Jerry Szilagyi<span class="inv-badge">INV</span><div class="name-meta"><a href="https://www.linkedin.com/in/jerry-szilagyi-717a4849" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer, Catalyst Capital Advisors LL</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-rec">Recommendation Made</span></td>
       <td>$25,000</td>
@@ -295,10 +299,9 @@
       <td>—</td>
       <td>—</td>
       <td>80</td>
-      <td class="links"><a href="https://www.linkedin.com/in/jerry-szilagyi-717a4849" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="4" data-stage-order="0" data-amount="25000.0" data-rsvp="2026-03-02" data-contacted="2026-05-20T17:54:02.753Z" data-times="31" data-task-ms="1779883200000" data-meeting-ms="0" data-status-order="1" data-stage-label="Recommendation Made">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/221903818079" target="_blank" class="hs-badge">HS</a>Eric Moskowitz</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/221903818079" target="_blank" class="hs-badge">HS</a>Eric Moskowitz<div class="name-meta"><a href="https://www.linkedin.com/in/eric-moskowitz" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Operating Officer, America, WhiteCrow Research</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-rec">Recommendation Made</span></td>
       <td>$25,000</td>
@@ -307,7 +310,6 @@
       <td>—</td>
       <td><span title="check on moskowitz">5/27/26</span></td>
       <td>31</td>
-      <td class="links"><a href="https://www.linkedin.com/in/eric-moskowitz" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="5" data-stage-order="0" data-amount="5000.0" data-rsvp="2026-03-28" data-contacted="2026-05-21T00:28:52Z" data-times="25" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Recommendation Made">
       <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/45929687350" target="_blank" class="hs-badge">HS</a>Alexander Fine</td>
@@ -319,10 +321,9 @@
       <td>—</td>
       <td>—</td>
       <td>25</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="6" data-stage-order="0" data-amount="2500.0" data-rsvp="2026-04-08" data-contacted="2026-05-14T21:46:55.954Z" data-times="15" data-task-ms="1779192000000" data-meeting-ms="0" data-status-order="1" data-stage-label="Recommendation Made">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/216033096746" target="_blank" class="hs-badge">HS</a>Taylor Parkinson</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/216033096746" target="_blank" class="hs-badge">HS</a>Taylor Parkinson<div class="name-meta"><a href="https://www.linkedin.com/in/taylor-parkinson-87808183" target="_blank">LI</a>&nbsp;<span class="name-sub">President, West Biofuels</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-rec">Recommendation Made</span></td>
       <td>$2,500</td>
@@ -331,10 +332,9 @@
       <td>—</td>
       <td><span title="see why this guy ignoring need small basq ticket">5/19/26</span></td>
       <td>15</td>
-      <td class="links"><a href="https://www.linkedin.com/in/taylor-parkinson-87808183" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="7" data-stage-order="1" data-amount="250000.0" data-rsvp="2026-04-17" data-contacted="2026-05-14T17:55:24Z" data-times="16" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215773114113" target="_blank" class="hs-badge">HS</a>Priam Sen</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215773114113" target="_blank" class="hs-badge">HS</a>Priam Sen<div class="name-meta"><span class="name-sub">CEO, Monarch Holdings</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td>$250,000</td>
@@ -343,10 +343,9 @@
       <td>—</td>
       <td>—</td>
       <td>16</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="8" data-stage-order="1" data-amount="50000.0" data-rsvp="2026-02-27" data-contacted="2026-05-19T15:33:06.738Z" data-times="34" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/23161908032" target="_blank" class="hs-badge">HS</a>Nelson Garcez</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/23161908032" target="_blank" class="hs-badge">HS</a>Nelson Garcez<div class="name-meta"><a href="https://linkedin.com/in/nelsongarcez" target="_blank">LI</a>&nbsp;<span class="name-sub">Director, Development, Magellan Wind</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td>$50,000</td>
@@ -355,10 +354,9 @@
       <td>—</td>
       <td>—</td>
       <td>34</td>
-      <td class="links"><a href="https://linkedin.com/in/nelsongarcez" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="9" data-stage-order="1" data-amount="25000.0" data-rsvp="2026-04-10" data-contacted="2026-05-21T18:55:02.940Z" data-times="18" data-task-ms="1779969600000" data-meeting-ms="0" data-status-order="1" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/148594068777" target="_blank" class="hs-badge">HS</a>Peter Newman</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/148594068777" target="_blank" class="hs-badge">HS</a>Peter Newman<div class="name-meta"><a href="https://linkedin.com/in/peter-newman-50b87942" target="_blank">LI</a>&nbsp;<span class="name-sub">Founder and President, Newman Real Estate Services</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td>$25,000</td>
@@ -367,10 +365,9 @@
       <td>—</td>
       <td><span title="check on peter newman">5/28/26</span></td>
       <td>18</td>
-      <td class="links"><a href="https://linkedin.com/in/peter-newman-50b87942" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="10" data-stage-order="1" data-amount="25000.0" data-rsvp="2026-03-18" data-contacted="2026-05-21T22:02:43.781Z" data-times="25" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209561789473" target="_blank" class="hs-badge">HS</a>Bernd Wuebben</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209561789473" target="_blank" class="hs-badge">HS</a>Bernd Wuebben<div class="name-meta"><a href="https://linkedin.com/in/berndwuebben" target="_blank">LI</a>&nbsp;<span class="name-sub">Advisory Board Member, MOV37</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td>$25,000</td>
@@ -379,10 +376,9 @@
       <td>—</td>
       <td>—</td>
       <td>25</td>
-      <td class="links"><a href="https://linkedin.com/in/berndwuebben" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="11" data-stage-order="1" data-amount="20000.0" data-rsvp="2026-04-21" data-contacted="2026-04-22T17:39:17.395Z" data-times="4" data-task-ms="1779451200000" data-meeting-ms="0" data-status-order="1" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128226024362" target="_blank" class="hs-badge">HS</a>Alex Gorbansky</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128226024362" target="_blank" class="hs-badge">HS</a>Alex Gorbansky<div class="name-meta"><a href="https://linkedin.com/in/alex-a-gorbansky-6b976" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer, Aeae Group</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td>$20,000</td>
@@ -391,10 +387,9 @@
       <td>—</td>
       <td><span title="invite alex gorbanksy to lunch or something">5/22/26</span></td>
       <td>4</td>
-      <td class="links"><a href="https://linkedin.com/in/alex-a-gorbansky-6b976" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="12" data-stage-order="1" data-amount="15000.0" data-rsvp="2026-04-13" data-contacted="2026-05-20T18:00:03.270Z" data-times="7" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209564880249" target="_blank" class="hs-badge">HS</a>Kaenan Hertz</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209564880249" target="_blank" class="hs-badge">HS</a>Kaenan Hertz<div class="name-meta"><a href="https://www.linkedin.com/in/khertz" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Insurance Officer and Co-f, Ahoy! Insurance</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td>$15,000</td>
@@ -403,10 +398,9 @@
       <td>—</td>
       <td>—</td>
       <td>7</td>
-      <td class="links"><a href="https://www.linkedin.com/in/khertz" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="13" data-stage-order="1" data-amount="10000.0" data-rsvp="2026-03-16" data-contacted="2026-05-14T17:54:39.476Z" data-times="33" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209025692513" target="_blank" class="hs-badge">HS</a>Aleks Mino</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209025692513" target="_blank" class="hs-badge">HS</a>Aleks Mino<div class="name-meta"><a href="https://www.linkedin.com/in/ACwAAAZAOqUBBX4Abmeiv2pWu3L8FfVoJVZZUGk" target="_blank">LI</a>&nbsp;<span class="name-sub">Owner, Sync Construction</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td>$10,000</td>
@@ -415,10 +409,9 @@
       <td>—</td>
       <td>—</td>
       <td>33</td>
-      <td class="links"><a href="https://www.linkedin.com/in/ACwAAAZAOqUBBX4Abmeiv2pWu3L8FfVoJVZZUGk" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="14" data-stage-order="1" data-amount="5000.0" data-rsvp="2026-05-08" data-contacted="2026-05-21T19:54:17.350Z" data-times="10" data-task-ms="1779883200000" data-meeting-ms="0" data-status-order="1" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/86902994049" target="_blank" class="hs-badge">HS</a>Martin Kelsohn</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/86902994049" target="_blank" class="hs-badge">HS</a>Martin Kelsohn<div class="name-meta"><span class="name-sub">Executive Producer, Point Global Productions</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td>$5,000</td>
@@ -427,10 +420,9 @@
       <td>—</td>
       <td><span title="see if marty made an account">5/27/26</span></td>
       <td>10</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="15" data-stage-order="1" data-amount="1000.0" data-rsvp="2026-02-23" data-contacted="2026-05-13T18:54:15.284Z" data-times="1" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/26788707620" target="_blank" class="hs-badge">HS</a>Christiano Boria</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/26788707620" target="_blank" class="hs-badge">HS</a>Christiano Boria<div class="name-meta"><a href="https://www.linkedin.com/in/christiano-boria" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Strategy Officer, Stealth Startup</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td>$1,000</td>
@@ -439,10 +431,9 @@
       <td>—</td>
       <td>—</td>
       <td>1</td>
-      <td class="links"><a href="https://www.linkedin.com/in/christiano-boria" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="16" data-stage-order="1" data-amount="1000.0" data-rsvp="2026-04-20" data-contacted="2026-05-12T20:54:37.080Z" data-times="6" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/216229896008" target="_blank" class="hs-badge">HS</a>Rob Russo</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/216229896008" target="_blank" class="hs-badge">HS</a>Rob Russo<div class="name-meta"><a href="https://www.linkedin.com/in/robert-russo-6a57081a" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer, Majorit, MessApps</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td>$1,000</td>
@@ -451,10 +442,9 @@
       <td>—</td>
       <td>—</td>
       <td>6</td>
-      <td class="links"><a href="https://www.linkedin.com/in/robert-russo-6a57081a" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="17" data-stage-order="1" data-amount="0.0" data-rsvp="2026-03-11" data-contacted="2026-05-14T17:46:11.846Z" data-times="13" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/122686360237" target="_blank" class="hs-badge">HS</a>Evan Myrian</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/122686360237" target="_blank" class="hs-badge">HS</a>Evan Myrian<div class="name-meta"><a href="https://linkedin.com/in/evan-myrianthopoulos-7b80532" target="_blank">LI</a>&nbsp;<span class="name-sub">Senior Managing Director - Life , Alliance Global Partners</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td></td>
@@ -463,10 +453,9 @@
       <td>—</td>
       <td>—</td>
       <td>13</td>
-      <td class="links"><a href="https://linkedin.com/in/evan-myrianthopoulos-7b80532" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="18" data-stage-order="2" data-amount="25000.0" data-rsvp="2026-04-16" data-contacted="2026-04-20T20:27:54.125Z" data-times="6" data-task-ms="1777377600000" data-meeting-ms="0" data-status-order="1" data-stage-label="Meeting Scheduled">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/52774028687" target="_blank" class="hs-badge">HS</a>Barry Frey</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/52774028687" target="_blank" class="hs-badge">HS</a>Barry Frey<div class="name-meta"><a href="https://linkedin.com/in/barryfrey1" target="_blank">LI</a>&nbsp;<span class="name-sub">President and Chief Executive Of, DPAA</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-meeting">Meeting Scheduled</span></td>
       <td>$25,000</td>
@@ -475,10 +464,9 @@
       <td>—</td>
       <td><span title="email follow up to barry frey - traveling">4/28/26</span></td>
       <td>6</td>
-      <td class="links"><a href="https://linkedin.com/in/barryfrey1" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="19" data-stage-order="2" data-amount="25000.0" data-rsvp="2026-05-07" data-contacted="2026-05-21T21:00:00Z" data-times="27" data-task-ms="1779969600000" data-meeting-ms="0" data-status-order="1" data-stage-label="Meeting Scheduled">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/91333623323" target="_blank" class="hs-badge">HS</a>Jonathan Lanzkowsky</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/91333623323" target="_blank" class="hs-badge">HS</a>Jonathan Lanzkowsky<div class="name-meta"><a href="https://linkedin.com/in/jonathan-lanzkowsky-9277289" target="_blank">LI</a>&nbsp;<span class="name-sub">Partner, Grazi Kramer &amp; Lanzkowsky MD</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-meeting">Meeting Scheduled</span></td>
       <td>$25,000</td>
@@ -487,10 +475,9 @@
       <td>—</td>
       <td><span title="check in with jonathan lanzkowsky">5/28/26</span></td>
       <td>27</td>
-      <td class="links"><a href="https://linkedin.com/in/jonathan-lanzkowsky-9277289" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="20" data-stage-order="2" data-amount="15000.0" data-rsvp="2026-04-13" data-contacted="2026-05-19T21:07:33.809Z" data-times="8" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Meeting Scheduled">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/214660436781" target="_blank" class="hs-badge">HS</a>Emmanuel Bello</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/214660436781" target="_blank" class="hs-badge">HS</a>Emmanuel Bello<div class="name-meta"><a href="https://www.linkedin.com/in/emmanuel-bello-7a24bbb" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Operating Officer &amp; Chief , Bethesda Elite Care</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-meeting">Meeting Scheduled</span></td>
       <td>$15,000</td>
@@ -499,10 +486,9 @@
       <td>—</td>
       <td>—</td>
       <td>8</td>
-      <td class="links"><a href="https://www.linkedin.com/in/emmanuel-bello-7a24bbb" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="21" data-stage-order="2" data-amount="2500.0" data-rsvp="2026-03-30" data-contacted="2026-05-12T21:10:18.841Z" data-times="15" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Meeting Scheduled">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/109137001260" target="_blank" class="hs-badge">HS</a>Justin Prager</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/109137001260" target="_blank" class="hs-badge">HS</a>Justin Prager<div class="name-meta"><a href="https://linkedin.com/in/justin-prager-390bb031" target="_blank">LI</a>&nbsp;<span class="name-sub">Senior Director of Music Program, Vevo</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-meeting">Meeting Scheduled</span></td>
       <td>$2,500</td>
@@ -511,10 +497,9 @@
       <td>—</td>
       <td>—</td>
       <td>15</td>
-      <td class="links"><a href="https://linkedin.com/in/justin-prager-390bb031" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="22" data-stage-order="2" data-amount="1000.0" data-rsvp="2026-03-11" data-contacted="2026-05-13T21:36:20.653Z" data-times="22" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Meeting Scheduled">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156708547075" target="_blank" class="hs-badge">HS</a>Alex Schneider</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156708547075" target="_blank" class="hs-badge">HS</a>Alex Schneider<div class="name-meta"><a href="https://www.linkedin.com/in/alex-schneider-18517916" target="_blank">LI</a>&nbsp;<span class="name-sub">Registrar and Collection Manager, MacAndrews &amp; Forbes</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-meeting">Meeting Scheduled</span></td>
       <td>$1,000</td>
@@ -523,10 +508,9 @@
       <td>—</td>
       <td>—</td>
       <td>22</td>
-      <td class="links"><a href="https://www.linkedin.com/in/alex-schneider-18517916" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="23" data-stage-order="3" data-amount="1000.0" data-rsvp="2026-03-18" data-contacted="2026-05-21T21:16:32.302Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Long Term Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209559935039" target="_blank" class="hs-badge">HS</a>Brian Newman</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209559935039" target="_blank" class="hs-badge">HS</a>Brian Newman<div class="name-meta"><a href="https://linkedin.com/in/brian-newman-966bb3" target="_blank">LI</a>&nbsp;<span class="name-sub">Founder, Sub-Genre</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-longterm">Long Term Relationship</span></td>
       <td>$1,000</td>
@@ -535,10 +519,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links"><a href="https://linkedin.com/in/brian-newman-966bb3" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="24" data-stage-order="4" data-amount="100000.0" data-rsvp="2026-03-29" data-contacted="2026-05-13T01:27:31.707Z" data-times="11" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/212494350198" target="_blank" class="hs-badge">HS</a>Michael O&#x27;Hara</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/212494350198" target="_blank" class="hs-badge">HS</a>Michael O&#x27;Hara<div class="name-meta"><a href="https://www.linkedin.com/in/michael-o-hara-b9739a7a" target="_blank">LI</a>&nbsp;<span class="name-sub">Member Board of Directors, Juice Plus</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$100,000</td>
@@ -547,10 +530,9 @@
       <td>—</td>
       <td>—</td>
       <td>11</td>
-      <td class="links"><a href="https://www.linkedin.com/in/michael-o-hara-b9739a7a" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="25" data-stage-order="4" data-amount="50000.0" data-rsvp="2026-02-27" data-contacted="2026-05-14T20:49:13Z" data-times="23" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/530278362" target="_blank" class="hs-badge">HS</a>Bachir Karam<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">left another voicemail this time</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/530278362" target="_blank" class="hs-badge">HS</a>Bachir Karam<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">left another voicemail this time</div><div class="name-meta"><a href="https://www.linkedin.com/in/bachirpkaram" target="_blank">LI</a>&nbsp;<span class="name-sub">Partner, Sullivan &amp; Cromwell LLP</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$50,000</td>
@@ -559,10 +541,9 @@
       <td>—</td>
       <td>—</td>
       <td>23</td>
-      <td class="links"><a href="https://www.linkedin.com/in/bachirpkaram" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="26" data-stage-order="4" data-amount="50000.0" data-rsvp="2026-04-07" data-contacted="2026-05-14T21:32:15.170Z" data-times="8" data-task-ms="1779364800000" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/26789760408" target="_blank" class="hs-badge">HS</a>Philip Lo<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">plo@littlejohnllc.com cell 917-478-5250 work - 203-552-3531</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/26789760408" target="_blank" class="hs-badge">HS</a>Philip Lo<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">plo@littlejohnllc.com cell 917-478-5250 work - 203-552-3531</div><div class="name-meta"><a href="https://www.linkedin.com/in/philiplo" target="_blank">LI</a>&nbsp;<span class="name-sub">Managing Director, Capital Forma, Littlejohn &amp; Co</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$50,000</td>
@@ -571,10 +552,9 @@
       <td>—</td>
       <td><span title="check on phil lo">5/21/26</span></td>
       <td>8</td>
-      <td class="links"><a href="https://www.linkedin.com/in/philiplo" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="27" data-stage-order="4" data-amount="50000.0" data-rsvp="2026-03-16" data-contacted="2026-05-21T18:50:10Z" data-times="17" data-task-ms="1779796800000" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128195234951" target="_blank" class="hs-badge">HS</a>Chris Rousseau<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">wantagh new york used to be a consultant super interested stayed the whole time - we discussed at length good…</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128195234951" target="_blank" class="hs-badge">HS</a>Chris Rousseau<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">wantagh new york used to be a consultant super interested stayed the whole time - we discussed at length good…</div><div class="name-meta"><a href="https://www.linkedin.com/in/rousseauchris" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Information Officer, Practising Law Institute (Pl</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$50,000</td>
@@ -583,10 +563,9 @@
       <td>—</td>
       <td><span title="try and get chris rousseau to office">5/26/26</span></td>
       <td>17</td>
-      <td class="links"><a href="https://www.linkedin.com/in/rousseauchris" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="28" data-stage-order="4" data-amount="50000.0" data-rsvp="2026-04-07" data-contacted="2026-05-12T21:21:22Z" data-times="11" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/213494115674" target="_blank" class="hs-badge">HS</a>Christopher Burke</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/213494115674" target="_blank" class="hs-badge">HS</a>Christopher Burke<div class="name-meta"><a href="https://linkedin.com/in/christopherburke2" target="_blank">LI</a>&nbsp;<span class="name-sub">Filmmaker, maxus group</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$50,000</td>
@@ -595,10 +574,9 @@
       <td>—</td>
       <td>—</td>
       <td>11</td>
-      <td class="links"><a href="https://linkedin.com/in/christopherburke2" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="29" data-stage-order="4" data-amount="50000.0" data-rsvp="2026-03-16" data-contacted="2026-05-21T02:03:29.276Z" data-times="24" data-task-ms="1779364800000" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209025878105" target="_blank" class="hs-badge">HS</a>Andrew Pearce</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209025878105" target="_blank" class="hs-badge">HS</a>Andrew Pearce<div class="name-meta"><a href="https://www.linkedin.com/in/andrew-pearce-885aa8" target="_blank">LI</a>&nbsp;<span class="name-sub">President of the Board of Direct, Skedans Systems</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$50,000</td>
@@ -607,10 +585,9 @@
       <td>—</td>
       <td><span title="try and get this guy to lunch or something">5/21/26</span></td>
       <td>24</td>
-      <td class="links"><a href="https://www.linkedin.com/in/andrew-pearce-885aa8" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="30" data-stage-order="4" data-amount="30000.0" data-rsvp="2026-04-20" data-contacted="2026-05-12T21:30:25.108Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215789389133" target="_blank" class="hs-badge">HS</a>Flora Huang<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">Talent agent. Lost 100k in broadway investment. Attractive. Likes fund and individual painting supplement…</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215789389133" target="_blank" class="hs-badge">HS</a>Flora Huang<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">Talent agent. Lost 100k in broadway investment. Attractive. Likes fund and individual painting supplement…</div><div class="name-meta"><span class="name-sub">CFO, Buchwald</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$30,000</td>
@@ -619,10 +596,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="31" data-stage-order="4" data-amount="25000.0" data-rsvp="2026-03-23" data-contacted="2026-05-14T21:01:06.695Z" data-times="18" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/144910412159" target="_blank" class="hs-badge">HS</a>Ron Needham</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/144910412159" target="_blank" class="hs-badge">HS</a>Ron Needham<div class="name-meta"><a href="https://linkedin.com/in/ron-needham-nyc" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Revenue Officer, Wolters Kluwer ELM Solutions</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$25,000</td>
@@ -631,10 +607,9 @@
       <td>—</td>
       <td>—</td>
       <td>18</td>
-      <td class="links"><a href="https://linkedin.com/in/ron-needham-nyc" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="32" data-stage-order="4" data-amount="15000.0" data-rsvp="2026-05-20" data-contacted="2026-05-21T19:11:18.940Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/189482102125" target="_blank" class="hs-badge">HS</a>Samuel Ollunga<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">nice guy lawyer soft spoken wants to bring his boyfriend back to gallery</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/189482102125" target="_blank" class="hs-badge">HS</a>Samuel Ollunga<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">nice guy lawyer soft spoken wants to bring his boyfriend back to gallery</div><div class="name-meta"><span class="name-sub">Partner, Thomson Ollunga LLP</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$15,000</td>
@@ -643,10 +618,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="33" data-stage-order="4" data-amount="15000.0" data-rsvp="2026-05-08" data-contacted="2026-05-12T12:12:52.642Z" data-times="4" data-task-ms="1779710400000" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/220235827631" target="_blank" class="hs-badge">HS</a>Ben Ramos<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">Nice guy. Brought his family. Might have some dough hard to gauge interest tho i didnt get to speak with him…</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/220235827631" target="_blank" class="hs-badge">HS</a>Ben Ramos<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">Nice guy. Brought his family. Might have some dough hard to gauge interest tho i didnt get to speak with him…</div><div class="name-meta"><span class="name-sub">VP, Fox Archives &amp; Emerging Tech, Fox News Media</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$15,000</td>
@@ -655,10 +629,9 @@
       <td>—</td>
       <td><span title="ben ramos back from brazil trip?">5/25/26</span></td>
       <td>4</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="34" data-stage-order="4" data-amount="10000.0" data-rsvp="2026-05-06" data-contacted="2026-05-18T15:19:28.605Z" data-times="4" data-task-ms="1781524800000" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/20214878807" target="_blank" class="hs-badge">HS</a>David Koranyi<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">Maybe some interest. Non profit guy. Spoke to his friend a bit</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/20214878807" target="_blank" class="hs-badge">HS</a>David Koranyi<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">Maybe some interest. Non profit guy. Spoke to his friend a bit</div><div class="name-meta"><a href="https://linkedin.com/in/david-koranyi" target="_blank">LI</a>&nbsp;<span class="name-sub">President and Executive Director, action for democracy</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$10,000</td>
@@ -667,10 +640,9 @@
       <td>—</td>
       <td><span title="David Koranyi back from travel - Book meeting with him">6/15/26</span></td>
       <td>4</td>
-      <td class="links"><a href="https://linkedin.com/in/david-koranyi" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="35" data-stage-order="4" data-amount="10000.0" data-rsvp="2026-03-09" data-contacted="2026-05-13T16:59:50.712Z" data-times="22" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/116194664552" target="_blank" class="hs-badge">HS</a>Armando Luna<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">armandony@verizon.net</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/116194664552" target="_blank" class="hs-badge">HS</a>Armando Luna<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">armandony@verizon.net</div><div class="name-meta"><a href="https://www.linkedin.com/in/armando-luna-306b1125" target="_blank">LI</a>&nbsp;<span class="name-sub">Director, Design, Masood Textile Mills</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$10,000</td>
@@ -679,10 +651,9 @@
       <td>—</td>
       <td>—</td>
       <td>22</td>
-      <td class="links"><a href="https://www.linkedin.com/in/armando-luna-306b1125" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="36" data-stage-order="4" data-amount="10000.0" data-rsvp="2026-03-15" data-contacted="2026-04-23T20:33:50.128Z" data-times="25" data-task-ms="1779969600000" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/135899351363" target="_blank" class="hs-badge">HS</a>Joseph Shamie<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">917-868-1000 cell number i got from his secretary</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/135899351363" target="_blank" class="hs-badge">HS</a>Joseph Shamie<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">917-868-1000 cell number i got from his secretary</div><div class="name-meta"><a href="https://www.linkedin.com/in/louis-shamie-8878261b8" target="_blank">LI</a>&nbsp;<span class="name-sub">Senior Design Engineer, Children&#x27;s Products</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$10,000</td>
@@ -691,10 +662,9 @@
       <td>—</td>
       <td><span title="keep trying joe shamie">5/28/26</span></td>
       <td>25</td>
-      <td class="links"><a href="https://www.linkedin.com/in/louis-shamie-8878261b8" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="37" data-stage-order="4" data-amount="10000.0" data-rsvp="2026-03-11" data-contacted="2026-05-14T21:08:52.044Z" data-times="12" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/207306072756" target="_blank" class="hs-badge">HS</a>Alessandro Bogliari</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/207306072756" target="_blank" class="hs-badge">HS</a>Alessandro Bogliari<div class="name-meta"><a href="https://linkedin.com/in/alessandrobogliari" target="_blank">LI</a>&nbsp;<span class="name-sub">Founding Member, Hampton</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$10,000</td>
@@ -703,10 +673,9 @@
       <td>—</td>
       <td>—</td>
       <td>12</td>
-      <td class="links"><a href="https://linkedin.com/in/alessandrobogliari" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="38" data-stage-order="4" data-amount="5000.0" data-rsvp="2026-02-23" data-contacted="2026-05-18T00:11:01.935Z" data-times="6" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/539935778" target="_blank" class="hs-badge">HS</a>Alan Fields</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/539935778" target="_blank" class="hs-badge">HS</a>Alan Fields<div class="name-meta"><a href="https://www.linkedin.com/in/alan-fields-200a797" target="_blank">LI</a>&nbsp;<span class="name-sub">Managing Director, Engild Private Capital</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$5,000</td>
@@ -715,10 +684,9 @@
       <td>—</td>
       <td>—</td>
       <td>6</td>
-      <td class="links"><a href="https://www.linkedin.com/in/alan-fields-200a797" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="39" data-stage-order="4" data-amount="5000.0" data-rsvp="2026-03-24" data-contacted="2026-05-12T21:19:46.683Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/189885344835" target="_blank" class="hs-badge">HS</a>Nicholas Bruckman<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">netflix show guy showed up high had a bit of interest but doesnt have a ton of dough small activation likely</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/189885344835" target="_blank" class="hs-badge">HS</a>Nicholas Bruckman<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">netflix show guy showed up high had a bit of interest but doesnt have a ton of dough small activation likely</div><div class="name-meta"><a href="https://www.linkedin.com/in/nicholas-bruckman" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer, People&#x27;s Television</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$5,000</td>
@@ -727,7 +695,6 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://www.linkedin.com/in/nicholas-bruckman" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="40" data-stage-order="4" data-amount="5000.0" data-rsvp="2026-03-13" data-contacted="2026-05-14T21:00:41.664Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
       <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/206827973419" target="_blank" class="hs-badge">HS</a>Vanessa Burbano<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">@Erik Bringsjord we initially invited her husband who is a managing director at pimco &amp;amp; also a wharton…</div></td>
@@ -739,10 +706,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="41" data-stage-order="4" data-amount="5000.0" data-rsvp="2026-03-09" data-contacted="2026-05-13T18:45:07Z" data-times="25" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/207043696166" target="_blank" class="hs-badge">HS</a>Abhi Gupta<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">mentioned at the gallery event he had interest in this and could be open to learning about this as an…</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/207043696166" target="_blank" class="hs-badge">HS</a>Abhi Gupta<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">mentioned at the gallery event he had interest in this and could be open to learning about this as an…</div><div class="name-meta"><span class="name-sub">Director, Engineering (Informati, IEEE Communications Society</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$5,000</td>
@@ -751,10 +717,9 @@
       <td>—</td>
       <td>—</td>
       <td>25</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="42" data-stage-order="4" data-amount="0.0" data-rsvp="2026-04-08" data-contacted="2026-04-17T20:19:12.195Z" data-times="2" data-task-ms="1776173400000" data-meeting-ms="0" data-status-order="1" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156698587470" target="_blank" class="hs-badge">HS</a>David Warsoff<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">jp morgan alternative investment guy wasnt interested for himself but thought we could fix our distribution…</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156698587470" target="_blank" class="hs-badge">HS</a>David Warsoff<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">jp morgan alternative investment guy wasnt interested for himself but thought we could fix our distribution…</div><div class="name-meta"><a href="https://linkedin.com/in/david-warsoff-3665b610" target="_blank">LI</a>&nbsp;<span class="name-sub">Executive Director, JPMorgan Chase</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td></td>
@@ -763,10 +728,9 @@
       <td>—</td>
       <td><span title="Call">4/14/26</span></td>
       <td>2</td>
-      <td class="links"><a href="https://linkedin.com/in/david-warsoff-3665b610" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="43" data-stage-order="5" data-amount="50000.0" data-rsvp="2026-05-06" data-contacted="2026-05-13T22:22:17.955Z" data-times="6" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/32863805762" target="_blank" class="hs-badge">HS</a>Michael Hansen</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/32863805762" target="_blank" class="hs-badge">HS</a>Michael Hansen<div class="name-meta"><a href="https://linkedin.com/in/mike-hansen-nyc" target="_blank">LI</a>&nbsp;<span class="name-sub">Strategist, Audio Video &amp; Controls</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$50,000</td>
@@ -775,10 +739,9 @@
       <td>—</td>
       <td>—</td>
       <td>6</td>
-      <td class="links"><a href="https://linkedin.com/in/mike-hansen-nyc" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="44" data-stage-order="5" data-amount="25000.0" data-rsvp="2026-05-18" data-contacted="2026-05-21T22:03:15.409Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/221815291275" target="_blank" class="hs-badge">HS</a>Nic Diiorio</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/221815291275" target="_blank" class="hs-badge">HS</a>Nic Diiorio<div class="name-meta"><a href="https://www.linkedin.com/in/nic-di-iorio" target="_blank">LI</a>&nbsp;<span class="name-sub">Partner, ALDA Tech</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$25,000</td>
@@ -787,10 +750,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links"><a href="https://www.linkedin.com/in/nic-di-iorio" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="45" data-stage-order="5" data-amount="25000.0" data-rsvp="2026-05-18" data-contacted="2026-05-21T21:56:23.027Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/221808214272" target="_blank" class="hs-badge">HS</a>Victor Novoselov</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/221808214272" target="_blank" class="hs-badge">HS</a>Victor Novoselov<div class="name-meta"><a href="https://www.linkedin.com/in/viktor-novoseloff-b3369314" target="_blank">LI</a>&nbsp;<span class="name-sub">Director, Red Stone Equity Partners</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$25,000</td>
@@ -799,10 +761,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links"><a href="https://www.linkedin.com/in/viktor-novoseloff-b3369314" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="46" data-stage-order="5" data-amount="20000.0" data-rsvp="2026-04-21" data-contacted="2026-05-11T21:08:26.218Z" data-times="9" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128211939232" target="_blank" class="hs-badge">HS</a>Ernesto Quinteros</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128211939232" target="_blank" class="hs-badge">HS</a>Ernesto Quinteros<div class="name-meta"><a href="https://linkedin.com/in/ernestoquinteros" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Experience Officer, Korrus workpido</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$20,000</td>
@@ -811,10 +772,9 @@
       <td>—</td>
       <td>—</td>
       <td>9</td>
-      <td class="links"><a href="https://linkedin.com/in/ernestoquinteros" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="47" data-stage-order="5" data-amount="20000.0" data-rsvp="2026-04-13" data-contacted="2026-04-14T18:14:42.278Z" data-times="3" data-task-ms="1776254400000" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209562405180" target="_blank" class="hs-badge">HS</a>Matin Kamali</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209562405180" target="_blank" class="hs-badge">HS</a>Matin Kamali<div class="name-meta"><a href="https://www.linkedin.com/in/matin-kamali-06266ab" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer, Quantxt</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$20,000</td>
@@ -823,10 +783,9 @@
       <td>—</td>
       <td><span title="check on matin good lead had lots of questions">4/15/26</span></td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/matin-kamali-06266ab" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="48" data-stage-order="5" data-amount="20000.0" data-rsvp="2026-05-11" data-contacted="2026-05-21T17:50:25.846Z" data-times="6" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209549527135" target="_blank" class="hs-badge">HS</a>Samuel Foley</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209549527135" target="_blank" class="hs-badge">HS</a>Samuel Foley<div class="name-meta"><a href="https://www.linkedin.com/in/sam-foley-38a14826" target="_blank">LI</a>&nbsp;<span class="name-sub">President, Nyc Water Works</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$20,000</td>
@@ -835,10 +794,9 @@
       <td>—</td>
       <td>—</td>
       <td>6</td>
-      <td class="links"><a href="https://www.linkedin.com/in/sam-foley-38a14826" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="49" data-stage-order="5" data-amount="15000.0" data-rsvp="2026-04-17" data-contacted="2026-05-19T16:30:23.660Z" data-times="7" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215784864660" target="_blank" class="hs-badge">HS</a>Juliette Han</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215784864660" target="_blank" class="hs-badge">HS</a>Juliette Han<div class="name-meta"><span class="name-sub">CFO &amp; COO, Cambrian Biopharma</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$15,000</td>
@@ -847,10 +805,9 @@
       <td>—</td>
       <td>—</td>
       <td>7</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="50" data-stage-order="5" data-amount="15000.0" data-rsvp="2026-05-11" data-contacted="2026-05-13T21:51:49.019Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/220474258565" target="_blank" class="hs-badge">HS</a>Damon Kornhauser</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/220474258565" target="_blank" class="hs-badge">HS</a>Damon Kornhauser<div class="name-meta"><a href="https://www.linkedin.com/in/damon-kornhauser-8169b07" target="_blank">LI</a>&nbsp;<span class="name-sub">Managing Director &amp; Founder, NextUs Ventures</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$15,000</td>
@@ -859,10 +816,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://www.linkedin.com/in/damon-kornhauser-8169b07" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="51" data-stage-order="5" data-amount="10000.0" data-rsvp="2026-02-27" data-contacted="2026-05-12T20:43:33.915Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/21620848981" target="_blank" class="hs-badge">HS</a>Peter Herb</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/21620848981" target="_blank" class="hs-badge">HS</a>Peter Herb<div class="name-meta"><a href="https://linkedin.com/in/peter-herb-94b4207" target="_blank">LI</a>&nbsp;<span class="name-sub">Owner, Law Office of Peter L. Herb</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$10,000</td>
@@ -871,10 +827,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links"><a href="https://linkedin.com/in/peter-herb-94b4207" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="52" data-stage-order="5" data-amount="10000.0" data-rsvp="2026-04-17" data-contacted="2026-05-12T21:18:24.919Z" data-times="6" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215786614181" target="_blank" class="hs-badge">HS</a>Pauline Koningsveld</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215786614181" target="_blank" class="hs-badge">HS</a>Pauline Koningsveld<div class="name-meta"><span class="name-sub">Co-Founder &amp; COO, Livi Beauty</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$10,000</td>
@@ -883,10 +838,9 @@
       <td>—</td>
       <td>—</td>
       <td>6</td>
-      <td class="links">—</td>
     </tr>
     <tr class="contacted-today" data-default-order="53" data-stage-order="5" data-amount="5000.0" data-rsvp="2026-05-20" data-contacted="2026-05-21T19:03:54.061Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/222824820625" target="_blank" class="hs-badge">HS</a>Kudjo Sogadzi</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/222824820625" target="_blank" class="hs-badge">HS</a>Kudjo Sogadzi<div class="name-meta"><a href="https://www.linkedin.com/in/kudjo-sogadzi-19a70b19" target="_blank">LI</a>&nbsp;<span class="name-sub">President, MediaCo Holding Inc.</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$5,000</td>
@@ -895,10 +849,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/kudjo-sogadzi-19a70b19" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="54" data-stage-order="5" data-amount="5000.0" data-rsvp="2026-03-11" data-contacted="2026-05-12T19:24:59.380Z" data-times="7" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/208589341364" target="_blank" class="hs-badge">HS</a>Ryan Jost</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/208589341364" target="_blank" class="hs-badge">HS</a>Ryan Jost<div class="name-meta"><a href="https://www.linkedin.com/in/ryan-jost-cfa-a7578610" target="_blank">LI</a>&nbsp;<span class="name-sub">Global Investment Specialist, JPMorgan</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$5,000</td>
@@ -907,10 +860,9 @@
       <td>—</td>
       <td>—</td>
       <td>7</td>
-      <td class="links"><a href="https://www.linkedin.com/in/ryan-jost-cfa-a7578610" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="55" data-stage-order="5" data-amount="5000.0" data-rsvp="2026-05-06" data-contacted="2026-05-13T00:55:38.925Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209589282111" target="_blank" class="hs-badge">HS</a>Michael Eskin</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209589282111" target="_blank" class="hs-badge">HS</a>Michael Eskin<div class="name-meta"><a href="https://linkedin.com/in/michael-eskin-b069b443" target="_blank">LI</a>&nbsp;<span class="name-sub">Owner, Ideal Strength &amp; Fitness</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$5,000</td>
@@ -919,10 +871,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/michael-eskin-b069b443" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="56" data-stage-order="5" data-amount="5000.0" data-rsvp="2026-04-10" data-contacted="2026-05-21T18:02:46Z" data-times="6" data-task-ms="1776259800000" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/214658374322" target="_blank" class="hs-badge">HS</a>Lauren Canetti</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/214658374322" target="_blank" class="hs-badge">HS</a>Lauren Canetti<div class="name-meta"><span class="name-sub">Founder &amp; CEO, Lauretti New York</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$5,000</td>
@@ -931,10 +882,9 @@
       <td>—</td>
       <td><span title="Call">4/15/26</span></td>
       <td>6</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="57" data-stage-order="5" data-amount="2500.0" data-rsvp="2026-05-11" data-contacted="2026-05-13T22:09:10.209Z" data-times="1" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/116219265954" target="_blank" class="hs-badge">HS</a>Evan Serowoky</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/116219265954" target="_blank" class="hs-badge">HS</a>Evan Serowoky<div class="name-meta"><a href="https://linkedin.com/in/richardafnelson" target="_blank">LI</a>&nbsp;<span class="name-sub">Senior Project Manager, AmpThink</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$2,500</td>
@@ -943,10 +893,9 @@
       <td>—</td>
       <td>—</td>
       <td>1</td>
-      <td class="links"><a href="https://linkedin.com/in/richardafnelson" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="58" data-stage-order="5" data-amount="2000.0" data-rsvp="2026-05-08" data-contacted="2026-05-11T21:12:15Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/220237523628" target="_blank" class="hs-badge">HS</a>Ethan David</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/220237523628" target="_blank" class="hs-badge">HS</a>Ethan David<div class="name-meta"><span class="name-sub">Freeman</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$2,000</td>
@@ -955,10 +904,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="59" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-29" data-contacted="2026-05-12T19:33:39.022Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/523961500" target="_blank" class="hs-badge">HS</a>Francisco Rosario</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/523961500" target="_blank" class="hs-badge">HS</a>Francisco Rosario<div class="name-meta"><a href="https://www.linkedin.com/in/franciscorosario" target="_blank">LI</a>&nbsp;<span class="name-sub">Graphic Designer, Central Park SummerStage</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -967,10 +915,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/franciscorosario" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="60" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-29" data-contacted="2026-05-12T21:26:14.652Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/26788862248" target="_blank" class="hs-badge">HS</a>Sangeeta Prasad</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/26788862248" target="_blank" class="hs-badge">HS</a>Sangeeta Prasad<div class="name-meta"><a href="https://www.linkedin.com/in/sangeetaprasad" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Marketing Officer, Slalom</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -979,10 +926,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/sangeetaprasad" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="61" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-29" data-contacted="2026-05-12T21:32:55.914Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/98455700243" target="_blank" class="hs-badge">HS</a>Ramel Lee</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/98455700243" target="_blank" class="hs-badge">HS</a>Ramel Lee<div class="name-meta"><a href="https://linkedin.com/in/ramel-lee" target="_blank">LI</a>&nbsp;<span class="name-sub">Deputy Chief, Metropolitan Transportation </span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -991,10 +937,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/ramel-lee" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="62" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-29" data-contacted="2026-05-12T19:42:17.944Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/99245308844" target="_blank" class="hs-badge">HS</a>George Giotis</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/99245308844" target="_blank" class="hs-badge">HS</a>George Giotis<div class="name-meta"><a href="https://linkedin.com/in/angelos-giotis-aggaagency17" target="_blank">LI</a>&nbsp;<span class="name-sub">Director of Media Services, AGGA Media Group</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1003,10 +948,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links"><a href="https://linkedin.com/in/angelos-giotis-aggaagency17" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="63" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-14" data-contacted="2026-05-05T19:30:47.143Z" data-times="35" data-task-ms="1774526400000" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209467651716" target="_blank" class="hs-badge">HS</a>Esteban Mozo<span class="inv-badge">INV</span></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209467651716" target="_blank" class="hs-badge">HS</a>Esteban Mozo<span class="inv-badge">INV</span><div class="name-meta"><a href="https://www.linkedin.com/in/estebanmozo" target="_blank">LI</a>&nbsp;<span class="name-sub">Business Owner, SSJ Hardwood Flooring</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1015,10 +959,9 @@
       <td>—</td>
       <td><span title="check on esteban we need him">3/26/26</span></td>
       <td>35</td>
-      <td class="links"><a href="https://www.linkedin.com/in/estebanmozo" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="64" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-21" data-contacted="2026-05-12T22:26:15.438Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128218459479" target="_blank" class="hs-badge">HS</a>Marc de</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128218459479" target="_blank" class="hs-badge">HS</a>Marc de<div class="name-meta"><a href="https://www.linkedin.com/in/marcdesaintphalle" target="_blank">LI</a>&nbsp;<span class="name-sub">Partner, Summit Rock Advisors</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1027,10 +970,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/marcdesaintphalle" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="65" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-16" data-contacted="2026-05-12T19:21:03.349Z" data-times="6" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209025571759" target="_blank" class="hs-badge">HS</a>Bill Hofstetter</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209025571759" target="_blank" class="hs-badge">HS</a>Bill Hofstetter<div class="name-meta"><a href="https://linkedin.com/in/sbhnyc" target="_blank">LI</a>&nbsp;<span class="name-sub">Senior Vice President Social Str, Edelman</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1039,10 +981,9 @@
       <td>—</td>
       <td>—</td>
       <td>6</td>
-      <td class="links"><a href="https://linkedin.com/in/sbhnyc" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="66" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-23" data-contacted="2026-05-12T19:24:06.899Z" data-times="6" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209566839875" target="_blank" class="hs-badge">HS</a>Umar Siddiqui</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209566839875" target="_blank" class="hs-badge">HS</a>Umar Siddiqui<div class="name-meta"><span class="name-sub">Chief Medical Officer, LiveWorld</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1051,10 +992,9 @@
       <td>—</td>
       <td>—</td>
       <td>6</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="67" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-18" data-contacted="2026-05-12T19:24:03.142Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209573881122" target="_blank" class="hs-badge">HS</a>Chick Polak</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209573881122" target="_blank" class="hs-badge">HS</a>Chick Polak<div class="name-meta"><a href="https://www.linkedin.com/in/chick-polak-04b50146" target="_blank">LI</a>&nbsp;<span class="name-sub">President, Style Gem</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1063,10 +1003,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/chick-polak-04b50146" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="68" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-29" data-contacted="2026-05-12T19:21:00.572Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209591605581" target="_blank" class="hs-badge">HS</a>Gary Hurewitz</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209591605581" target="_blank" class="hs-badge">HS</a>Gary Hurewitz<div class="name-meta"><a href="https://linkedin.com/in/gary-hurewitz-74069a7" target="_blank">LI</a>&nbsp;<span class="name-sub">Teacher, Friends Seminary</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1075,10 +1014,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links"><a href="https://linkedin.com/in/gary-hurewitz-74069a7" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="69" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-28" data-contacted="2026-05-12T19:23:02.567Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209566848310" target="_blank" class="hs-badge">HS</a>Jason Allen</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209566848310" target="_blank" class="hs-badge">HS</a>Jason Allen<div class="name-meta"><a href="https://linkedin.com/in/jasondallen" target="_blank">LI</a>&nbsp;<span class="name-sub">Partner, workshop design + architectu</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1087,10 +1025,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/jasondallen" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="70" data-stage-order="5" data-amount="0.0" data-rsvp="2026-05-07" data-contacted="2026-05-21T13:39:07.636Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/220342818310" target="_blank" class="hs-badge">HS</a>Dennis Purcell</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/220342818310" target="_blank" class="hs-badge">HS</a>Dennis Purcell<div class="name-meta"><a href="https://linkedin.com/in/dennis-purcell-96aab367" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Operating Officer, Summus Global</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -1099,10 +1036,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links"><a href="https://linkedin.com/in/dennis-purcell-96aab367" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="71" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-10" data-contacted="2026-04-14T13:20:04Z" data-times="2" data-task-ms="1776259800000" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/45029030424" target="_blank" class="hs-badge">HS</a>Michel Louise</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/45029030424" target="_blank" class="hs-badge">HS</a>Michel Louise<div class="name-meta"><a href="https://linkedin.com/in/michelljones" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief People Officer, OvationMR</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -1111,10 +1047,9 @@
       <td>—</td>
       <td><span title="Call">4/15/26</span></td>
       <td>2</td>
-      <td class="links"><a href="https://linkedin.com/in/michelljones" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="72" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-10" data-contacted="2026-05-06T01:17:09.003Z" data-times="3" data-task-ms="1776259800000" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/189927652447" target="_blank" class="hs-badge">HS</a>Matthew Reagan</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/189927652447" target="_blank" class="hs-badge">HS</a>Matthew Reagan<div class="name-meta"><a href="https://linkedin.com/in/matthew-reagan-b5510a50" target="_blank">LI</a>&nbsp;<span class="name-sub">President, Industrial Metals Internatio</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -1123,10 +1058,9 @@
       <td>—</td>
       <td><span title="Call">4/15/26</span></td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/matthew-reagan-b5510a50" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="73" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-10" data-contacted="2026-05-19T20:02:08.945Z" data-times="5" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/142225464343" target="_blank" class="hs-badge">HS</a>Keith Schwebel</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/142225464343" target="_blank" class="hs-badge">HS</a>Keith Schwebel<div class="name-meta"><a href="https://www.linkedin.com/in/keith-schwebel" target="_blank">LI</a>&nbsp;<span class="name-sub">President &amp; Owner, Ksny</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -1135,10 +1069,9 @@
       <td>—</td>
       <td>—</td>
       <td>5</td>
-      <td class="links"><a href="https://www.linkedin.com/in/keith-schwebel" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="74" data-stage-order="5" data-amount="0.0" data-rsvp="2026-05-04" data-contacted="2026-05-12T20:55:12.843Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/219791100246" target="_blank" class="hs-badge">HS</a>Harveer Bhalla</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/219791100246" target="_blank" class="hs-badge">HS</a>Harveer Bhalla<div class="name-meta"><a href="https://www.linkedin.com/in/harveer-singh-bhalla-cfa-3187b641" target="_blank">LI</a>&nbsp;<span class="name-sub">Executive Director - Portfolio M, JP Morgan &amp; Co</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -1147,10 +1080,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/harveer-singh-bhalla-cfa-3187b641" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="75" data-stage-order="6" data-amount="0.0" data-rsvp="2026-05-11" data-contacted="2026-05-11T14:02:17.289Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Event Attended">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/116221814073" target="_blank" class="hs-badge">HS</a>Warren Tong</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/116221814073" target="_blank" class="hs-badge">HS</a>Warren Tong<div class="name-meta"><a href="https://www.linkedin.com/in/warren-tong-70a7a28" target="_blank">LI</a>&nbsp;<span class="name-sub">Director, Publications &amp; Special, Pfizer</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-event">Event Attended</span></td>
       <td></td>
@@ -1159,10 +1091,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links"><a href="https://www.linkedin.com/in/warren-tong-70a7a28" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="76" data-stage-order="6" data-amount="0.0" data-rsvp="2026-04-13" data-contacted="2026-05-13T18:28:39Z" data-times="13" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Event Attended">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209589581879" target="_blank" class="hs-badge">HS</a>Jon Harari</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209589581879" target="_blank" class="hs-badge">HS</a>Jon Harari<div class="name-meta"><a href="https://linkedin.com/in/jonharari" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer &amp; Co-Fou, WindowsWear</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-event">Event Attended</span></td>
       <td></td>
@@ -1171,10 +1102,9 @@
       <td>—</td>
       <td>—</td>
       <td>13</td>
-      <td class="links"><a href="https://linkedin.com/in/jonharari" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="77" data-stage-order="6" data-amount="0.0" data-rsvp="2026-05-08" data-contacted="2026-05-08T21:21:17.884Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Event Attended">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209550251624" target="_blank" class="hs-badge">HS</a>Thomas Renaud</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209550251624" target="_blank" class="hs-badge">HS</a>Thomas Renaud<div class="name-meta"><span class="name-sub">Managing Director, Arrowhead Business and Inves</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-event">Event Attended</span></td>
       <td></td>
@@ -1183,10 +1113,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="78" data-stage-order="6" data-amount="0.0" data-rsvp="2026-05-06" data-contacted="2026-05-06T16:48:25.720Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="Event Attended">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209572509963" target="_blank" class="hs-badge">HS</a>Jeffrey Gandel</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209572509963" target="_blank" class="hs-badge">HS</a>Jeffrey Gandel<div class="name-meta"><a href="https://linkedin.com/in/jeff-gandel-3078571" target="_blank">LI</a>&nbsp;<span class="name-sub">Lawyer, The Law Office Of Jeffrey Ga</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td><span class="badge stage-event">Event Attended</span></td>
       <td></td>
@@ -1195,10 +1124,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links"><a href="https://linkedin.com/in/jeff-gandel-3078571" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="79" data-stage-order="12" data-amount="0.0" data-rsvp="2026-04-14" data-contacted="2026-05-20T17:55:52.351Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/54868801" target="_blank" class="hs-badge">HS</a>March Krotee</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/54868801" target="_blank" class="hs-badge">HS</a>March Krotee<div class="name-meta"><a href="https://www.linkedin.com/in/chip-krotee-200429109" target="_blank">LI</a>&nbsp;<span class="name-sub">Managing Director, Clarion Capital Partners</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td>—</td>
       <td></td>
@@ -1207,10 +1135,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links"><a href="https://www.linkedin.com/in/chip-krotee-200429109" target="_blank">LI</a></td>
     </tr>
     <tr class="contacted-today" data-default-order="80" data-stage-order="12" data-amount="0.0" data-rsvp="2026-03-21" data-contacted="2026-05-21T01:58:55Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/221222696601" target="_blank" class="hs-badge">HS</a>James Russell<span class="inv-badge">INV</span></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/221222696601" target="_blank" class="hs-badge">HS</a>James Russell<span class="inv-badge">INV</span><div class="name-meta"><a href="https://linkedin.com/in/jirussell" target="_blank">LI</a>&nbsp;<span class="name-sub">Manager, Data Center Services, PwC</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td>—</td>
       <td></td>
@@ -1219,10 +1146,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links"><a href="https://linkedin.com/in/jirussell" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="81" data-stage-order="12" data-amount="0.0" data-rsvp="2026-04-09" data-contacted="2026-05-06T14:49:21.248Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="1" data-stage-label="">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156712420898" target="_blank" class="hs-badge">HS</a>Yungbum Hahn<span class="inv-badge">INV</span></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156712420898" target="_blank" class="hs-badge">HS</a>Yungbum Hahn<span class="inv-badge">INV</span><div class="name-meta"><span class="name-sub">President, H2 Architects</span></div></td>
       <td><span class="badge status-active">Active</span></td>
       <td>—</td>
       <td></td>
@@ -1231,10 +1157,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="82" data-stage-order="0" data-amount="2500.0" data-rsvp="2026-03-24" data-contacted="2026-05-20T19:38:22.630Z" data-times="16" data-task-ms="1783512000000" data-meeting-ms="0" data-status-order="2" data-stage-label="Recommendation Made">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/213462708635" target="_blank" class="hs-badge">HS</a>Kraig Schulz</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/213462708635" target="_blank" class="hs-badge">HS</a>Kraig Schulz<div class="name-meta"><a href="https://linkedin.com/in/kraig-schulz-6b72a6" target="_blank">LI</a>&nbsp;<span class="name-sub">Head of Customer Success, BERA</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-rec">Recommendation Made</span></td>
       <td>$2,500</td>
@@ -1243,10 +1168,9 @@
       <td>—</td>
       <td><span title="invite kraig schulz to WTC">7/8/26</span></td>
       <td>16</td>
-      <td class="links"><a href="https://linkedin.com/in/kraig-schulz-6b72a6" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="83" data-stage-order="1" data-amount="10000.0" data-rsvp="2026-04-30" data-contacted="2026-05-07T15:48:00.991Z" data-times="2" data-task-ms="1786104000000" data-meeting-ms="0" data-status-order="2" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/115878998867" target="_blank" class="hs-badge">HS</a>Nelson Chikusa</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/115878998867" target="_blank" class="hs-badge">HS</a>Nelson Chikusa<div class="name-meta"><a href="https://linkedin.com/in/nchikusa" target="_blank">LI</a>&nbsp;<span class="name-sub">Executive Director, Briarcliffe Credit Partners</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td>$10,000</td>
@@ -1255,10 +1179,9 @@
       <td>—</td>
       <td><span title="check in with nelson? maybe invite to next event?">8/7/26</span></td>
       <td>2</td>
-      <td class="links"><a href="https://linkedin.com/in/nchikusa" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="84" data-stage-order="1" data-amount="5000.0" data-rsvp="2026-03-28" data-contacted="2026-04-27T15:52:18.787Z" data-times="0" data-task-ms="1789473600000" data-meeting-ms="0" data-status-order="2" data-stage-label="Nurture">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209586679171" target="_blank" class="hs-badge">HS</a>Jeff Meltzer</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209586679171" target="_blank" class="hs-badge">HS</a>Jeff Meltzer<div class="name-meta"><a href="https://linkedin.com/in/jeff-meltzer-4887893" target="_blank">LI</a>&nbsp;<span class="name-sub">Executive Producer of the Suki a, Ss Entertainment</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-nurture">Nurture</span></td>
       <td>$5,000</td>
@@ -1267,7 +1190,6 @@
       <td>—</td>
       <td><span title="re-engage jeff meltzer events prospecting lead">9/15/26</span></td>
       <td></td>
-      <td class="links"><a href="https://linkedin.com/in/jeff-meltzer-4887893" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="85" data-stage-order="4" data-amount="100.0" data-rsvp="2026-03-29" data-contacted="2026-04-29T18:12:54Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Active Relationship">
       <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/212462980898" target="_blank" class="hs-badge">HS</a>Karen Spheeris<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">I think this is the wife of the apostoly guy ? did she attend?</div></td>
@@ -1279,10 +1201,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="86" data-stage-order="4" data-amount="100.0" data-rsvp="2026-04-07" data-contacted="2026-04-28T11:47:18Z" data-times="7" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Active Relationship">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209548455747" target="_blank" class="hs-badge">HS</a>Eddy Hayotsyan<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">Owns Açaí Shop Threw out 5k as an example Not overly sophisticated but was very appreciative that he was…</div></td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209548455747" target="_blank" class="hs-badge">HS</a>Eddy Hayotsyan<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display==='block'?'none':'block'">&#9662;</span><div class="note-snippet" style="display:none">Owns Açaí Shop Threw out 5k as an example Not overly sophisticated but was very appreciative that he was…</div><div class="name-meta"><a href="https://linkedin.com/in/arshak-hayotsyan-68565642" target="_blank">LI</a>&nbsp;<span class="name-sub">Co Founder, Agavi Juice</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-active">Active Relationship</span></td>
       <td>$100</td>
@@ -1291,10 +1212,9 @@
       <td>—</td>
       <td>—</td>
       <td>7</td>
-      <td class="links"><a href="https://linkedin.com/in/arshak-hayotsyan-68565642" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="87" data-stage-order="5" data-amount="100000.0" data-rsvp="2026-03-13" data-contacted="2026-04-23T20:45:36Z" data-times="14" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156723240971" target="_blank" class="hs-badge">HS</a>Josh Goldberg</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156723240971" target="_blank" class="hs-badge">HS</a>Josh Goldberg<div class="name-meta"><a href="https://www.linkedin.com/in/josh-goldberg-1ba1825b" target="_blank">LI</a>&nbsp;<span class="name-sub">Managing Partner, G2 Investment Partners</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100,000</td>
@@ -1303,10 +1223,9 @@
       <td>—</td>
       <td>—</td>
       <td>14</td>
-      <td class="links"><a href="https://www.linkedin.com/in/josh-goldberg-1ba1825b" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="88" data-stage-order="5" data-amount="50000.0" data-rsvp="2026-03-23" data-contacted="2026-04-23T21:20:32.123Z" data-times="13" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128225396369" target="_blank" class="hs-badge">HS</a>Sombit Mishra</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128225396369" target="_blank" class="hs-badge">HS</a>Sombit Mishra<div class="name-meta"><a href="https://linkedin.com/in/sombitmishra" target="_blank">LI</a>&nbsp;<span class="name-sub">Founder and CEO, QMedic</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$50,000</td>
@@ -1315,10 +1234,9 @@
       <td>—</td>
       <td>—</td>
       <td>13</td>
-      <td class="links"><a href="https://linkedin.com/in/sombitmishra" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="89" data-stage-order="5" data-amount="25000.0" data-rsvp="2026-03-02" data-contacted="2026-04-27T20:11:07Z" data-times="25" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/189203895455" target="_blank" class="hs-badge">HS</a>Gil Makleff</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/189203895455" target="_blank" class="hs-badge">HS</a>Gil Makleff<div class="name-meta"><span class="name-sub">Chief Executive Officer, Sembly AI</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$25,000</td>
@@ -1327,10 +1245,9 @@
       <td>—</td>
       <td>—</td>
       <td>25</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="90" data-stage-order="5" data-amount="25000.0" data-rsvp="2026-03-30" data-contacted="2026-04-27T18:56:55Z" data-times="12" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/98918350425" target="_blank" class="hs-badge">HS</a>Vijay  Kant</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/98918350425" target="_blank" class="hs-badge">HS</a>Vijay  Kant<div class="name-meta"><a href="https://linkedin.com/in/vijaykantd" target="_blank">LI</a>&nbsp;<span class="name-sub">Executive Director- Head of US R, United Overseas Bank</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$25,000</td>
@@ -1339,7 +1256,6 @@
       <td>—</td>
       <td>—</td>
       <td>12</td>
-      <td class="links"><a href="https://linkedin.com/in/vijaykantd" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="91" data-stage-order="5" data-amount="25000.0" data-rsvp="2026-04-17" data-contacted="2026-04-20T19:29:19.268Z" data-times="1" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
       <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/113999621270" target="_blank" class="hs-badge">HS</a>Chris Himes</td>
@@ -1351,10 +1267,9 @@
       <td>—</td>
       <td>—</td>
       <td>1</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="92" data-stage-order="5" data-amount="25000.0" data-rsvp="2026-03-20" data-contacted="2026-04-23T20:18:20.861Z" data-times="16" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209571734350" target="_blank" class="hs-badge">HS</a>Dickson Aladesanmi</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209571734350" target="_blank" class="hs-badge">HS</a>Dickson Aladesanmi<div class="name-meta"><a href="https://www.linkedin.com/in/dicksonaladesanmi" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Financial Officer, Wellful</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$25,000</td>
@@ -1363,10 +1278,9 @@
       <td>—</td>
       <td>—</td>
       <td>16</td>
-      <td class="links"><a href="https://www.linkedin.com/in/dicksonaladesanmi" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="93" data-stage-order="5" data-amount="25000.0" data-rsvp="2026-03-23" data-contacted="2026-04-23T18:41:01.091Z" data-times="10" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/210875715878" target="_blank" class="hs-badge">HS</a>Steve Levitan</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/210875715878" target="_blank" class="hs-badge">HS</a>Steve Levitan<div class="name-meta"><a href="https://linkedin.com/in/steve-levitan-6106ab5b" target="_blank">LI</a>&nbsp;<span class="name-sub">Partner, Morgan Lewis</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$25,000</td>
@@ -1375,7 +1289,6 @@
       <td>—</td>
       <td>—</td>
       <td>10</td>
-      <td class="links"><a href="https://linkedin.com/in/steve-levitan-6106ab5b" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="94" data-stage-order="5" data-amount="25000.0" data-rsvp="2026-03-28" data-contacted="2026-04-27T18:58:58Z" data-times="6" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
       <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/212234294049" target="_blank" class="hs-badge">HS</a>Jill Wiseman</td>
@@ -1387,10 +1300,9 @@
       <td>—</td>
       <td>—</td>
       <td>6</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="95" data-stage-order="5" data-amount="15000.0" data-rsvp="2026-03-21" data-contacted="2026-04-11T01:16:27.716Z" data-times="1" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128215190556" target="_blank" class="hs-badge">HS</a>Kiel Kim</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128215190556" target="_blank" class="hs-badge">HS</a>Kiel Kim<div class="name-meta"><a href="https://www.linkedin.com/in/kiel-kim-72751990" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Business Officer, SK Life Science Labs</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$15,000</td>
@@ -1399,10 +1311,9 @@
       <td>—</td>
       <td>—</td>
       <td>1</td>
-      <td class="links"><a href="https://www.linkedin.com/in/kiel-kim-72751990" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="96" data-stage-order="5" data-amount="10000.0" data-rsvp="2026-03-26" data-contacted="2026-04-27T19:01:19Z" data-times="11" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/93546565027" target="_blank" class="hs-badge">HS</a>Ziad Mantoura</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/93546565027" target="_blank" class="hs-badge">HS</a>Ziad Mantoura<div class="name-meta"><a href="https://linkedin.com/in/ziad-mantoura-257a0b" target="_blank">LI</a>&nbsp;<span class="name-sub">Senior Vice President and Genera, Epiq</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$10,000</td>
@@ -1411,10 +1322,9 @@
       <td>—</td>
       <td>—</td>
       <td>11</td>
-      <td class="links"><a href="https://linkedin.com/in/ziad-mantoura-257a0b" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="97" data-stage-order="5" data-amount="10000.0" data-rsvp="2026-03-26" data-contacted="2026-04-27T19:00:00Z" data-times="10" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/102957769087" target="_blank" class="hs-badge">HS</a>Tom Pogacnik</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/102957769087" target="_blank" class="hs-badge">HS</a>Tom Pogacnik<div class="name-meta"><a href="https://linkedin.com/in/tom-pogacnik-5985a41" target="_blank">LI</a>&nbsp;<span class="name-sub">Director, Slalom</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$10,000</td>
@@ -1423,10 +1333,9 @@
       <td>—</td>
       <td>—</td>
       <td>10</td>
-      <td class="links"><a href="https://linkedin.com/in/tom-pogacnik-5985a41" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="98" data-stage-order="5" data-amount="10000.0" data-rsvp="2026-03-13" data-contacted="2026-03-18T13:20:13.946Z" data-times="5" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/207114297500" target="_blank" class="hs-badge">HS</a>Aaron Abend</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/207114297500" target="_blank" class="hs-badge">HS</a>Aaron Abend<div class="name-meta"><span class="name-sub">Managing Director, Prognosis Data</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$10,000</td>
@@ -1435,10 +1344,9 @@
       <td>—</td>
       <td>—</td>
       <td>5</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="99" data-stage-order="5" data-amount="10000.0" data-rsvp="2026-03-20" data-contacted="2026-04-23T18:55:56.843Z" data-times="12" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209561175062" target="_blank" class="hs-badge">HS</a>David Gould</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209561175062" target="_blank" class="hs-badge">HS</a>David Gould<div class="name-meta"><a href="https://www.linkedin.com/in/david-gould-2434327" target="_blank">LI</a>&nbsp;<span class="name-sub">Managing Director - Head of Capi, FarmTogether</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$10,000</td>
@@ -1447,10 +1355,9 @@
       <td>—</td>
       <td>—</td>
       <td>12</td>
-      <td class="links"><a href="https://www.linkedin.com/in/david-gould-2434327" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="100" data-stage-order="5" data-amount="5000.0" data-rsvp="2026-03-15" data-contacted="2026-04-27T19:59:28Z" data-times="7" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/102403827882" target="_blank" class="hs-badge">HS</a>James May</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/102403827882" target="_blank" class="hs-badge">HS</a>James May<div class="name-meta"><a href="https://linkedin.com/in/james-may-76b9a63" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Financial Officer, Jfkiat</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$5,000</td>
@@ -1459,10 +1366,9 @@
       <td>—</td>
       <td>—</td>
       <td>7</td>
-      <td class="links"><a href="https://linkedin.com/in/james-may-76b9a63" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="101" data-stage-order="5" data-amount="5000.0" data-rsvp="2026-04-22" data-contacted="2026-04-23T18:49:52.588Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128225239637" target="_blank" class="hs-badge">HS</a>Mitchell Keidan</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128225239637" target="_blank" class="hs-badge">HS</a>Mitchell Keidan<div class="name-meta"><a href="https://linkedin.com/in/lagoni" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer, Stackline</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$5,000</td>
@@ -1471,10 +1377,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/lagoni" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="102" data-stage-order="5" data-amount="5000.0" data-rsvp="2026-03-13" data-contacted="2026-04-27T19:48:24Z" data-times="12" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128215499552" target="_blank" class="hs-badge">HS</a>Eric Luke</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128215499552" target="_blank" class="hs-badge">HS</a>Eric Luke<div class="name-meta"><a href="https://linkedin.com/in/eric-luke-7ab6363" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Financial Officer, EHE Health</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$5,000</td>
@@ -1483,10 +1388,9 @@
       <td>—</td>
       <td>—</td>
       <td>12</td>
-      <td class="links"><a href="https://linkedin.com/in/eric-luke-7ab6363" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="103" data-stage-order="5" data-amount="5000.0" data-rsvp="2026-03-26" data-contacted="2026-04-23T18:45:29.898Z" data-times="18" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128227542149" target="_blank" class="hs-badge">HS</a>Vageesh Naik</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128227542149" target="_blank" class="hs-badge">HS</a>Vageesh Naik<div class="name-meta"><a href="https://www.linkedin.com/in/vageesh-naik-8401644" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer, Reva Capital Holdings, LLC</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$5,000</td>
@@ -1495,10 +1399,9 @@
       <td>—</td>
       <td>—</td>
       <td>18</td>
-      <td class="links"><a href="https://www.linkedin.com/in/vageesh-naik-8401644" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="104" data-stage-order="5" data-amount="5000.0" data-rsvp="2026-03-13" data-contacted="2026-04-27T19:48:35Z" data-times="8" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156712719937" target="_blank" class="hs-badge">HS</a>Achille Davisson</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156712719937" target="_blank" class="hs-badge">HS</a>Achille Davisson<div class="name-meta"><a href="https://www.linkedin.com/in/achille-davisson-5b178824" target="_blank">LI</a>&nbsp;<span class="name-sub">Account Executive &amp; Sales Manage, The Yard</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$5,000</td>
@@ -1507,10 +1410,9 @@
       <td>—</td>
       <td>—</td>
       <td>8</td>
-      <td class="links"><a href="https://www.linkedin.com/in/achille-davisson-5b178824" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="105" data-stage-order="5" data-amount="5000.0" data-rsvp="2026-03-29" data-contacted="2026-04-27T18:58:15Z" data-times="11" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209568075116" target="_blank" class="hs-badge">HS</a>Gonzalo Pizarro</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209568075116" target="_blank" class="hs-badge">HS</a>Gonzalo Pizarro<div class="name-meta"><a href="https://www.linkedin.com/in/gonzalopizarrol" target="_blank">LI</a>&nbsp;<span class="name-sub">Policy Chief, United Nations</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$5,000</td>
@@ -1519,10 +1421,9 @@
       <td>—</td>
       <td>—</td>
       <td>11</td>
-      <td class="links"><a href="https://www.linkedin.com/in/gonzalopizarrol" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="106" data-stage-order="5" data-amount="5000.0" data-rsvp="2026-04-20" data-contacted="2026-04-23T18:47:54Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/216214352968" target="_blank" class="hs-badge">HS</a>Anshu Tekwani</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/216214352968" target="_blank" class="hs-badge">HS</a>Anshu Tekwani<div class="name-meta"><a href="https://www.linkedin.com/in/anshutekwani" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief of Staff Verizon Consumer , Verizon</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$5,000</td>
@@ -1531,10 +1432,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/anshutekwani" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="107" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-16" data-contacted="2026-04-29T17:57:08Z" data-times="5" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156281801" target="_blank" class="hs-badge">HS</a>Benoit Flammar</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156281801" target="_blank" class="hs-badge">HS</a>Benoit Flammar<div class="name-meta"><a href="https://linkedin.com/in/benoitflammang" target="_blank">LI</a>&nbsp;<span class="name-sub">Founder &amp; Chief Executive Office, The Associates</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1543,10 +1443,9 @@
       <td>—</td>
       <td>—</td>
       <td>5</td>
-      <td class="links"><a href="https://linkedin.com/in/benoitflammang" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="108" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-28" data-contacted="2026-04-27T18:21:12Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/275590401" target="_blank" class="hs-badge">HS</a>Adi Divgi</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/275590401" target="_blank" class="hs-badge">HS</a>Adi Divgi<div class="name-meta"><a href="https://linkedin.com/in/adivgi" target="_blank">LI</a>&nbsp;<span class="name-sub">Founder and Managing Partner, Divino Global Holdings</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1555,10 +1454,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/adivgi" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="109" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-13" data-contacted="2026-04-29T18:12:40Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/285173052" target="_blank" class="hs-badge">HS</a>Justin Nance</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/285173052" target="_blank" class="hs-badge">HS</a>Justin Nance<div class="name-meta"><a href="https://linkedin.com/in/justin-p-nance-95503569" target="_blank">LI</a>&nbsp;<span class="name-sub">JPM CIB, JP Morgan Corporate &amp; Invest</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1567,10 +1465,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/justin-p-nance-95503569" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="110" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-28" data-contacted="2026-04-27T18:47:03Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/493801101" target="_blank" class="hs-badge">HS</a>Stefano Pacifico</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/493801101" target="_blank" class="hs-badge">HS</a>Stefano Pacifico<div class="name-meta"><a href="https://www.linkedin.com/in/stefanopacifico" target="_blank">LI</a>&nbsp;<span class="name-sub">Co-Founder, Chief Executive Offi, Epistemic AI</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1579,10 +1476,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://www.linkedin.com/in/stefanopacifico" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="111" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-28" data-contacted="2026-04-27T18:21:10Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/15545711269" target="_blank" class="hs-badge">HS</a>Adel Assaf</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/15545711269" target="_blank" class="hs-badge">HS</a>Adel Assaf<div class="name-meta"><a href="https://linkedin.com/in/adel-assaf-b6a86720" target="_blank">LI</a>&nbsp;<span class="name-sub">Cafe Sabor</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1591,10 +1487,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://linkedin.com/in/adel-assaf-b6a86720" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="112" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-29" data-contacted="2026-04-30T05:40:37.220Z" data-times="16" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/21621128304" target="_blank" class="hs-badge">HS</a>Greg Lourdin</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/21621128304" target="_blank" class="hs-badge">HS</a>Greg Lourdin<div class="name-meta"><span class="name-sub">Senior Vice President of Investm, first colonial group</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1603,10 +1498,9 @@
       <td>—</td>
       <td>—</td>
       <td>16</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="113" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-31" data-contacted="2026-04-27T18:55:35Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/32860937815" target="_blank" class="hs-badge">HS</a>Stephanie Khoo</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/32860937815" target="_blank" class="hs-badge">HS</a>Stephanie Khoo<div class="name-meta"><a href="https://www.linkedin.com/in/stephanie-khoo-837b8349" target="_blank">LI</a>&nbsp;<span class="name-sub">Partner, Nyca Partners</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1615,10 +1509,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://www.linkedin.com/in/stephanie-khoo-837b8349" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="114" data-stage-order="5" data-amount="100.0" data-rsvp="2026-04-03" data-contacted="2026-04-21T18:08:00.631Z" data-times="1" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/37871579017" target="_blank" class="hs-badge">HS</a>Mark Roybal</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/37871579017" target="_blank" class="hs-badge">HS</a>Mark Roybal<div class="name-meta"><span class="name-sub">wiip</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1627,10 +1520,9 @@
       <td>—</td>
       <td>—</td>
       <td>1</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="115" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-30" data-contacted="2026-04-27T18:43:41Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/38213640842" target="_blank" class="hs-badge">HS</a>Rob Juman</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/38213640842" target="_blank" class="hs-badge">HS</a>Rob Juman<div class="name-meta"><a href="https://linkedin.com/in/rob-juman-8562954" target="_blank">LI</a>&nbsp;<span class="name-sub">Ausa, United States Attorneys&#x27;​ Of</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1639,10 +1531,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/rob-juman-8562954" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="116" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-29" data-contacted="2026-04-29T18:44:41Z" data-times="5" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/86910226009" target="_blank" class="hs-badge">HS</a>Tim Shopa</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/86910226009" target="_blank" class="hs-badge">HS</a>Tim Shopa<div class="name-meta"><a href="https://linkedin.com/in/timshopa" target="_blank">LI</a>&nbsp;<span class="name-sub">Principal, Idst Projects</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1651,10 +1542,9 @@
       <td>—</td>
       <td>—</td>
       <td>5</td>
-      <td class="links"><a href="https://linkedin.com/in/timshopa" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="117" data-stage-order="5" data-amount="100.0" data-rsvp="2026-04-03" data-contacted="2026-04-27T18:47:41Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/213251583781" target="_blank" class="hs-badge">HS</a>Stephen Fishler</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/213251583781" target="_blank" class="hs-badge">HS</a>Stephen Fishler<div class="name-meta"><a href="https://linkedin.com/in/stephen-fishler-16156212" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer &amp; Co-Fou</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1663,10 +1553,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/stephen-fishler-16156212" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="118" data-stage-order="5" data-amount="100.0" data-rsvp="2026-04-03" data-contacted="2026-04-29T18:10:19Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/90173606462" target="_blank" class="hs-badge">HS</a>Evie Salomon</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/90173606462" target="_blank" class="hs-badge">HS</a>Evie Salomon<div class="name-meta"><a href="https://linkedin.com/in/richard-salomon-b28ab47" target="_blank">LI</a>&nbsp;<span class="name-sub">Owner, Vantage Point Consultants</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1675,10 +1564,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/richard-salomon-b28ab47" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="119" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-23" data-contacted="2026-04-27T18:51:08Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/91342979159" target="_blank" class="hs-badge">HS</a>Samuel Levy</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/91342979159" target="_blank" class="hs-badge">HS</a>Samuel Levy<div class="name-meta"><span class="name-sub">Managing Director, Equiteq</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1687,10 +1575,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="120" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-22" data-contacted="2026-04-29T17:57:01Z" data-times="1" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/94889262227" target="_blank" class="hs-badge">HS</a>john partilla</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/94889262227" target="_blank" class="hs-badge">HS</a>john partilla<div class="name-meta"><a href="https://linkedin.com/in/johnpartilla" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer, Screenvision Media</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1699,10 +1586,9 @@
       <td>—</td>
       <td>—</td>
       <td>1</td>
-      <td class="links"><a href="https://linkedin.com/in/johnpartilla" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="121" data-stage-order="5" data-amount="100.0" data-rsvp="2026-04-03" data-contacted="2026-04-29T18:10:33Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/214493856038" target="_blank" class="hs-badge">HS</a>George Mcauliffe</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/214493856038" target="_blank" class="hs-badge">HS</a>George Mcauliffe<div class="name-meta"><a href="https://linkedin.com/in/george-mcauliffe-892b535" target="_blank">LI</a>&nbsp;<span class="name-sub">Portfolio Manager, Tocqueville Asset Management</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1711,10 +1597,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/george-mcauliffe-892b535" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="122" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-30" data-contacted="2026-04-24T19:05:49Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/102955917159" target="_blank" class="hs-badge">HS</a>Zachary Fadem</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/102955917159" target="_blank" class="hs-badge">HS</a>Zachary Fadem<div class="name-meta"><a href="https://linkedin.com/in/zackfadem" target="_blank">LI</a>&nbsp;<span class="name-sub">Managing Director, Senior Equity, Wells Fargo</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1723,10 +1608,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/zackfadem" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="123" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-23" data-contacted="2026-04-27T18:48:14Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128216839959" target="_blank" class="hs-badge">HS</a>Vansh Langer</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128216839959" target="_blank" class="hs-badge">HS</a>Vansh Langer<div class="name-meta"><a href="https://www.linkedin.com/in/vansh-langer-md" target="_blank">LI</a>&nbsp;<span class="name-sub">Venture Partner, Pioneer Fund</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1735,10 +1619,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://www.linkedin.com/in/vansh-langer-md" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="124" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-20" data-contacted="2026-04-29T18:56:56Z" data-times="7" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128212361873" target="_blank" class="hs-badge">HS</a>Duncan Goldie-Morrison</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/128212361873" target="_blank" class="hs-badge">HS</a>Duncan Goldie-Morrison<div class="name-meta"><a href="https://www.linkedin.com/in/duncan-goldie-morrison-62964530" target="_blank">LI</a>&nbsp;<span class="name-sub">Director and Owner, Transact Payments Limited</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1747,10 +1630,9 @@
       <td>—</td>
       <td>—</td>
       <td>7</td>
-      <td class="links"><a href="https://www.linkedin.com/in/duncan-goldie-morrison-62964530" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="125" data-stage-order="5" data-amount="100.0" data-rsvp="2026-04-03" data-contacted="2026-04-27T18:47:24Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/137701566301" target="_blank" class="hs-badge">HS</a>Mickey Winston</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/137701566301" target="_blank" class="hs-badge">HS</a>Mickey Winston<div class="name-meta"><a href="https://linkedin.com/in/mickeywinston" target="_blank">LI</a>&nbsp;<span class="name-sub">Senior Global Business Protectio, Spotify</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1759,10 +1641,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://linkedin.com/in/mickeywinston" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="126" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-16" data-contacted="2026-04-27T18:46:36Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/147457405268" target="_blank" class="hs-badge">HS</a>Evan Kesten</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/147457405268" target="_blank" class="hs-badge">HS</a>Evan Kesten<div class="name-meta"><a href="https://linkedin.com/in/evankesten" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Technology Officer and Co-, Cabinet</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1771,10 +1652,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://linkedin.com/in/evankesten" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="127" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-29" data-contacted="2026-04-29T18:39:02Z" data-times="5" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/168744243969" target="_blank" class="hs-badge">HS</a>Bryan Doorish</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/168744243969" target="_blank" class="hs-badge">HS</a>Bryan Doorish<div class="name-meta"><a href="https://www.linkedin.com/in/bryan-doorish-060228184" target="_blank">LI</a>&nbsp;<span class="name-sub">Senior Project Manager, 2com Group</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1783,10 +1663,9 @@
       <td>—</td>
       <td>—</td>
       <td>5</td>
-      <td class="links"><a href="https://www.linkedin.com/in/bryan-doorish-060228184" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="128" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-09" data-contacted="2026-04-27T18:48:36Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/207684784285" target="_blank" class="hs-badge">HS</a>Alexander Poots</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/207684784285" target="_blank" class="hs-badge">HS</a>Alexander Poots<div class="name-meta"><a href="https://linkedin.com/in/matthewdonovan3" target="_blank">LI</a>&nbsp;<span class="name-sub">Construction Spv, The Shed</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1795,10 +1674,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://linkedin.com/in/matthewdonovan3" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="129" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-15" data-contacted="2026-04-29T18:42:01Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/208293841571" target="_blank" class="hs-badge">HS</a>Frank Popp</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/208293841571" target="_blank" class="hs-badge">HS</a>Frank Popp<div class="name-meta"><a href="https://linkedin.com/in/frank-popp" target="_blank">LI</a>&nbsp;<span class="name-sub">Marketing, Product Development, , frank popp consulting</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1807,10 +1685,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/frank-popp" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="130" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-11" data-contacted="2026-04-27T20:02:19Z" data-times="16" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/208589755710" target="_blank" class="hs-badge">HS</a>Kareem Ali</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/208589755710" target="_blank" class="hs-badge">HS</a>Kareem Ali<div class="name-meta"><span class="name-sub">Vice President of Investment Ban</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1819,10 +1696,9 @@
       <td>—</td>
       <td>—</td>
       <td>16</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="131" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-16" data-contacted="2026-04-29T17:59:32Z" data-times="5" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209025633401" target="_blank" class="hs-badge">HS</a>Brian Shim</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209025633401" target="_blank" class="hs-badge">HS</a>Brian Shim<div class="name-meta"><a href="https://www.linkedin.com/in/brian-shim-5112b134" target="_blank">LI</a>&nbsp;<span class="name-sub">Senior Portfolio Manager, Millennium Management</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1831,10 +1707,9 @@
       <td>—</td>
       <td>—</td>
       <td>5</td>
-      <td class="links"><a href="https://www.linkedin.com/in/brian-shim-5112b134" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="132" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-24" data-contacted="2026-04-29T18:17:53Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209563953681" target="_blank" class="hs-badge">HS</a>Lane Altschuler</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209563953681" target="_blank" class="hs-badge">HS</a>Lane Altschuler<div class="name-meta"><a href="https://linkedin.com/in/lane-altschuler-9994b16" target="_blank">LI</a>&nbsp;<span class="name-sub">Owner, Lane Anthony Productions Gry</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1843,10 +1718,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links"><a href="https://linkedin.com/in/lane-altschuler-9994b16" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="133" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-24" data-contacted="2026-04-27T18:56:22Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209548446617" target="_blank" class="hs-badge">HS</a>Mudita Chawla</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209548446617" target="_blank" class="hs-badge">HS</a>Mudita Chawla<div class="name-meta"><a href="https://www.linkedin.com/in/mudita-chawla-18bb479" target="_blank">LI</a>&nbsp;<span class="name-sub">Partner, Chemtob Moss &amp; Forman</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1855,10 +1729,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/mudita-chawla-18bb479" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="134" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-23" data-contacted="2026-04-27T18:53:31Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209574028456" target="_blank" class="hs-badge">HS</a>Myron Baer</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209574028456" target="_blank" class="hs-badge">HS</a>Myron Baer<div class="name-meta"><a href="https://www.linkedin.com/in/myronbaer" target="_blank">LI</a>&nbsp;<span class="name-sub">Managing Director (USA, Canada), Orpheo</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1867,10 +1740,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://www.linkedin.com/in/myronbaer" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="135" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-23" data-contacted="2026-04-29T18:13:44Z" data-times="6" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209591904653" target="_blank" class="hs-badge">HS</a>Phillip Bloch</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209591904653" target="_blank" class="hs-badge">HS</a>Phillip Bloch<div class="name-meta"><a href="https://linkedin.com/in/phillipbloch" target="_blank">LI</a>&nbsp;<span class="name-sub">Creator and Host, True Crime Fashion And Passi</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1879,10 +1751,9 @@
       <td>—</td>
       <td>—</td>
       <td>6</td>
-      <td class="links"><a href="https://linkedin.com/in/phillipbloch" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="136" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-18" data-contacted="2026-04-29T17:57:43Z" data-times="5" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209588664169" target="_blank" class="hs-badge">HS</a>David Schiffer</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209588664169" target="_blank" class="hs-badge">HS</a>David Schiffer<div class="name-meta"><span class="name-sub">Chief Executive Officer, RevBits</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1891,10 +1762,9 @@
       <td>—</td>
       <td>—</td>
       <td>5</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="137" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-18" data-contacted="2026-04-28T22:21:36Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209588664181" target="_blank" class="hs-badge">HS</a>David Ezell</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209588664181" target="_blank" class="hs-badge">HS</a>David Ezell<div class="name-meta"><a href="https://linkedin.com/in/dezell" target="_blank">LI</a>&nbsp;<span class="name-sub">Principal Chief Executive Office, Darien Wellness</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1903,10 +1773,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/dezell" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="138" data-stage-order="5" data-amount="100.0" data-rsvp="2026-03-28" data-contacted="2026-04-29T18:11:01Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209570974538" target="_blank" class="hs-badge">HS</a>Gaston Eguigorry</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209570974538" target="_blank" class="hs-badge">HS</a>Gaston Eguigorry<div class="name-meta"><a href="https://linkedin.com/in/gaston-eguigorry-66489a49" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer, Relier</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1915,10 +1784,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links"><a href="https://linkedin.com/in/gaston-eguigorry-66489a49" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="139" data-stage-order="5" data-amount="100.0" data-rsvp="2026-04-29" data-contacted="2026-04-29T17:47:33.301Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/217708448355" target="_blank" class="hs-badge">HS</a>Pierre Dupont</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/217708448355" target="_blank" class="hs-badge">HS</a>Pierre Dupont<div class="name-meta"><span class="name-sub">Partner, Cerity Partners</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1927,10 +1795,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="140" data-stage-order="5" data-amount="100.0" data-rsvp="2026-04-28" data-contacted="2026-04-29T17:54:54Z" data-times="1" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/218179526177" target="_blank" class="hs-badge">HS</a>Benjamin Soemartopo</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/218179526177" target="_blank" class="hs-badge">HS</a>Benjamin Soemartopo<div class="name-meta"><span class="name-sub">CEO, Eureka AI</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1939,10 +1806,9 @@
       <td>—</td>
       <td>—</td>
       <td>1</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="141" data-stage-order="5" data-amount="100.0" data-rsvp="2026-04-28" data-contacted="2026-04-29T17:55:38Z" data-times="1" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/218112058449" target="_blank" class="hs-badge">HS</a>Helge Petermann</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/218112058449" target="_blank" class="hs-badge">HS</a>Helge Petermann<div class="name-meta"><a href="https://www.linkedin.com/in/hpetermann" target="_blank">LI</a>&nbsp;<span class="name-sub">Partner, Snowbridge Advisors</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td>$100</td>
@@ -1951,10 +1817,9 @@
       <td>—</td>
       <td>—</td>
       <td>1</td>
-      <td class="links"><a href="https://www.linkedin.com/in/hpetermann" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="142" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-08" data-contacted="2026-04-09T19:10:52.182Z" data-times="5" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/532148455" target="_blank" class="hs-badge">HS</a>Brian Byrd</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/532148455" target="_blank" class="hs-badge">HS</a>Brian Byrd<div class="name-meta"><a href="https://linkedin.com/in/brian-carlton-byrd-6292bb8" target="_blank">LI</a>&nbsp;<span class="name-sub">President and Chief Executive Of, New Breed w</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -1963,10 +1828,9 @@
       <td>—</td>
       <td>—</td>
       <td>5</td>
-      <td class="links"><a href="https://linkedin.com/in/brian-carlton-byrd-6292bb8" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="143" data-stage-order="5" data-amount="0.0" data-rsvp="2026-03-28" data-contacted="2026-04-21T21:11:52Z" data-times="17" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/26789760606" target="_blank" class="hs-badge">HS</a>Lawrence Wiseman</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/26789760606" target="_blank" class="hs-badge">HS</a>Lawrence Wiseman<div class="name-meta"><a href="https://www.linkedin.com/in/lawrence-wiseman-2473114" target="_blank">LI</a>&nbsp;<span class="name-sub">Partner, Comtech Capital</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -1975,10 +1839,9 @@
       <td>—</td>
       <td>—</td>
       <td>17</td>
-      <td class="links"><a href="https://www.linkedin.com/in/lawrence-wiseman-2473114" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="144" data-stage-order="5" data-amount="0.0" data-rsvp="2026-02-27" data-contacted="2026-04-27T18:43:06Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/190040154777" target="_blank" class="hs-badge">HS</a>Carl Schecter</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/190040154777" target="_blank" class="hs-badge">HS</a>Carl Schecter<div class="name-meta"><a href="https://linkedin.com/in/carl-schecter-4256b8b7" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer, Chief I, Staunton Capital</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -1987,10 +1850,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://linkedin.com/in/carl-schecter-4256b8b7" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="145" data-stage-order="5" data-amount="0.0" data-rsvp="2026-03-30" data-contacted="2026-04-21T19:24:43Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/64661570129" target="_blank" class="hs-badge">HS</a>Jason Winocour</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/64661570129" target="_blank" class="hs-badge">HS</a>Jason Winocour<div class="name-meta"><span class="name-sub">Retired, Jason Winocour - Placeholder</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -1999,10 +1861,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="146" data-stage-order="5" data-amount="0.0" data-rsvp="2026-03-31" data-contacted="2026-04-21T19:36:41Z" data-times="2" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/113977953865" target="_blank" class="hs-badge">HS</a>David Blumberg</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/113977953865" target="_blank" class="hs-badge">HS</a>David Blumberg<div class="name-meta"><a href="https://www.linkedin.com/in/davidblumberg1/" target="_blank">LI</a>&nbsp;</div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2011,10 +1872,9 @@
       <td>—</td>
       <td>—</td>
       <td>2</td>
-      <td class="links"><a href="https://www.linkedin.com/in/davidblumberg1/" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="147" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-17" data-contacted="2026-04-20T20:29:56.300Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/113995285914" target="_blank" class="hs-badge">HS</a>Ilan Katz</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/113995285914" target="_blank" class="hs-badge">HS</a>Ilan Katz<div class="name-meta"><a href="https://linkedin.com/in/ilan-katz-7650546" target="_blank">LI</a>&nbsp;<span class="name-sub">Partner, Dentons</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2023,10 +1883,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/ilan-katz-7650546" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="148" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-22" data-contacted="2026-04-23T18:08:41.212Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/118600050461" target="_blank" class="hs-badge">HS</a>Evan Obsatz</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/118600050461" target="_blank" class="hs-badge">HS</a>Evan Obsatz<div class="name-meta"><a href="https://linkedin.com/in/evan-obsatz-90964539" target="_blank">LI</a>&nbsp;<span class="name-sub">Managing Director, Butterfield Market</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2035,10 +1894,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://linkedin.com/in/evan-obsatz-90964539" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="149" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-10" data-contacted="2026-04-10T15:32:02.426Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/189960074002" target="_blank" class="hs-badge">HS</a>Ryan Jennings</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/189960074002" target="_blank" class="hs-badge">HS</a>Ryan Jennings<div class="name-meta"><a href="https://linkedin.com/in/ryan-jennings-412b85b" target="_blank">LI</a>&nbsp;<span class="name-sub">President, Sentinel Builders</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2047,10 +1905,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links"><a href="https://linkedin.com/in/ryan-jennings-412b85b" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="150" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-10" data-contacted="2026-04-14T14:31:28.888Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/168741901060" target="_blank" class="hs-badge">HS</a>Joshua Airth</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/168741901060" target="_blank" class="hs-badge">HS</a>Joshua Airth<div class="name-meta"><a href="https://www.linkedin.com/in/josh-airth-13b6b814a" target="_blank">LI</a>&nbsp;<span class="name-sub">To The Creative Manager &amp; Co-Fou, Joan Creative</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2059,10 +1916,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/josh-airth-13b6b814a" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="151" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-10" data-contacted="2026-04-14T13:46:29.634Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209550714992" target="_blank" class="hs-badge">HS</a>Michael Wittke</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209550714992" target="_blank" class="hs-badge">HS</a>Michael Wittke<div class="name-meta"><a href="https://www.linkedin.com/in/michaelwittke" target="_blank">LI</a>&nbsp;<span class="name-sub">Director, Platform Management, IvyWise</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2071,10 +1927,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/michaelwittke" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="152" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-10" data-contacted="2026-04-14T13:48:15.545Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209563643142" target="_blank" class="hs-badge">HS</a>Michael Snell</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209563643142" target="_blank" class="hs-badge">HS</a>Michael Snell<div class="name-meta"><a href="https://www.linkedin.com/in/michael-snell" target="_blank">LI</a>&nbsp;<span class="name-sub">Founder, The MJS Groupe</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2083,10 +1938,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/michael-snell" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="153" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-10" data-contacted="2026-04-14T13:49:32.933Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209567908751" target="_blank" class="hs-badge">HS</a>Mark Pandaleon</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209567908751" target="_blank" class="hs-badge">HS</a>Mark Pandaleon<div class="name-meta"><a href="https://www.linkedin.com/in/mark-pandaleon-31b50324" target="_blank">LI</a>&nbsp;<span class="name-sub">General Manager, Hotel Theta</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2095,10 +1949,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/mark-pandaleon-31b50324" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="154" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-10" data-contacted="2026-04-14T13:52:04.915Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209571576425" target="_blank" class="hs-badge">HS</a>Timothy Lee</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/209571576425" target="_blank" class="hs-badge">HS</a>Timothy Lee<div class="name-meta"><a href="https://www.linkedin.com/in/timothy-scott-lee-csat" target="_blank">LI</a>&nbsp;<span class="name-sub">Owner, New York Pathways</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2107,10 +1960,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/timothy-scott-lee-csat" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="155" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-09" data-contacted="2026-04-13T18:52:34Z" data-times="5" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/214443528007" target="_blank" class="hs-badge">HS</a>Peter Marinis</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/214443528007" target="_blank" class="hs-badge">HS</a>Peter Marinis<div class="name-meta"><a href="https://linkedin.com/in/peter-marinis-3720304" target="_blank">LI</a>&nbsp;<span class="name-sub">Pediatric Dietitian, Feed to Succeed</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2119,10 +1971,9 @@
       <td>—</td>
       <td>—</td>
       <td>5</td>
-      <td class="links"><a href="https://linkedin.com/in/peter-marinis-3720304" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="156" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-14" data-contacted="2026-04-15T20:36:19.540Z" data-times="5" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215342812594" target="_blank" class="hs-badge">HS</a>Linda Dahl</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215342812594" target="_blank" class="hs-badge">HS</a>Linda Dahl<div class="name-meta"><span class="name-sub">CEO &amp; Founder, Better Breastfeeding LLC</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2131,10 +1982,9 @@
       <td>—</td>
       <td>—</td>
       <td>5</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="157" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-17" data-contacted="2026-04-21T13:47:05.209Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215787995722" target="_blank" class="hs-badge">HS</a>Jenny Tromski</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215787995722" target="_blank" class="hs-badge">HS</a>Jenny Tromski<div class="name-meta"><span class="name-sub">VP, Business Development, Brooklyn Navy Yard Developme</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2143,10 +1993,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="158" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-17" data-contacted="2026-04-21T13:30:27.358Z" data-times="4" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215787078412" target="_blank" class="hs-badge">HS</a>Jane Tran</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215787078412" target="_blank" class="hs-badge">HS</a>Jane Tran<div class="name-meta"><a href="https://www.linkedin.com/in/jane-tran-xyz" target="_blank">LI</a>&nbsp;<span class="name-sub">Co-founder &amp; Chief Operating Off, Sixfold</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2155,10 +2004,9 @@
       <td>—</td>
       <td>—</td>
       <td>4</td>
-      <td class="links"><a href="https://www.linkedin.com/in/jane-tran-xyz" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="159" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-17" data-contacted="2026-04-22T03:53:00.964Z" data-times="5" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215792046448" target="_blank" class="hs-badge">HS</a>Jean Smart</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215792046448" target="_blank" class="hs-badge">HS</a>Jean Smart<div class="name-meta"><span class="name-sub">Founder &amp; CEO, Penelope</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2167,10 +2015,9 @@
       <td>—</td>
       <td>—</td>
       <td>5</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="160" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-17" data-contacted="2026-04-21T19:20:40Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/216006802579" target="_blank" class="hs-badge">HS</a>Jarrod Tuckman</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/216006802579" target="_blank" class="hs-badge">HS</a>Jarrod Tuckman<div class="name-meta"><a href="https://www.linkedin.com/in/jarrod-tuckman-b866269" target="_blank">LI</a>&nbsp;<span class="name-sub">Vice President, Ad Sales Finance, FOX</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2179,10 +2026,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links"><a href="https://www.linkedin.com/in/jarrod-tuckman-b866269" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="161" data-stage-order="5" data-amount="0.0" data-rsvp="2026-04-22" data-contacted="2026-04-24T03:08:00.544Z" data-times="3" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Advisor Assigned">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/216895031872" target="_blank" class="hs-badge">HS</a>Francesca Caligaris</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/216895031872" target="_blank" class="hs-badge">HS</a>Francesca Caligaris<div class="name-meta"><span class="name-sub">Chief Marketing Officer, Aleria</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-advisor">Advisor Assigned</span></td>
       <td></td>
@@ -2191,10 +2037,9 @@
       <td>—</td>
       <td>—</td>
       <td>3</td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="162" data-stage-order="6" data-amount="0.0" data-rsvp="2026-04-21" data-contacted="2026-04-21T21:03:23.585Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Event Attended">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/102408228416" target="_blank" class="hs-badge">HS</a>Christophe Attard</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/102408228416" target="_blank" class="hs-badge">HS</a>Christophe Attard<div class="name-meta"><a href="https://www.linkedin.com/in/christophe-attard" target="_blank">LI</a>&nbsp;<span class="name-sub">Founder, We Are Spartners</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-event">Event Attended</span></td>
       <td></td>
@@ -2203,10 +2048,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links"><a href="https://www.linkedin.com/in/christophe-attard" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="163" data-stage-order="6" data-amount="0.0" data-rsvp="2026-04-03" data-contacted="2026-04-21T20:41:33Z" data-times="1" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Event Attended">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/213251451965" target="_blank" class="hs-badge">HS</a>Puneet Agrawal</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/213251451965" target="_blank" class="hs-badge">HS</a>Puneet Agrawal<div class="name-meta"><a href="https://linkedin.com/in/puneet-agrawal-15b11919" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Executive Officer, Azeera</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-event">Event Attended</span></td>
       <td></td>
@@ -2215,10 +2059,9 @@
       <td>—</td>
       <td>—</td>
       <td>1</td>
-      <td class="links"><a href="https://linkedin.com/in/puneet-agrawal-15b11919" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="164" data-stage-order="6" data-amount="0.0" data-rsvp="2026-04-28" data-contacted="2026-04-28T14:20:22.384Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="Event Attended">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/218180132194" target="_blank" class="hs-badge">HS</a>Daniel Lowden</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/218180132194" target="_blank" class="hs-badge">HS</a>Daniel Lowden<div class="name-meta"><a href="https://linkedin.com/in/danlowden" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Marketing Officer, Blackbird.AI</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td><span class="badge stage-event">Event Attended</span></td>
       <td></td>
@@ -2227,10 +2070,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links"><a href="https://linkedin.com/in/danlowden" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="165" data-stage-order="12" data-amount="0.0" data-rsvp="2026-03-28" data-contacted="2026-04-09T19:48:59Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/212463059038" target="_blank" class="hs-badge">HS</a>212463059038</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/212463059038" target="_blank" class="hs-badge">HS</a>212463059038<div class="name-meta"><span class="name-sub">Partner, Wallace Corporate Counsel</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td>—</td>
       <td></td>
@@ -2239,10 +2081,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links">—</td>
     </tr>
     <tr data-default-order="166" data-stage-order="12" data-amount="0.0" data-rsvp="2026-03-23" data-contacted="2026-04-27T19:47:56Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/104207376957" target="_blank" class="hs-badge">HS</a>Lidor Bar</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/104207376957" target="_blank" class="hs-badge">HS</a>Lidor Bar<div class="name-meta"><a href="https://linkedin.com/in/lidor-bar-david-625192128" target="_blank">LI</a>&nbsp;<span class="name-sub">Chief Marketing Officer, openigloo</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td>—</td>
       <td></td>
@@ -2251,10 +2092,9 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links"><a href="https://linkedin.com/in/lidor-bar-david-625192128" target="_blank">LI</a></td>
     </tr>
     <tr data-default-order="167" data-stage-order="12" data-amount="0.0" data-rsvp="2026-04-10" data-contacted="2026-04-14T14:38:22.104Z" data-times="0" data-task-ms="0" data-meeting-ms="0" data-status-order="2" data-stage-label="">
-      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/214628225095" target="_blank" class="hs-badge">HS</a>qi Cao</td>
+      <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/214628225095" target="_blank" class="hs-badge">HS</a>qi Cao<div class="name-meta"><a href="https://linkedin.com/in/xiuqi-cao-b4a16b85" target="_blank">LI</a>&nbsp;<span class="name-sub">Co-Founder and Chief Executive O, Chargeblast</span></div></td>
       <td><span class="badge status-dormant">Dormant</span></td>
       <td>—</td>
       <td></td>
@@ -2263,7 +2103,6 @@
       <td>—</td>
       <td>—</td>
       <td></td>
-      <td class="links"><a href="https://linkedin.com/in/xiuqi-cao-b4a16b85" target="_blank">LI</a></td>
     </tr>
   </tbody>
 </table>
