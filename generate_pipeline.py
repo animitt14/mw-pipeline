@@ -968,10 +968,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   .page-hdr h1 {{ margin: 0; }}
   .meta {{ font-size: 0.78rem; color: #888; }}
   .meta span {{ margin-right: 14px; }}
-  .charts-row {{ display: flex; gap: 20px; margin-bottom: 22px; align-items: stretch; }}
-  .chart-box {{ background: #1e1e1e; border: 1px solid #3a3a3a; border-radius: 6px; padding: 12px 16px; flex: 1; min-width: 0; max-width: 440px; }}
+  .chart-box {{ background: transparent; border: none; border-radius: 0; padding: 16px 20px; flex: 1; min-width: 0; max-width: 400px; }}
   .chart-box h3 {{ font-size: 0.7rem; font-weight: 500; color: #777; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 10px; }}
-  .cal-section {{ display: flex; flex-direction: column; }}
+  .cal-section {{ display: flex; flex-direction: column; padding: 16px 20px; }}
   .cal-heading {{ font-size: 0.7rem; font-weight: 500; color: #777; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 6px; }}
   .cal-cards {{ display: flex; gap: 8px; flex: 1; }}
   .cal-card {{ background: #1e1e1e; border: 1px solid #3a3a3a; border-radius: 6px; padding: 8px 12px; width: fit-content; display: flex; flex-direction: column; }}
@@ -1054,11 +1053,14 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   .nav a {{ font-size: 0.78rem; padding: 4px 14px; border-radius: 4px; border: 1px solid #3a3a3a; color: #888; text-decoration: none; }}
   .nav a.active {{ border-color: #c9a96e; color: #c9a96e; }}
   .nav a:hover {{ border-color: #c9a96e; color: #c9a96e; }}
-  .stat-row {{ display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }}
-  .stat-card {{ background: #1e1e1e; border: 1px solid #2e2e2e; border-radius: 6px; padding: 12px 18px; min-width: 120px; }}
-  .stat-val {{ font-size: 1.45rem; font-weight: 700; line-height: 1; margin-bottom: 5px; }}
-  .stat-lbl {{ font-size: 0.72rem; color: #888; text-transform: uppercase; letter-spacing: 0.04em; }}
-  .stat-sub {{ font-size: 0.68rem; color: #555; margin-top: 3px; }}
+  .dash-header {{ display: flex; gap: 0; margin-bottom: 22px; background: #1a1a1a; border: 1px solid #2e2e2e; border-radius: 8px; align-items: stretch; overflow: hidden; }}
+  .stat-group {{ display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 16px 20px; align-content: center; }}
+  .stat-card {{ padding: 8px 12px; }}
+  .stat-val {{ font-size: 1.35rem; font-weight: 700; line-height: 1; margin-bottom: 4px; }}
+  .stat-lbl {{ font-size: 0.7rem; color: #777; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }}
+  .stat-sub {{ font-size: 0.65rem; color: #555; margin-top: 2px; }}
+  .dash-divider {{ width: 1px; background: #2e2e2e; flex-shrink: 0; align-self: stretch; }}
+  .charts-row {{ display: flex; gap: 0; flex: 1; align-items: stretch; }}
   .section-header {{ font-size: 0.72rem; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin: 26px 0 8px; display: flex; align-items: center; gap: 10px; }}
   .section-header .section-count {{ background: #2a2a2a; color: #aaa; border-radius: 10px; padding: 1px 8px; font-size: 0.68rem; font-weight: 500; text-transform: none; letter-spacing: 0; }}
   .section-header .section-dot {{ width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }}
@@ -1117,15 +1119,19 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   <h1>Pipeline &mdash; {owner_name}</h1>
   <div class="meta"><span>{count} contacts</span><span>Updated {now}</span></div>
 </div>
-<div class="stat-row">{stats_html}</div>
-<div class="charts-row">
-  <div class="chart-box">
-    <h3>Active Deals by Stage</h3>
-    <div class="funnel">{funnel_html}</div>
-  </div>
-  <div class="cal-section">
-    <h3 class="cal-heading">Next 3 Days</h3>
-    <div class="cal-cards">{cal_cards_html}</div>
+<div class="dash-header">
+  <div class="stat-group">{stats_html}</div>
+  <div class="dash-divider"></div>
+  <div class="charts-row">
+    <div class="chart-box">
+      <h3>Active Deals by Stage</h3>
+      <div class="funnel">{funnel_html}</div>
+    </div>
+    <div class="dash-divider"></div>
+    <div class="cal-section">
+      <h3 class="cal-heading">Next 3 Days</h3>
+      <div class="cal-cards">{cal_cards_html}</div>
+    </div>
   </div>
 </div>
 <div class="section-header"><span class="section-dot dot-today"></span>Today<span class="section-count">{len(today_rows)}</span></div>
