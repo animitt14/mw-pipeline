@@ -736,6 +736,36 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     # Default sort: stage priority order, then amount descending within group
     row_data.sort(key=lambda r: (r['status_order'], STAGE_SORT_ORDER.get(r['stage_id'], 9), r['meeting_ms'] if (r['status_order'] == 0 and r['meeting_ms'] > 0) else 0, -r['amount_val']))
 
+    # --- Summary stats ---
+    ms_7d = 7 * 24 * 3600 * 1000
+    stat_pipeline_val  = sum(r['amount_val'] for r in row_data if r['amount_val'] > 0)
+    stat_mtg_count     = sum(1 for r in row_data if r['meeting_ms'] > 0)
+    stat_tasks_week    = sum(1 for r in row_data if 0 < r['task_due_ms'] <= now_ms_ts + ms_7d)
+    stat_active        = sum(1 for r in row_data if r['status'] in ('Active', 'Upcoming'))
+    stat_dormant       = sum(1 for r in row_data if r['status'] == 'Dormant')
+    stat_whales        = len([r for r in all_row_data if r['amount_val'] >= 50_000])
+
+    def fmt_stat_val(n):
+        if n >= 1_000_000: return f'${n/1_000_000:.1f}M'
+        if n >= 1_000:     return f'${n/1_000:.0f}k'
+        return f'${int(n):,}'
+
+    def stat_card(value, label, sublabel='', accent=False):
+        val_color = '#c9a96e' if accent else '#e8e8e8'
+        return (f'<div class="stat-card">'
+                f'<div class="stat-val" style="color:{val_color}">{value}</div>'
+                f'<div class="stat-lbl">{label}</div>'
+                + (f'<div class="stat-sub">{sublabel}</div>' if sublabel else '') +
+                f'</div>')
+
+    stats_html = (
+        stat_card(fmt_stat_val(stat_pipeline_val), 'pipeline value', 'active deals w/ amounts', accent=True) +
+        stat_card(str(stat_mtg_count), 'upcoming meetings') +
+        stat_card(str(stat_tasks_week), 'tasks due this week') +
+        stat_card(str(stat_active), 'active', f'{stat_dormant} dormant') +
+        stat_card(str(stat_whales), 'whales', '$50k+')
+    )
+
     # --- Today / Whale subsets ---
     today_start_ms = int(datetime.combine(today_date, datetime.min.time()).replace(tzinfo=timezone.utc).timestamp() * 1000)
     today_end_ms   = today_start_ms + 86_400_000
@@ -984,6 +1014,11 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   .nav a {{ font-size: 0.78rem; padding: 4px 14px; border-radius: 4px; border: 1px solid #3a3a3a; color: #888; text-decoration: none; }}
   .nav a.active {{ border-color: #c9a96e; color: #c9a96e; }}
   .nav a:hover {{ border-color: #c9a96e; color: #c9a96e; }}
+  .stat-row {{ display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }}
+  .stat-card {{ background: #1e1e1e; border: 1px solid #2e2e2e; border-radius: 6px; padding: 12px 18px; min-width: 120px; }}
+  .stat-val {{ font-size: 1.45rem; font-weight: 700; line-height: 1; margin-bottom: 5px; }}
+  .stat-lbl {{ font-size: 0.72rem; color: #888; text-transform: uppercase; letter-spacing: 0.04em; }}
+  .stat-sub {{ font-size: 0.68rem; color: #555; margin-top: 3px; }}
   .section-header {{ font-size: 0.72rem; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin: 26px 0 8px; display: flex; align-items: center; gap: 10px; }}
   .section-header .section-count {{ background: #2a2a2a; color: #aaa; border-radius: 10px; padding: 1px 8px; font-size: 0.68rem; font-weight: 500; text-transform: none; letter-spacing: 0; }}
   .section-header .section-dot {{ width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }}
@@ -1043,6 +1078,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   <span>{count} contacts</span>
   <span>Updated {now}</span>
 </div>
+<div class="stat-row">{stats_html}</div>
 <div class="charts-row">
   <div class="chart-box">
     <h3>Active Deals by Stage</h3>
