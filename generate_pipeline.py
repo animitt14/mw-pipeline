@@ -749,7 +749,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
         inv_badge = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
         stage_cell = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else '—'
-        amt_cell = f'<span class="whale-amt">{escape(r["amount_fmt"])}</span>' if r['amount_val'] >= 50_000 else escape(r['amount_fmt']) or '—'
+        amt_cell = escape(r['amount_fmt']) if r['amount_fmt'] else '—'
         mtg_title = escape(r['meeting_title']) if r['meeting_title'] else ''
         mtg_cell = f'<span title="{mtg_title}">{r["meeting_start"]}</span>' if r['meeting_start'] else '—'
         task_title = escape(r['task_subject']) if r['task_subject'] else ''
