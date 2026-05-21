@@ -1108,13 +1108,13 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 <div class="section-header" style="margin-top:22px"><span class="section-dot dot-all"></span>All Contacts<span class="section-count">{count}</span></div>
 <div class="controls">
   <button id="btn-default" onclick="resetSort()">Default Sort</button>
-  <button id="btn-dormant" onclick="toggleDormant()">Hide dormant ({stat_dormant})</button>
   <span class="sort-hint">deal stage &rarr; amount</span>
   <label for="stage-filter">Stage:</label>
   <select id="stage-filter" onchange="filterStage(this.value)">
     <option value="">All Stages</option>
 {stage_options}
   </select>
+  <button id="btn-dormant" onclick="toggleDormant()">Show dormant ({stat_dormant})</button>
   <span id="visible-count" style="color:#555;font-size:0.78rem;"></span>
 </div>
 <table id="pipeline-table">
@@ -1201,7 +1201,14 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   }};
 
   var stageFilter = '';
-  var hideDormant = false;
+  var hideDormant = true;
+  // hide dormant on load
+  (function() {{
+    document.querySelectorAll('#pipeline-body tr[data-status="Dormant"]').forEach(function(r) {{
+      r.classList.add('hidden');
+    }});
+    updateCount();
+  }})();
 
   function applyFilters() {{
     var rows = document.querySelectorAll('#pipeline-body tr');

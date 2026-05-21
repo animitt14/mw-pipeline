@@ -160,7 +160,7 @@
 <div class="nav"><a href="index.html" class="active">Ani</a><a href="erik.html">Erik</a><a href="overview.html">Overview</a></div>
 <div class="page-hdr">
   <h1>Pipeline &mdash; Ani</h1>
-  <div class="meta"><span>269 contacts</span><span>Updated May 21, 2026 23:20 UTC</span></div>
+  <div class="meta"><span>269 contacts</span><span>Updated May 21, 2026 23:21 UTC</span></div>
 </div>
 <div class="stat-row"><div class="stat-card"><div class="stat-val" style="color:#c9a96e">$1.6M</div><div class="stat-lbl">pipeline value</div><div class="stat-sub">active deals w/ amounts</div></div><div class="stat-card"><div class="stat-val" style="color:#e8e8e8">5</div><div class="stat-lbl">upcoming meetings</div></div><div class="stat-card"><div class="stat-val" style="color:#e8e8e8">37</div><div class="stat-lbl">tasks due this week</div></div><div class="stat-card"><div class="stat-val" style="color:#e8e8e8">191</div><div class="stat-lbl">active</div><div class="stat-sub">13 dormant</div></div><div class="stat-card"><div class="stat-val" style="color:#e8e8e8">5</div><div class="stat-lbl">whales</div><div class="stat-sub">$50k+</div></div></div>
 <div class="charts-row">
@@ -227,7 +227,6 @@
 <div class="section-header" style="margin-top:22px"><span class="section-dot dot-all"></span>All Contacts<span class="section-count">269</span></div>
 <div class="controls">
   <button id="btn-default" onclick="resetSort()">Default Sort</button>
-  <button id="btn-dormant" onclick="toggleDormant()">Hide dormant (13)</button>
   <span class="sort-hint">deal stage &rarr; amount</span>
   <label for="stage-filter">Stage:</label>
   <select id="stage-filter" onchange="filterStage(this.value)">
@@ -240,6 +239,7 @@
       <option value="Advisor Assigned">Advisor Assigned</option>
       <option value="Event Attended">Event Attended</option>
   </select>
+  <button id="btn-dormant" onclick="toggleDormant()">Show dormant (13)</button>
   <span id="visible-count" style="color:#555;font-size:0.78rem;"></span>
 </div>
 <table id="pipeline-table">
@@ -2773,7 +2773,14 @@
   };
 
   var stageFilter = '';
-  var hideDormant = false;
+  var hideDormant = true;
+  // hide dormant on load
+  (function() {
+    document.querySelectorAll('#pipeline-body tr[data-status="Dormant"]').forEach(function(r) {
+      r.classList.add('hidden');
+    });
+    updateCount();
+  })();
 
   function applyFilters() {
     var rows = document.querySelectorAll('#pipeline-body tr');
