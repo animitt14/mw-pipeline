@@ -726,6 +726,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         row_data[-1]['status'] = _status
         row_data[-1]['status_order'] = _status_order
 
+    # Save pre-filter rows for whale tracker (includes Collector etc.)
+    all_row_data = row_data[:]
+
     # Remove disqualified and closed won
     row_data = [r for r in row_data if r['stage_id'] not in TERMINAL_STAGES]
 
@@ -738,9 +741,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     today_rows = [r for r in row_data if
         (r['meeting_ms'] > 0 and today_start_ms <= r['meeting_ms'] < today_end_ms) or
         (r['task_due_ms'] > 0 and today_start_ms <= r['task_due_ms'] < today_end_ms)]
-    today_rows.sort(key=lambda r: (r['meeting_ms'] if r['meeting_ms'] > 0 else 9e15, r['task_due_ms'] if r['task_due_ms'] > 0 else 9e15))
+    today_rows.sort(key=lambda r: -r['amount_val'])
 
-    whale_rows = sorted([r for r in row_data if r['amount_val'] >= 50_000], key=lambda r: -r['amount_val'])
+    whale_rows = sorted([r for r in all_row_data if r['amount_val'] >= 50_000], key=lambda r: -r['amount_val'])
 
     def mini_row(r):
         hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
