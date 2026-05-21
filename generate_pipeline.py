@@ -896,10 +896,11 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
             f' data-amount="{r["amount_val"]}" data-rsvp="{escape(r["rsvp_raw"])}"'
             f' data-contacted="{escape(r["contacted_raw"])}" data-times="{r["times_val"]}"'
             f' data-task-ms="{r["task_due_ms"]}" data-meeting-ms="{r["meeting_ms"]}"'
-            f' data-status-order="{r["status_order"]}" data-stage-label="{escape(r["stage_label"])}">\n'
+            f' data-status-order="{r["status_order"]}" data-stage-label="{escape(r["stage_label"])}"'
+            f' data-status="{r["status"]}">\n'
+            f'      <td>{status_cell}</td>\n'
             f'      <td>{hs_badge}{r["name"]}{inv_badge}{note_html}</td>\n'
             f'      <td class="tc-col">{tc_cell}</td>\n'
-            f'      <td>{status_cell}</td>\n'
             f'      <td>{stage_cell}</td>\n'
             f'      <td>{escape(r["amount_fmt"])}</td>\n'
             f'      <td>{r["rsvp_date"]}</td>\n'
@@ -983,7 +984,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   .note-toggle {{ cursor: pointer; color: #aaa; font-size: 0.75rem; margin-left: 5px; user-select: none; }}
   .note-toggle:hover {{ color: #eee; }}
   .note-snippet {{ font-size: 0.72rem; color: #aaa; font-style: italic; margin-top: 4px; line-height: 1.4; white-space: normal; }}
-  td:first-child {{ max-width: 170px; }}
+  td:nth-child(2) {{ max-width: 170px; }}
   .tc-col {{ max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left !important; }}
   .tc-text {{ font-size: 0.78rem; color: #888; }}
   .li-inline {{ font-size: 0.68rem; font-weight: 600; color: #555; border: 1px solid #333; border-radius: 3px; padding: 1px 4px; margin-right: 4px; }}
@@ -1003,9 +1004,11 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   .stage-disq      {{ background: #252525; color: #777; }}
   th:nth-child(n+2) {{ text-align: center; }}
   td:nth-child(n+2) {{ text-align: center; }}
-  td:nth-child(4)  {{ font-variant-numeric: tabular-nums; color: #c9a96e; }}
-  td:nth-child(9)  {{ font-variant-numeric: tabular-nums; color: #aaa; }}
-  td:nth-child(8)  {{ font-size: 0.78rem; color: #999; }}
+  th:nth-child(2), th:nth-child(3) {{ text-align: left; }}
+  td:nth-child(2), td:nth-child(3) {{ text-align: left; }}
+  td:nth-child(5)  {{ font-variant-numeric: tabular-nums; color: #c9a96e; }}
+  td:nth-child(10) {{ font-variant-numeric: tabular-nums; color: #aaa; }}
+  td:nth-child(9)  {{ font-size: 0.78rem; color: #999; }}
   .status-upcoming {{ background: #222236; color: #adadee; }}
   .status-active    {{ background: #1a3a1a; color: #7dd87d; }}
   .status-dormant   {{ background: #282828; color: #777; }}
@@ -1104,6 +1107,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 <div class="section-header" style="margin-top:22px"><span class="section-dot dot-all"></span>All Contacts<span class="section-count">{count}</span></div>
 <div class="controls">
   <button id="btn-default" onclick="resetSort()">Default Sort</button>
+  <button id="btn-dormant" onclick="toggleDormant()">Hide dormant ({stat_dormant})</button>
   <span class="sort-hint">deal stage &rarr; amount</span>
   <label for="stage-filter">Stage:</label>
   <select id="stage-filter" onchange="filterStage(this.value)">
@@ -1115,9 +1119,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 <table id="pipeline-table">
   <thead>
     <tr>
+      <th onclick="sortTable(8,'number')">Status</th>
       <th onclick="sortTable(0,'text')">Name</th>
       <th>Title / Co</th>
-      <th onclick="sortTable(8,'number')">Status</th>
       <th onclick="sortTable(1,'stage')">Deal Stage</th>
       <th onclick="sortTable(2,'number')">Deal Amount</th>
       <th onclick="sortTable(3,'date')">Date Attended</th>
@@ -1195,12 +1199,30 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     updateCount();
   }};
 
-  window.filterStage = function(val) {{
+  var stageFilter = '';
+  var hideDormant = false;
+
+  function applyFilters() {{
     var rows = document.querySelectorAll('#pipeline-body tr');
     rows.forEach(function(r) {{
-      r.classList.toggle('hidden', val !== '' && r.dataset.stageLabel !== val);
+      var stageHide   = stageFilter !== '' && r.dataset.stageLabel !== stageFilter;
+      var dormantHide = hideDormant && r.dataset.status === 'Dormant';
+      r.classList.toggle('hidden', stageHide || dormantHide);
     }});
     updateCount();
+  }}
+
+  window.filterStage = function(val) {{
+    stageFilter = val;
+    applyFilters();
+  }};
+
+  window.toggleDormant = function() {{
+    hideDormant = !hideDormant;
+    var dormantCount = document.querySelectorAll('#pipeline-body tr[data-status="Dormant"]').length;
+    document.getElementById('btn-dormant').textContent =
+      (hideDormant ? 'Show' : 'Hide') + ' dormant (' + dormantCount + ')';
+    applyFilters();
   }};
 
   function updateCount() {{
