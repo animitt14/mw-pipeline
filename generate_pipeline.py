@@ -857,20 +857,18 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
             except Exception:
                 pass
         row_class = ' class="contacted-today"' if contacted_today else ''
-        title_parts = [r['title'][:32] if r['title'] else '', r['company'][:28] if r['company'] else '']
-        title_co = ', '.join(p for p in title_parts if p)
-        li_title_html = ''
-        if li_link != '—' or title_co:
-            li_bit = f'{li_link}&nbsp;' if li_link != '—' else ''
-            co_bit = f'<span class="name-sub">{escape(title_co)}</span>' if title_co else ''
-            li_title_html = f'<div class="name-meta">{li_bit}{co_bit}</div>'
+        tc_parts = [r['title'][:28] if r['title'] else '', r['company'][:24] if r['company'] else '']
+        tc_str = ', '.join(p for p in tc_parts if p)
+        li_bit = f'<a href="{escape(r["li_url"])}" target="_blank" class="li-inline">LI</a> ' if r['li_url'] else ''
+        tc_cell = f'{li_bit}<span class="tc-text">{escape(tc_str)}</span>' if tc_str else (li_bit.strip() or '—')
         rows.append(
             f'    <tr{row_class} data-default-order="{i}" data-stage-order="{STAGE_SORT_ORDER.get(r["stage_id"], 9)}"'
             f' data-amount="{r["amount_val"]}" data-rsvp="{escape(r["rsvp_raw"])}"'
             f' data-contacted="{escape(r["contacted_raw"])}" data-times="{r["times_val"]}"'
             f' data-task-ms="{r["task_due_ms"]}" data-meeting-ms="{r["meeting_ms"]}"'
             f' data-status-order="{r["status_order"]}" data-stage-label="{escape(r["stage_label"])}">\n'
-            f'      <td>{hs_badge}{r["name"]}{inv_badge}{note_html}{li_title_html}</td>\n'
+            f'      <td>{hs_badge}{r["name"]}{inv_badge}{note_html}</td>\n'
+            f'      <td class="tc-col">{tc_cell}</td>\n'
             f'      <td>{status_cell}</td>\n'
             f'      <td>{stage_cell}</td>\n'
             f'      <td>{escape(r["amount_fmt"])}</td>\n'
@@ -955,12 +953,11 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   .note-toggle {{ cursor: pointer; color: #aaa; font-size: 0.75rem; margin-left: 5px; user-select: none; }}
   .note-toggle:hover {{ color: #eee; }}
   .note-snippet {{ font-size: 0.72rem; color: #aaa; font-style: italic; margin-top: 4px; line-height: 1.4; white-space: normal; }}
-  td:first-child {{ max-width: 220px; }}
-  .name-meta {{ margin-top: 3px; display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }}
-  .name-sub {{ font-size: 0.69rem; color: #666; font-style: italic; }}
-  .name-meta .links {{ display: inline; }}
-  .name-meta .links a {{ font-size: 0.68rem; font-weight: 600; color: #555; border: 1px solid #333; border-radius: 3px; padding: 0px 4px; }}
-  .name-meta .links a:hover {{ color: #c9a96e; border-color: #c9a96e; text-decoration: none; }}
+  td:first-child {{ max-width: 170px; }}
+  .tc-col {{ max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left !important; }}
+  .tc-text {{ font-size: 0.78rem; color: #888; }}
+  .li-inline {{ font-size: 0.68rem; font-weight: 600; color: #555; border: 1px solid #333; border-radius: 3px; padding: 1px 4px; margin-right: 4px; }}
+  .li-inline:hover {{ color: #c9a96e !important; border-color: #c9a96e !important; text-decoration: none !important; }}
   .links a {{ font-size: 0.72rem; font-weight: 600; color: #999; border: 1px solid #3a3a3a; border-radius: 3px; padding: 1px 5px; }}
   .links a:hover {{ color: #c9a96e; border-color: #c9a96e; text-decoration: none; }}
   .badge {{ display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.72rem; font-weight: 500; white-space: nowrap; }}
@@ -1083,6 +1080,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   <thead>
     <tr>
       <th onclick="sortTable(0,'text')">Name</th>
+      <th>Title / Co</th>
       <th onclick="sortTable(8,'number')">Status</th>
       <th onclick="sortTable(1,'stage')">Deal Stage</th>
       <th onclick="sortTable(2,'number')">Deal Amount</th>
