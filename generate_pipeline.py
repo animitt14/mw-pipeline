@@ -929,7 +929,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   * {{ box-sizing: border-box; }}
   body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #141414; color: #e8e8e8; margin: 0; padding: 24px 28px; }}
   h1 {{ font-size: 1.3rem; font-weight: 600; margin: 0 0 4px; color: #f0f0f0; }}
-  .meta {{ font-size: 0.78rem; color: #888; margin-bottom: 14px; }}
+  .page-hdr {{ display: flex; align-items: baseline; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }}
+  .page-hdr h1 {{ margin: 0; }}
+  .meta {{ font-size: 0.78rem; color: #888; }}
   .meta span {{ margin-right: 14px; }}
   .charts-row {{ display: flex; gap: 20px; margin-bottom: 22px; align-items: stretch; }}
   .chart-box {{ background: #1e1e1e; border: 1px solid #3a3a3a; border-radius: 6px; padding: 12px 16px; flex: 1; min-width: 0; max-width: 440px; }}
@@ -1076,10 +1078,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 }})();
 </script>
 {nav_html}
-<h1>Pipeline &mdash; {owner_name}</h1>
-<div class="meta">
-  <span>{count} contacts</span>
-  <span>Updated {now}</span>
+<div class="page-hdr">
+  <h1>Pipeline &mdash; {owner_name}</h1>
+  <div class="meta"><span>{count} contacts</span><span>Updated {now}</span></div>
 </div>
 <div class="stat-row">{stats_html}</div>
 <div class="charts-row">
