@@ -935,88 +935,6 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         if d <= 28:      return 'heat-2'
         return 'heat-3'
 
-    def mini_row(r):
-        hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
-        inv_badge = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
-        stage_cell = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else '—'
-        amt_cell = escape(r['amount_fmt']) if r['amount_fmt'] else '—'
-        mtg_title = escape(r['meeting_title']) if r['meeting_title'] else ''
-        mtg_cell = f'<span title="{mtg_title}">{r["meeting_start"]}</span>' if r['meeting_start'] else '—'
-        task_title = escape(r['task_subject']) if r['task_subject'] else ''
-        task_cell = f'<span title="{task_title}">{r["task_due"]}</span>' if r['task_due'] else '—'
-        cls = heat_cls(r.get('days_since'))
-        cls_attr = f' class="{cls}"' if cls else ''
-        return (f'<tr{cls_attr}>'
-                f'<td>{hs_badge}{r["name"]}{inv_badge}</td>'
-                f'<td>{stage_cell}</td>'
-                f'<td>{amt_cell}</td>'
-                f'<td>{r["last_contact"]}</td>'
-                f'<td>{mtg_cell}</td>'
-                f'<td>{task_cell}</td>'
-                f'</tr>')
-
-    def whale_row(r):
-        hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
-        inv_badge = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
-        stage_cell = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else '—'
-        amt_cell = escape(r['amount_fmt']) if r['amount_fmt'] else '—'
-        # Next action — same logic as the whale tiles
-        if r['meeting_ms'] > 0 and r['meeting_ms'] >= now_ms_ts:
-            mtitle = (r['meeting_title'] or 'Meeting').strip()
-            next_cell = (
-                f'<span class="next-strong" title="{escape(mtitle)}">{escape(mtitle[:32])}</span>'
-                f'<span class="next-meta"> &middot; {escape(r["meeting_start"])}</span>'
-            )
-        elif r['task_due_ms'] > 0:
-            tsubj = (r['task_subject'] or 'Task').strip()
-            next_cell = (
-                f'<span class="next-strong" title="{escape(tsubj)}">{escape(tsubj[:32])}</span>'
-                f'<span class="next-meta"> &middot; due {escape(r["task_due"])}</span>'
-            )
-        else:
-            next_cell = '<span class="next-prompt">Book follow-up</span>'
-        cls = heat_cls(r.get('days_since'))
-        cls_attr = f' class="{cls}"' if cls else ''
-        return (f'<tr{cls_attr}>'
-                f'<td>{hs_badge}{r["name"]}{inv_badge}</td>'
-                f'<td>{stage_cell}</td>'
-                f'<td>{amt_cell}</td>'
-                f'<td>{r["last_contact"] or "—"}</td>'
-                f'<td class="next-cell">{next_cell}</td>'
-                f'</tr>')
-
-    def today_row(r):
-        hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
-        inv_badge = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
-        stage_cell = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else '—'
-        amt_cell = escape(r['amount_fmt']) if r['amount_fmt'] else '—'
-        has_mtg_today = r['meeting_ms'] > 0 and today_start_ms <= r['meeting_ms'] < today_end_ms
-        has_task_today = r['task_due_ms'] > 0 and today_start_ms <= r['task_due_ms'] < today_end_ms
-        # Meeting takes priority when both fall on the same day
-        if has_mtg_today:
-            mtg_title = escape(r['meeting_title']) if r['meeting_title'] else 'Meeting'
-            activity_cell = (
-                f'<span class="act act-mtg" title="{mtg_title}">'
-                f'<span class="act-kind">meeting</span></span>'
-            )
-        elif has_task_today:
-            task_title = escape(r['task_subject']) if r['task_subject'] else ''
-            detail = task_title[:60] if task_title else ''
-            activity_cell = (
-                f'<span class="act act-task" title="{task_title}">'
-                f'<span class="act-kind">task</span>{detail}</span>'
-            )
-        else:
-            activity_cell = '<span class="act-empty">&mdash;</span>'
-        cls = heat_cls(r.get('days_since'))
-        cls_attr = f' class="{cls}"' if cls else ''
-        return (f'<tr{cls_attr}>'
-                f'<td>{hs_badge}{r["name"]}{inv_badge}</td>'
-                f'<td>{stage_cell}</td>'
-                f'<td>{amt_cell}</td>'
-                f'<td class="act-cell">{activity_cell}</td>'
-                f'</tr>')
-
     def cold_row(r):
         hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
         inv_badge = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
@@ -1036,10 +954,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
                 f'<td>{task_cell}</td>'
                 f'</tr>')
 
-    # Whale table excludes the top 3 already shown as tiles
-    whale_table_rows = whale_rows[3:]
-    whale_rows_html      = '\n'.join(whale_row(r) for r in whale_table_rows) if whale_table_rows else '<tr><td colspan="5" style="color:var(--text-3);text-align:center;padding:18px">All whales above are in the tiles</td></tr>'
-    cold_rows_html       = '\n'.join(cold_row(r) for r in cold_rows)         if cold_rows        else '<tr><td colspan="5" style="color:var(--text-3);text-align:center;padding:18px">No deals are slipping</td></tr>'
+    cold_rows_html = '\n'.join(cold_row(r) for r in cold_rows) if cold_rows else '<tr><td colspan="5" style="color:var(--text-3);text-align:center;padding:18px">No deals are slipping</td></tr>'
 
     # --- Today: vertical meeting timeline + tasks bucket ---
     try:
@@ -1552,73 +1467,6 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 </body>
 </html>'''
 
-
-
-_STATIC_STAGE_PROGRESSION = '''
-<div class="stale-note">Last updated: May 13, 2026 — stage progression history is not available via the HubSpot API.</div>
-<div class="g2">
-  <div class="card">
-    <div class="ctitle">Daily advances by advisor</div>
-    <div style="display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap;">
-      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)"><div style="width:10px;height:10px;border-radius:2px;background:#534AB7"></div>Bringsjord</div>
-      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)"><div style="width:10px;height:10px;border-radius:2px;background:#3B6D11"></div>Mittal</div>
-    </div>
-    <div style="display:grid;grid-template-columns:76px repeat(10,minmax(0,1fr));gap:3px;align-items:center;">
-      <div></div>
-      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">Apr 28</div>
-      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">Apr 30</div>
-      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 1</div>
-      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 4</div>
-      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 5</div>
-      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 6</div>
-      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 7</div>
-      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 8</div>
-      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 11</div>
-      <div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">May 12 ⚠</div>
-      <div style="font-size:11px;font-weight:500;padding:3px 0;color:var(--text)">Bringsjord</div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:10%;background:#534AB7">1</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="height:0%"></div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:10%;background:#534AB7">1</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="height:0%"></div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="height:0%"></div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="height:0%"></div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:18%;background:#534AB7">3</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:10%;background:#534AB7">1</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:20%;background:#534AB7">4</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:98%;background:#534AB7">92</div></div>
-      <div style="font-size:11px;font-weight:500;padding:3px 0;color:var(--text)">Mittal</div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:14%;background:#3B6D11">2</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:18%;background:#3B6D11">3</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:18%;background:#3B6D11">3</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:20%;background:#3B6D11">4</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:25%;background:#3B6D11">6</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:14%;background:#3B6D11">2</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:31%;background:#3B6D11">9</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:20%;background:#3B6D11">4</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"><div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9);min-height:3px;height:20%;background:#3B6D11">4</div></div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"></div>
-    </div>
-    <div class="note">Deals moved into a new forward stage · excl. new deal creation · ⚠ May 12 includes a bulk CRM stage update</div>
-  </div>
-  <div class="card">
-    <div class="ctitle" style="margin-bottom:11px">Last 5 working days (May 6–12)</div>
-    <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px">Advances by advisor</div>
-    <div style="display:grid;grid-template-columns:76px 1fr 26px 28px;gap:5px;align-items:center;padding:5px 0;border-bottom:.5px solid var(--border);font-size:11px;font-size:10px;color:var(--text3)"><span>Advisor</span><span></span><span style="text-align:right">Wk</span><span style="text-align:right">Prev</span></div>
-    <div style="display:grid;grid-template-columns:76px 1fr 26px 28px;gap:5px;align-items:center;padding:5px 0;border-bottom:.5px solid var(--border);font-size:11px"><span style="font-weight:500">Mittal</span><div><div style="height:5px;background:var(--green);border-radius:3px;width:100%"></div></div><span style="text-align:right;font-weight:500;color:var(--green)">25</span><span style="text-align:right;color:var(--text3)">—</span></div>
-    <div style="display:grid;grid-template-columns:76px 1fr 26px 28px;gap:5px;align-items:center;padding:5px 0;border-bottom:.5px solid var(--border);font-size:11px"><span style="font-weight:500">Bringsjord</span><div><div style="height:5px;background:var(--purple);border-radius:3px;width:100%"></div></div><span style="text-align:right;font-weight:500;color:var(--purple)">100</span><span style="text-align:right;color:var(--text3)">—</span></div>
-    <div style="margin-top:14px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px">Where deals moved to</div>
-    <div class="sr"><div style="flex:1"><span>Attem. to Contact</span><div class="sbar" style="width:100%;background:var(--amber)"></div></div><span style="font-weight:500;white-space:nowrap">106</span></div>
-    <div class="sr"><div style="flex:1"><span>Contacted</span><div class="sbar" style="width:16%;background:var(--purple)"></div></div><span style="font-weight:500;white-space:nowrap">17</span></div>
-    <div class="sr"><div style="flex:1"><span>Meeting Scheduled</span><div class="sbar" style="width:7%;background:var(--purple)"></div></div><span style="font-weight:500;white-space:nowrap">7</span></div>
-    <div class="sr"><div style="flex:1"><span>Nurture</span><div class="sbar" style="width:4%;background:#888"></div></div><span style="font-weight:500;white-space:nowrap">4</span></div>
-    <div class="sr"><div style="flex:1"><span>Rec. Made</span><div class="sbar" style="width:2%;background:var(--green)"></div></div><span style="font-weight:500;white-space:nowrap">2</span></div>
-    <div style="margin-top:11px;padding-top:9px;border-top:.5px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-      <div><div style="font-size:12px;color:var(--text2)">Total advances (last 5 days)</div><div style="font-size:10px;color:var(--text3);font-style:italic;margin-top:2px">Includes May 12 bulk stage update (92 deals)</div></div>
-      <span style="font-size:24px;font-weight:500;color:var(--purple)">135</span>
-    </div>
-  </div>
-</div>
-'''
 
 
 def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password='banksy'):
