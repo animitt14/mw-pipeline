@@ -225,12 +225,11 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .t3-col {
   min-width: 0;
   padding: 0 22px;
-  border-right: 1px solid var(--border);
 }
 .t3-col:first-child { padding-left: 0; }
-.t3-col:last-child  { padding-right: 0; border-right: none; }
+.t3-col:last-child  { padding-right: 0; }
 @media (max-width: 840px) {
-  .t3-col { padding: 0; border-right: none; }
+  .t3-col { padding: 0; }
 }
 .t3-col h3 {
   font-size: 0.78rem; font-weight: 600; color: var(--text);
