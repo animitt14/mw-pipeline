@@ -7,15 +7,15 @@
    ============================================================ */
 
 :root {
-  /* Neutral palette — soft cool gray, eye-friendly, pairs with purple accent */
-  --bg:        #f6f7f9;
+  /* Neutral palette — cool gray bg, white surfaces pop forward */
+  --bg:        #ebedf1;
   --surface:   #ffffff;
-  --surface-2: #eceef2;
-  --border:    #ededf0;
-  --border-2:  #dee0e4;
+  --surface-2: #dee1e7;
+  --border:    #d8dbe1;
+  --border-2:  #c6c9d0;
   --text:      #1a1c20;
   --text-2:    #52555c;
-  --text-3:    #898d96;
+  --text-3:    #7e828b;
 
   /* Accent — Masterworks deep purple */
   --accent:        #7c3aed;
@@ -82,13 +82,15 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 
 /* --- HERO BAND --- */
 .hero-band {
-  background: linear-gradient(180deg, #ffffff 0%, #f6f7fb 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #fafaff 100%);
   border-radius: 12px;
   padding: 36px 40px 30px;
   margin: 18px 0 32px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  box-shadow:
+    0 1px 2px rgba(20, 22, 30, 0.04),
+    0 8px 20px rgba(20, 22, 30, 0.05);
 }
 .hero-band::before {
   content: ''; position: absolute; top: 0; left: 36px; width: 28px; height: 1px;
@@ -273,16 +275,25 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 @media (max-width: 900px) { .whale-tiles { grid-template-columns: 1fr; } }
 .whale-tile {
   background: var(--surface);
-  border-radius: 10px;
-  padding: 22px 24px 18px;
+  border-radius: 12px;
+  padding: 24px 26px 20px;
   display: flex; flex-direction: column; gap: 10px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  box-shadow:
+    0 1px 2px rgba(20, 22, 30, 0.05),
+    0 6px 16px rgba(20, 22, 30, 0.06);
   position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.whale-tile:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 2px rgba(20, 22, 30, 0.06),
+    0 10px 24px rgba(20, 22, 30, 0.09);
 }
 .whale-tile::before {
-  content: ''; position: absolute; top: 0; left: 24px;
-  width: 32px; height: 2px; background: var(--accent);
-  border-radius: 0 0 2px 2px;
+  content: ''; position: absolute; top: 0; left: 26px;
+  width: 44px; height: 3px; background: var(--accent);
+  border-radius: 0 0 3px 3px;
 }
 .wt-amount {
   font-size: 2.1rem; font-weight: 400; color: var(--accent-2);
