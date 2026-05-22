@@ -280,6 +280,7 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 }
 .mtg-item .ti-name { font-size: 0.82rem; }
 .mtg-item .ti-body { min-width: 0; }
+.mtg-item .ti-amt { margin-left: 0; }
 
 /* Standing daily gallery event */
 .gallery-event { background: transparent; }
