@@ -831,6 +831,8 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
             continue
         if r['amount_val'] <= 10_000:
             continue
+        if r['task_due_ms'] > 0:  # already on the schedule — not slipping
+            continue
         d = r.get('days_since')
         if d is None or d >= threshold:
             cold_rows.append(r)
@@ -1109,15 +1111,6 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   </aside>
 </div>
 
-<div class="section-band cold">
-  <div class="section-title">Deals Slipping <span class="section-count">{len(cold_rows)}</span></div>
-  <div class="section-meta">Top 5 by days cold &middot; Meeting Scheduled 10+ days, Active Relationship 14+ days &middot; deals over $10k only</div>
-</div>
-<table class="mini-table cold-table">
-  <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Days Cold</th><th>Last Contacted</th><th>Task Due</th></tr></thead>
-  <tbody>{cold_rows_html}</tbody>
-</table>
-
 <div class="section-band whale">
   <div class="section-title">Whale Tracker <span class="section-count">{len(whale_rows)}</span></div>
   <div class="section-meta">Deals $50k and above, excluding Closed Lost</div>
@@ -1125,6 +1118,15 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 <table class="mini-table whale-table">
   <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
   <tbody>{whale_rows_html}</tbody>
+</table>
+
+<div class="section-band cold">
+  <div class="section-title">Deals Slipping <span class="section-count">{len(cold_rows)}</span></div>
+  <div class="section-meta">Top 5 by days cold &middot; Meeting Scheduled 10+ days, Active Relationship 14+ days &middot; over $10k, no upcoming task</div>
+</div>
+<table class="mini-table cold-table">
+  <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Days Cold</th><th>Last Contacted</th><th>Task Due</th></tr></thead>
+  <tbody>{cold_rows_html}</tbody>
 </table>
 
 <div class="section-band">
