@@ -820,7 +820,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         sub_stat(str(stat_dormant), 'Dormant') +
         sub_stat(str(stat_closed), 'Closed') +
         sub_stat(str(stat_mtg_count), 'Meetings') +
-        sub_stat(str(stat_tasks_week), 'Tasks / 7d') +
+        sub_stat(str(stat_tasks_week), 'Tasks this week') +
         sub_stat(str(stat_whales), 'Whales')
     )
 
