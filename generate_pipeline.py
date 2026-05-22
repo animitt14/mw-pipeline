@@ -1116,10 +1116,10 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   <div class="cal-cap"><span class="cal-bar">{bar_str}</span><span class="cal-cap-label">{free_h:.1f}h open</span></div>
 </div>'''
 
-    # Stacked horizontal funnel — proportional segments, colors map to stage badge palette
+    # Stacked horizontal funnel — colors mirror the .stage-* badge text colors
     total_funnel = sum(funnel_counts) or 1
     # Order matches FUNNEL_STAGES: Advisor, Active, LongTerm, Mtg, Nurture, Rec Made
-    SF_COLORS = ['#ca8a04', '#1d4ed8', '#4338ca', '#7c3aed', '#9a3412', '#0f766e']
+    SF_COLORS = ['#854d0e', '#1d4ed8', '#4338ca', '#5b21b6', '#9a3412', '#115e59']
     sf_segs = []
     sf_keys = []
     for i, (c, (sid, lbl)) in enumerate(zip(funnel_counts, FUNNEL_STAGES)):
