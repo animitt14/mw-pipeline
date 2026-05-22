@@ -1136,7 +1136,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 <div id="all-collapsible" class="collapsible">
   <div class="controls">
     <button id="btn-default" onclick="resetSort()">Default Sort</button>
-    <span class="sort-hint">deal stage &rarr; amount</span>
+    <span class="sort-hint">status &rarr; deal stage &rarr; amount</span>
     <label for="stage-filter">Stage:</label>
     <select id="stage-filter" onchange="filterStage(this.value)">
       <option value="">All Stages</option>
