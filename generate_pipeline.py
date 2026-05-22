@@ -120,6 +120,57 @@ def fetch_all_contacts(owner_id):
     return contacts
 
 
+def fetch_whale_replies(deal_ids):
+    """For each whale deal, find its associated contact and return last-reply info.
+
+    Returns: {deal_id: {'reply_date': str_iso_or_empty}}
+    """
+    out = {}
+    if not deal_ids:
+        return out
+
+    # Step 1: deal -> contact associations
+    deal_to_contact = {}
+    for i in range(0, len(deal_ids), 100):
+        batch = deal_ids[i:i+100]
+        r = requests.post(
+            'https://api.hubapi.com/crm/v4/associations/deal/contact/batch/read',
+            headers=HEADERS,
+            json={'inputs': [{'id': str(did)} for did in batch]},
+        )
+        r.raise_for_status()
+        for item in r.json().get('results', []):
+            did = str(item['from']['id'])
+            tos = item.get('to', [])
+            if tos:
+                deal_to_contact[did] = str(tos[0]['toObjectId'])
+        time.sleep(0.15)
+
+    # Step 2: batch-read contact reply dates
+    contact_ids = list(set(deal_to_contact.values()))
+    contact_props = {}
+    for i in range(0, len(contact_ids), 100):
+        batch = contact_ids[i:i+100]
+        r = requests.post(
+            'https://api.hubapi.com/crm/v3/objects/contacts/batch/read',
+            headers=HEADERS,
+            json={'inputs': [{'id': cid} for cid in batch],
+                  'properties': ['hs_email_last_reply_date']},
+        )
+        r.raise_for_status()
+        for c in r.json().get('results', []):
+            contact_props[c['id']] = c.get('properties', {})
+        time.sleep(0.15)
+
+    # Step 3: map deal_id -> reply_date
+    for did in deal_ids:
+        did_s = str(did)
+        cid = deal_to_contact.get(did_s, '')
+        rd = contact_props.get(cid, {}).get('hs_email_last_reply_date', '') if cid else ''
+        out[did_s] = {'reply_date': rd or ''}
+    return out
+
+
 def fetch_deals_live():
     """Fetch all Gallery Leads deals live from HubSpot API."""
     url = 'https://api.hubapi.com/crm/v3/objects/deals/search'
@@ -1742,6 +1793,11 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
         '1321369500': ('bp', 'Nurture'),
         '1321369502': ('bg', 'Rec. Made'),
     }
+    # Reply info for each whale (fetched live)
+    print('  Fetching whale email reply data...', flush=True)
+    whale_replies = fetch_whale_replies([d['id'] for d in whales])
+    n_replied = sum(1 for v in whale_replies.values() if v.get('reply_date'))
+
     whale_rows = ''
     for d in whales:
         p = d['properties']
@@ -1749,12 +1805,22 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
         age = deal_age_days(d)
         nc  = p.get('num_contacted_notes') or '0'
         owner = OVERVIEW_OWNER_NAMES.get(p.get('hubspot_owner_id', ''), '')
+        reply_info = whale_replies.get(str(d['id']), {})
+        rd_iso = reply_info.get('reply_date', '')
+        if rd_iso:
+            rd_dt = pd(rd_iso)
+            if rd_dt:
+                reply_cell = f'<td style="color:var(--green)">&#10003; {rd_dt.strftime("%b %#d" if sys.platform == "win32" else "%b %-d")}</td>'
+            else:
+                reply_cell = f'<td style="color:var(--green)">&#10003;</td>'
+        else:
+            reply_cell = '<td style="color:var(--text3)">&mdash;</td>'
         whale_rows += (f'<tr><td><strong>{escape(deal_name(d))}</strong>'
                        f'<small style="color:var(--text3);margin-left:5px">{owner}</small></td>'
                        f'<td>{fmtamt(amt(d))}</td>'
                        f'<td><span class="badge {cls}">{lbl}</span></td>'
                        f'<td>{age}d</td><td>{nc}</td>'
-                       f'<td style="color:var(--text3)">—</td></tr>')
+                       f'{reply_cell}</tr>')
 
     # ── Last 30d closed rows ──
     closed_30d_rows = ''
@@ -2023,9 +2089,8 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
         f'<div class="stat"><div class="sv" style="color:var(--purple)">{len(whales)}</div><div class="sl">active at $100k+</div></div>',
         f'<div class="stat"><div class="sv" style="color:var(--green)">{fmtamt(sum(amt(d) for d in whales))}</div><div class="sl">combined potential</div></div>',
         f'<div class="stat"><div class="sv" style="color:var(--red)">{sum(1 for d in whales if deal_age_days(d) > 30)} of {len(whales)}</div><div class="sl">over 30 days old</div></div>',
-        f'<div class="stat"><div class="sv" style="color:var(--amber)">—</div><div class="sl">inbound reply</div></div>',
+        f'<div class="stat"><div class="sv" style="color:var(--green)">{n_replied} of {len(whales)}</div><div class="sl">inbound reply</div></div>',
         '</div>',
-        '<div class="stale-note">Reply column: not available via HubSpot API — last updated May 13, 2026.</div>',
         '<table><thead><tr><th>Deal</th><th>Value</th><th>Stage</th><th>Age</th><th>Contacts</th><th>Reply</th></tr></thead><tbody>',
         whale_rows,
         '</tbody></table></div>',
