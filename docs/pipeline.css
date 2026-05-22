@@ -144,6 +144,11 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .funnel-eyebrow {
   font-size: 0.62rem; font-weight: 500; color: var(--text-3);
   text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 10px;
+  display: flex; align-items: baseline; gap: 10px;
+}
+.funnel-hint {
+  font-size: 0.6rem; color: var(--text-3); text-transform: none;
+  letter-spacing: 0; font-style: italic; opacity: 0.7;
 }
 .sf-track {
   display: flex; height: 8px; border-radius: 4px;

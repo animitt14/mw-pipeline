@@ -821,7 +821,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         sub_stat(str(stat_dormant),      'Dormant',         '&#128564;') +   # sleeping face
         sub_stat(str(stat_closed),       'Closed',          '&#9989;')   +   # check mark
         sub_stat(str(stat_mtg_count),    'Meetings',        '&#128197;') +   # calendar
-        sub_stat(str(stat_tasks_week),   'Tasks this week', '&#128203;') +   # clipboard
+        sub_stat(str(stat_tasks_week),   'Tasks',           '&#128203;') +   # clipboard
         sub_stat(str(stat_whales),       'Whales',          '&#128011;')     # whale
     )
 
@@ -1290,9 +1290,8 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     <div class="hero-sub-stats">{sub_stats_html}</div>
   </div>
   <div class="funnel-wrap">
-    <div class="funnel-eyebrow">Active Deals by Stage</div>
+    <div class="funnel-eyebrow">Active Deals by Stage <span class="funnel-hint">hover for counts</span></div>
     <div class="sf-track">{stacked_funnel_html}</div>
-    <div class="sf-legend">{stacked_funnel_legend_html}</div>
   </div>
 </section>
 
