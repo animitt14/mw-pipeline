@@ -282,6 +282,13 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .mtg-item .ti-name { font-size: 0.82rem; }
 .mtg-item .ti-body { min-width: 0; }
 
+/* Standing daily gallery event */
+.gallery-event { background: transparent; }
+.gallery-event::before { background: var(--text-3); }
+.gallery-event .mtg-time { color: var(--text-2); }
+.gallery-event .ti-name { color: var(--text-2); font-style: italic; font-weight: 500; }
+.gallery-event .ti-meta { color: var(--text-3); font-size: 0.7rem; }
+
 /* Task items — one-line compact rows with stage dot */
 .t3-tasks .ti-list { gap: 1px; }
 .task-item {

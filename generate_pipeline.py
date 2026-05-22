@@ -1022,7 +1022,30 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
             f'</div>'
         )
 
-    mtg_items_html  = '\n'.join(mtg_item(r) for r in today_meetings_rows) if today_meetings_rows else '<div class="ti-empty">No meetings today</div>'
+    # Standing 4–7pm gallery event every day — inserted in chronological order
+    if _NYC:
+        _gal_dt = datetime.combine(today_date, datetime.min.time()).replace(hour=16, tzinfo=_NYC)
+    else:
+        _gal_dt = datetime.combine(today_date, datetime.min.time()).replace(hour=20, tzinfo=timezone.utc)
+    gallery_ms = int(_gal_dt.timestamp() * 1000)
+    gallery_html = (
+        '<div class="ti mtg-item gallery-event">'
+        '<div class="mtg-time">4:00 PM</div>'
+        '<div class="ti-body">'
+        '<div class="ti-name">Gallery Event</div>'
+        '<div class="ti-meta">4&ndash;7pm &middot; Open to all leads</div>'
+        '</div></div>'
+    )
+    _mtg_pieces = []
+    _gallery_done = False
+    for r in today_meetings_rows:
+        if r['meeting_ms'] >= gallery_ms and not _gallery_done:
+            _mtg_pieces.append(gallery_html)
+            _gallery_done = True
+        _mtg_pieces.append(mtg_item(r))
+    if not _gallery_done:
+        _mtg_pieces.append(gallery_html)
+    mtg_items_html  = '\n'.join(_mtg_pieces)
     task_items_html = '\n'.join(task_item(r) for r in today_tasks_rows)   if today_tasks_rows   else '<div class="ti-empty">No tasks today</div>'
 
     def whale_tile(r):
@@ -1281,10 +1304,6 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     <div class="section-meta">Meetings on schedule, tasks to clear, next 3 days for context</div>
   </div>
   <div class="today-3col">
-    <aside class="t3-col t3-calendar">
-      <h3>Next 3 Days</h3>
-      <div class="cal-cards">{cal_cards_html}</div>
-    </aside>
     <div class="t3-col t3-meetings">
       <h3>Meetings <span class="t3-count">{len(today_meetings_rows)}</span></h3>
       <div class="ti-list">{mtg_items_html}</div>
@@ -1293,6 +1312,10 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
       <h3>Tasks <span class="t3-count">{len(today_tasks_rows)}</span></h3>
       <div class="ti-list">{task_items_html}</div>
     </div>
+    <aside class="t3-col t3-calendar">
+      <h3>Next 3 Days</h3>
+      <div class="cal-cards">{cal_cards_html}</div>
+    </aside>
   </div>
 </section>
 
