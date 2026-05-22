@@ -168,6 +168,13 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
     0 1px 2px rgba(20, 22, 30, 0.04),
     0 4px 12px rgba(20, 22, 30, 0.04);
 }
+/* Today = blue-tinted panel */
+.section-today {
+  background: #eef3fa;
+  box-shadow:
+    0 1px 2px rgba(29, 78, 216, 0.05),
+    0 4px 12px rgba(29, 78, 216, 0.05);
+}
 /* Whale = purple-tinted panel */
 .section-whale {
   background: #f6f1fc;
