@@ -157,7 +157,7 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .sf-key-n { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
 .sf-key-empty .sf-key-n { color: var(--text-3); font-weight: 400; }
 
-/* --- SECTION PANELS (Option A: each section is a white surface) --- */
+/* --- SECTION PANELS (Option A + per-section tinting) --- */
 .page-section {
   background: var(--surface);
   border-radius: 12px;
@@ -166,6 +166,20 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
   box-shadow:
     0 1px 2px rgba(20, 22, 30, 0.04),
     0 4px 12px rgba(20, 22, 30, 0.04);
+}
+/* Whale = purple-tinted panel */
+.section-whale {
+  background: #f6f1fc;
+  box-shadow:
+    0 1px 2px rgba(91, 33, 182, 0.06),
+    0 4px 12px rgba(91, 33, 182, 0.06);
+}
+/* Cold = red-tinted panel */
+.section-cold {
+  background: #fdf3f3;
+  box-shadow:
+    0 1px 2px rgba(185, 28, 28, 0.05),
+    0 4px 12px rgba(185, 28, 28, 0.05);
 }
 .page-section > .section-band { margin: 0 0 18px; }
 .page-section > .section-band + .today-layout,
@@ -275,7 +289,11 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .mini-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
 .mini-table th { text-align: left; padding: 9px 14px; background: transparent; color: var(--text-3); font-weight: 500; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); white-space: nowrap; position: static; cursor: default; }
 .mini-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-.mini-table tr:hover td { background: var(--surface-2); }
+.mini-table tr:hover td { background: rgba(20, 22, 30, 0.035); }
+.section-whale .mini-table th { border-bottom-color: rgba(124, 58, 237, 0.18); }
+.section-whale .mini-table td { border-bottom-color: rgba(124, 58, 237, 0.12); }
+.section-cold .mini-table th  { border-bottom-color: rgba(185, 28, 28, 0.18); }
+.section-cold .mini-table td  { border-bottom-color: rgba(185, 28, 28, 0.10); }
 .mini-table th:nth-child(n+2) { text-align: center; }
 .mini-table td:nth-child(n+2) { text-align: center; }
 .mini-table td:nth-child(3) { font-variant-numeric: tabular-nums; color: var(--accent-2); font-weight: 500; }
@@ -293,16 +311,19 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 }
 @media (max-width: 900px) { .whale-tiles { grid-template-columns: 1fr; } }
 .whale-tile {
-  background: linear-gradient(180deg, #fbfaff 0%, #f5f1fc 100%);
+  background: var(--surface);
   border-radius: 12px;
   padding: 24px 26px 20px;
   display: flex; flex-direction: column; gap: 10px;
   position: relative;
+  box-shadow: 0 1px 2px rgba(91, 33, 182, 0.04);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .whale-tile:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.08);
+  box-shadow:
+    0 1px 2px rgba(91, 33, 182, 0.06),
+    0 8px 20px rgba(91, 33, 182, 0.10);
 }
 .whale-tile::before {
   content: ''; position: absolute; top: 0; left: 26px;
