@@ -1168,39 +1168,37 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 
 <div class="section-band">
   <div class="section-title">All Contacts <span class="section-count">{count}</span></div>
-  <button id="all-toggle" class="collapse-btn" onclick="toggleAll()"><span class="chev">&rsaquo;</span><span class="lbl">Show all contacts</span></button>
+  <button id="hidden-toggle" class="collapse-btn" onclick="toggleHidden()"><span class="lbl">Show dormant + Advisor Assigned</span></button>
 </div>
-<div id="all-collapsible" class="collapsible">
-  <div class="controls">
-    <button id="btn-default" onclick="resetSort()">Default Sort</button>
-    <span class="sort-hint">status &rarr; deal stage &rarr; amount</span>
-    <label for="stage-filter">Stage:</label>
-    <select id="stage-filter" onchange="filterStage(this.value)">
-      <option value="">All Stages</option>
+<div class="controls">
+  <button id="btn-default" onclick="resetSort()">Default Sort</button>
+  <span class="sort-hint">status &rarr; deal stage &rarr; amount</span>
+  <label for="stage-filter">Stage:</label>
+  <select id="stage-filter" onchange="filterStage(this.value)">
+    <option value="">All Stages</option>
 {stage_options}
-    </select>
-    <span id="visible-count" style="color:var(--text-3);font-size:0.74rem;"></span>
-  </div>
-  <table id="pipeline-table">
-    <thead>
-      <tr>
-        <th onclick="sortTable(8,'number')">Status</th>
-        <th onclick="sortTable(0,'text')">Name</th>
-        <th>Title / Co</th>
-        <th onclick="sortTable(1,'stage')">Deal Stage</th>
-        <th onclick="sortTable(2,'number')">Deal Amount</th>
-        <th onclick="sortTable(3,'date')">Date Attended</th>
-        <th onclick="sortTable(4,'date')">Last Contacted</th>
-        <th onclick="sortTable(7,'date')">Upcoming Mtg</th>
-        <th onclick="sortTable(6,'number')">Task</th>
-        <th onclick="sortTable(5,'number')"># Contacted</th>
-      </tr>
-    </thead>
-    <tbody id="pipeline-body">
-{rows_html}
-    </tbody>
-  </table>
+  </select>
+  <span id="visible-count" style="color:var(--text-3);font-size:0.74rem;"></span>
 </div>
+<table id="pipeline-table">
+  <thead>
+    <tr>
+      <th onclick="sortTable(8,'number')">Status</th>
+      <th onclick="sortTable(0,'text')">Name</th>
+      <th>Title / Co</th>
+      <th onclick="sortTable(1,'stage')">Deal Stage</th>
+      <th onclick="sortTable(2,'number')">Deal Amount</th>
+      <th onclick="sortTable(3,'date')">Date Attended</th>
+      <th onclick="sortTable(4,'date')">Last Contacted</th>
+      <th onclick="sortTable(7,'date')">Upcoming Mtg</th>
+      <th onclick="sortTable(6,'number')">Task</th>
+      <th onclick="sortTable(5,'number')"># Contacted</th>
+    </tr>
+  </thead>
+  <tbody id="pipeline-body">
+{rows_html}
+  </tbody>
+</table>
 <script>
 (function() {{
   var sortState = {{ col: -1, dir: 1 }};
@@ -1250,12 +1248,21 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     }});
   }};
 
-  window.toggleAll = function() {{
-    var btn = document.getElementById('all-toggle');
-    var box = document.getElementById('all-collapsible');
-    var open = box.classList.toggle('open');
-    btn.classList.toggle('open', open);
-    btn.querySelector('.lbl').textContent = open ? 'Hide all contacts' : 'Show all contacts';
+  var showHidden = false;  // by default hide dormant + Advisor Assigned
+
+  function isMasked(r) {{
+    return r.dataset.status === 'Dormant' || r.dataset.stageLabel === 'Advisor Assigned';
+  }}
+
+  var maskedCount = Array.from(document.querySelectorAll('#pipeline-body tr')).filter(isMasked).length;
+
+  window.toggleHidden = function() {{
+    showHidden = !showHidden;
+    var btn = document.getElementById('hidden-toggle');
+    btn.querySelector('.lbl').textContent = showHidden
+      ? 'Hide dormant + Advisor Assigned'
+      : 'Show dormant + Advisor Assigned (' + maskedCount + ')';
+    applyFilters();
   }};
 
   window.resetSort = function() {{
@@ -1279,7 +1286,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     var rows = document.querySelectorAll('#pipeline-body tr');
     rows.forEach(function(r) {{
       var stageHide = stageFilter !== '' && r.dataset.stageLabel !== stageFilter;
-      r.classList.toggle('hidden', stageHide);
+      // Mask dormant + AA when no specific stage filter is active and showHidden is false
+      var maskHide = stageFilter === '' && !showHidden && isMasked(r);
+      r.classList.toggle('hidden', stageHide || maskHide);
     }});
     updateCount();
   }}
@@ -1288,6 +1297,13 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     stageFilter = val;
     applyFilters();
   }};
+
+  // Initial state: mask dormant + AA and set the button label
+  (function() {{
+    document.getElementById('hidden-toggle').querySelector('.lbl').textContent =
+      'Show dormant + Advisor Assigned (' + maskedCount + ')';
+    applyFilters();
+  }})();
 
   function updateCount() {{
     var rows = document.querySelectorAll('#pipeline-body tr:not(.hidden)');
