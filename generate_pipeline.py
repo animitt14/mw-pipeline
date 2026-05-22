@@ -761,6 +761,11 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
             _status, _status_order = 'Dormant', 2
         row_data[-1]['status'] = _status
         row_data[-1]['status_order'] = _status_order
+        # Days since most-recent contact (None if never recorded)
+        if _cont_ms > 0:
+            row_data[-1]['days_since'] = max(0, int((now_ms_ts - _cont_ms) // 86_400_000))
+        else:
+            row_data[-1]['days_since'] = None
 
     # Save pre-filter rows for whale tracker (includes Collector etc.)
     all_row_data = row_data[:]
@@ -781,24 +786,24 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     stat_whales        = len([r for r in all_row_data if r['amount_val'] >= 50_000])
 
     def fmt_stat_val(n):
-        if n >= 1_000_000: return f'${n/1_000_000:.1f}M'
+        if n >= 1_000_000: return f'${n/1_000_000:.2f}M'
         if n >= 1_000:     return f'${n/1_000:.0f}k'
         return f'${int(n):,}'
 
-    def stat_card(value, label, sublabel='', accent=False):
-        val_color = '#c9a96e' if accent else '#e8e8e8'
-        return (f'<div class="stat-card">'
-                f'<div class="stat-val" style="color:{val_color}">{value}</div>'
-                f'<div class="stat-lbl">{label}</div>'
-                + (f'<div class="stat-sub">{sublabel}</div>' if sublabel else '') +
+    hero_val_html = fmt_stat_val(stat_pipeline_val)
+
+    def sub_stat(value, label):
+        return (f'<div class="sub-stat">'
+                f'<div class="sub-val">{value}</div>'
+                f'<div class="sub-lbl">{label}</div>'
                 f'</div>')
 
-    stats_html = (
-        stat_card(fmt_stat_val(stat_pipeline_val), 'pipeline value', 'active deals w/ amounts', accent=True) +
-        stat_card(str(stat_mtg_count), 'upcoming meetings') +
-        stat_card(str(stat_tasks_week), 'tasks due this week') +
-        stat_card(str(stat_active), 'active', f'{stat_dormant} dormant') +
-        stat_card(str(stat_whales), 'whales', '$50k+')
+    sub_stats_html = (
+        sub_stat(str(stat_active), 'Active') +
+        sub_stat(str(stat_dormant), 'Dormant') +
+        sub_stat(str(stat_mtg_count), 'Meetings') +
+        sub_stat(str(stat_tasks_week), 'Tasks / 7d') +
+        sub_stat(str(stat_whales), 'Whales')
     )
 
     # --- Today / Whale subsets ---
@@ -809,7 +814,32 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         (r['task_due_ms'] > 0 and today_start_ms <= r['task_due_ms'] < today_end_ms)]
     today_rows.sort(key=lambda r: -r['amount_val'])
 
-    whale_rows = sorted([r for r in all_row_data if r['amount_val'] >= 50_000], key=lambda r: -r['amount_val'])
+    whale_rows = sorted(
+        [r for r in all_row_data
+         if r['amount_val'] >= 50_000 and r['stage_id'] != CLOSED_LOST_STAGE],
+        key=lambda r: -r['amount_val'])
+
+    # Cold deals — Meeting Sched 10+ days since contact, Active Rel 14+ days
+    COLD_RULES = {
+        '1321369497': 10,  # Meeting Scheduled
+        '1321369496': 14,  # Active Relationship
+    }
+    cold_rows = []
+    for r in row_data:
+        threshold = COLD_RULES.get(r['stage_id'])
+        if threshold is None:
+            continue
+        d = r.get('days_since')
+        if d is None or d >= threshold:
+            cold_rows.append(r)
+    cold_rows.sort(key=lambda r: -(r.get('days_since') if r.get('days_since') is not None else 9_999))
+
+    def heat_cls(d):
+        if d is None:    return 'heat-3'
+        if d <= 7:       return ''
+        if d <= 14:      return 'heat-1'
+        if d <= 28:      return 'heat-2'
+        return 'heat-3'
 
     def mini_row(r):
         hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
@@ -820,7 +850,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         mtg_cell = f'<span title="{mtg_title}">{r["meeting_start"]}</span>' if r['meeting_start'] else '—'
         task_title = escape(r['task_subject']) if r['task_subject'] else ''
         task_cell = f'<span title="{task_title}">{r["task_due"]}</span>' if r['task_due'] else '—'
-        return (f'<tr>'
+        cls = heat_cls(r.get('days_since'))
+        cls_attr = f' class="{cls}"' if cls else ''
+        return (f'<tr{cls_attr}>'
                 f'<td>{hs_badge}{r["name"]}{inv_badge}</td>'
                 f'<td>{stage_cell}</td>'
                 f'<td>{amt_cell}</td>'
@@ -829,8 +861,29 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
                 f'<td>{task_cell}</td>'
                 f'</tr>')
 
-    today_rows_html  = '\n'.join(mini_row(r) for r in today_rows)  if today_rows  else '<tr><td colspan="6" style="color:#555;text-align:center;padding:18px">No meetings or tasks due today</td></tr>'
-    whale_rows_html  = '\n'.join(mini_row(r) for r in whale_rows)  if whale_rows  else '<tr><td colspan="6" style="color:#555;text-align:center;padding:18px">No deals at $50k+</td></tr>'
+    def cold_row(r):
+        hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
+        inv_badge = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
+        stage_cell = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else '—'
+        amt_cell = escape(r['amount_fmt']) if r['amount_fmt'] else '—'
+        task_title = escape(r['task_subject']) if r['task_subject'] else ''
+        task_cell = f'<span title="{task_title}">{r["task_due"]}</span>' if r['task_due'] else '—'
+        d = r.get('days_since')
+        days_cell = '<span class="cold-days">never</span>' if d is None else f'<span class="cold-days">{d}d</span>'
+        cls = heat_cls(d)
+        cls_attr = f' class="{cls}"' if cls else ''
+        return (f'<tr{cls_attr}>'
+                f'<td>{hs_badge}{r["name"]}{inv_badge}</td>'
+                f'<td>{stage_cell}</td>'
+                f'<td>{amt_cell}</td>'
+                f'<td>{days_cell}</td>'
+                f'<td>{r["last_contact"] or "—"}</td>'
+                f'<td>{task_cell}</td>'
+                f'</tr>')
+
+    today_rows_html  = '\n'.join(mini_row(r) for r in today_rows)  if today_rows  else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No meetings or tasks due today</td></tr>'
+    whale_rows_html  = '\n'.join(mini_row(r) for r in whale_rows)  if whale_rows  else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals at $50k+</td></tr>'
+    cold_rows_html   = '\n'.join(cold_row(r) for r in cold_rows)   if cold_rows   else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals are slipping</td></tr>'
 
     # --- Chart data ---
     funnel_counts = [sum(1 for r in row_data if r['stage_id'] == sid) for sid, _ in FUNNEL_STAGES]
@@ -880,15 +933,32 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   <div class="cal-cap"><span class="cal-bar">{bar_str}</span><span class="cal-cap-label">{free_h:.1f}h open</span></div>
 </div>'''
 
-    # CSS funnel HTML (built in Python so braces don't need escaping in the f-string)
-    max_cnt = max(funnel_counts) if any(funnel_counts) else 1
-    F_COLORS = ['#c9c96d', '#6daacc', '#9d9ddd', '#cc8a6d', '#6dcccc', '#4dc94d']
-    funnel_html = '\n'.join(
-        f'<div class="f-row"><div class="f-track">'
-        f'<div class="f-bar" style="width:{max(c / max_cnt * 100, 8):.0f}%;background:{F_COLORS[i]}">'
-        f'{c}</div></div><span class="f-lbl">{lbl}</span></div>'
-        for i, (c, (_, lbl)) in enumerate(zip(funnel_counts, FUNNEL_STAGES))
-    )
+    # Stacked horizontal funnel — proportional segments, colors map to stage badge palette
+    total_funnel = sum(funnel_counts) or 1
+    # Order matches FUNNEL_STAGES: Advisor, Active, LongTerm, Mtg, Nurture, Rec Made
+    SF_COLORS = ['#ca8a04', '#1d4ed8', '#4338ca', '#7c3aed', '#9a3412', '#0f766e']
+    sf_segs = []
+    sf_keys = []
+    for i, (c, (sid, lbl)) in enumerate(zip(funnel_counts, FUNNEL_STAGES)):
+        if c == 0:
+            sf_keys.append(
+                f'<div class="sf-key sf-key-empty"><span class="sf-dot" style="background:{SF_COLORS[i]};opacity:0.3"></span>'
+                f'<span class="sf-key-lbl">{escape(lbl)}</span><span class="sf-key-n">0</span></div>'
+            )
+            continue
+        pct = c / total_funnel * 100
+        # Show count inside segment only if segment is wide enough
+        inline_count = f'<span class="sf-cnt">{c}</span>' if pct >= 8 else ''
+        sf_segs.append(
+            f'<div class="sf-seg" style="flex:{pct:.2f};background:{SF_COLORS[i]}" '
+            f'title="{escape(lbl)}: {c}">{inline_count}</div>'
+        )
+        sf_keys.append(
+            f'<div class="sf-key"><span class="sf-dot" style="background:{SF_COLORS[i]}"></span>'
+            f'<span class="sf-key-lbl">{escape(lbl)}</span><span class="sf-key-n">{c}</span></div>'
+        )
+    stacked_funnel_html = ''.join(sf_segs) or '<div class="sf-seg sf-empty">No active deals</div>'
+    stacked_funnel_legend_html = ''.join(sf_keys)
 
     # Collect unique stage labels for filter dropdown
     stage_labels = []
@@ -921,7 +991,13 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
                 contacted_today = ct.date() == today_date
             except Exception:
                 pass
-        row_class = ' class="contacted-today"' if contacted_today else ''
+        _classes = []
+        if contacted_today:
+            _classes.append('contacted-today')
+        else:
+            _heat = heat_cls(r.get('days_since'))
+            if _heat: _classes.append(_heat)
+        row_class = f' class="{" ".join(_classes)}"' if _classes else ''
         tc_parts = [shorten_title(r['title'])[:28] if r['title'] else '', r['company'][:24] if r['company'] else '']
         tc_str = ', '.join(p for p in tc_parts if p)
         li_bit = f'<a href="{escape(r["li_url"])}" target="_blank" class="li-inline">LI</a> ' if r['li_url'] else ''
@@ -960,133 +1036,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pipeline — {owner_name}</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
-<style>
-  * {{ box-sizing: border-box; }}
-  body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #141414; color: #e8e8e8; margin: 0; padding: 24px 28px; }}
-  h1 {{ font-size: 1.3rem; font-weight: 600; margin: 0 0 4px; color: #f0f0f0; }}
-  .page-hdr {{ display: flex; align-items: baseline; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }}
-  .page-hdr h1 {{ margin: 0; }}
-  .meta {{ font-size: 0.78rem; color: #888; }}
-  .meta span {{ margin-right: 14px; }}
-  .chart-box {{ background: transparent; border: none; border-radius: 0; padding: 16px 20px; flex: 1; min-width: 0; max-width: 400px; }}
-  .chart-box h3 {{ font-size: 0.7rem; font-weight: 500; color: #777; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 10px; }}
-  .cal-section {{ display: flex; flex-direction: column; padding: 16px 20px; }}
-  .cal-heading {{ font-size: 0.7rem; font-weight: 500; color: #777; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 6px; }}
-  .cal-cards {{ display: flex; gap: 8px; flex: 1; }}
-  .cal-card {{ background: #1e1e1e; border: 1px solid #3a3a3a; border-radius: 6px; padding: 8px 12px; width: fit-content; display: flex; flex-direction: column; }}
-  .cal-today {{ border-color: #c9a96e; }}
-  .cal-day-label {{ font-size: 0.76rem; font-weight: 600; color: #ddd; margin-bottom: 5px; }}
-  .cal-today .cal-day-label {{ color: #c9a96e; }}
-  .cal-mtg {{ font-size: 0.72rem; color: #bbb; margin-bottom: 5px; }}
-  .cal-tasks-section {{ margin-bottom: 6px; }}
-  .cal-row {{ display: flex; align-items: center; font-size: 0.71rem; color: #aaa; gap: 4px; line-height: 1.5; }}
-  .cal-icon {{ width: 1.1em; flex-shrink: 0; }}
-  .cal-lbl {{ color: #aaa; }}
-  .cal-num {{ min-width: 1.4em; font-variant-numeric: tabular-nums; color: #ddd; font-weight: 600; }}
-  .cal-cap {{ display: flex; align-items: center; gap: 6px; margin-top: 3px; }}
-  .cal-bar {{ font-size: 0.6rem; color: #6daacc; letter-spacing: -1px; }}
-  .cal-today .cal-bar {{ color: #c9a96e; }}
-  .cal-cap-label {{ font-size: 0.7rem; color: #999; }}
-  .f-row {{ display: flex; align-items: center; gap: 8px; margin: 2px 0; }}
-  .f-track {{ flex: 1; display: flex; justify-content: center; }}
-  .f-bar {{ height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; color: #111; border-radius: 2px; min-width: 22px; }}
-  .f-lbl {{ font-size: 0.69rem; color: #aaa; white-space: nowrap; width: 90px; }}
-  .controls {{ display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }}
-  .controls select, .controls button {{
-    background: #1e1e1e; color: #bbb; border: 1px solid #3a3a3a;
-    padding: 5px 10px; border-radius: 4px; font-size: 0.78rem; cursor: pointer;
-  }}
-  .controls button:hover, .controls select:hover {{ border-color: #c9a96e; color: #c9a96e; }}
-  .controls .sort-hint {{ font-size: 0.72rem; color: #777; font-style: italic; }}
-  .controls label {{ font-size: 0.78rem; color: #888; }}
-  table {{ width: 100%; border-collapse: collapse; font-size: 0.83rem; }}
-  th {{
-    text-align: left; padding: 9px 12px; background: #1a1a1a; color: #999;
-    font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em;
-    border-bottom: 1px solid #333; white-space: nowrap; position: sticky; top: 0;
-    cursor: pointer; user-select: none;
-  }}
-  th:last-child {{ cursor: default; }}
-  th.sort-asc::after  {{ content: " ▲"; font-size: 0.6rem; color: #c9a96e; }}
-  th.sort-desc::after {{ content: " ▼"; font-size: 0.6rem; color: #c9a96e; }}
-  td {{ padding: 8px 12px; border-bottom: 1px solid #272727; vertical-align: middle; }}
-  tr:hover td {{ background: #1c1c1c; }}
-  tr.hidden {{ display: none; }}
-  a {{ color: #c9a96e; text-decoration: none; }}
-  a:hover {{ text-decoration: underline; }}
-  .hs-badge {{ font-size: 0.68rem; font-weight: 700; color: #777; border: 1px solid #3a3a3a; border-radius: 3px; padding: 1px 4px; margin-right: 5px; vertical-align: middle; }}
-  .hs-badge:hover {{ color: #c9a96e !important; border-color: #c9a96e !important; text-decoration: none !important; }}
-  .inv-badge {{ font-size: 0.65rem; font-weight: 700; color: #6dcccc; border: 1px solid #2a5050; border-radius: 3px; padding: 1px 4px; margin-right: 5px; vertical-align: middle; }}
-  .note-toggle {{ cursor: pointer; color: #aaa; font-size: 0.75rem; margin-left: 5px; user-select: none; }}
-  .note-toggle:hover {{ color: #eee; }}
-  .note-snippet {{ font-size: 0.72rem; color: #aaa; font-style: italic; margin-top: 4px; line-height: 1.4; white-space: normal; }}
-  td:nth-child(2) {{ max-width: 170px; }}
-  .tc-col {{ max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left !important; }}
-  .tc-text {{ font-size: 0.78rem; color: #888; }}
-  .li-inline {{ font-size: 0.68rem; font-weight: 600; color: #555; border: 1px solid #333; border-radius: 3px; padding: 1px 4px; margin-right: 4px; }}
-  .li-inline:hover {{ color: #c9a96e !important; border-color: #c9a96e !important; text-decoration: none !important; }}
-  .links a {{ font-size: 0.72rem; font-weight: 600; color: #999; border: 1px solid #3a3a3a; border-radius: 3px; padding: 1px 5px; }}
-  .links a:hover {{ color: #c9a96e; border-color: #c9a96e; text-decoration: none; }}
-  .badge {{ display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.72rem; font-weight: 500; white-space: nowrap; }}
-  .stage-event     {{ background: #1a3a1a; color: #7dd87d; }}
-  .stage-advisor   {{ background: #363618; color: #d9d97d; }}
-  .stage-active    {{ background: #182a3a; color: #7dbedd; }}
-  .stage-longterm  {{ background: #1e2a3a; color: #7daedd; }}
-  .stage-meeting   {{ background: #222236; color: #adadee; }}
-  .stage-nurture   {{ background: #3a2418; color: #dd9a7d; }}
-  .stage-rec       {{ background: #183030; color: #7ddcdc; }}
-  .stage-won       {{ background: #162a16; color: #5dd95d; }}
-  .stage-lost      {{ background: #2e1212; color: #dd6666; }}
-  .stage-disq      {{ background: #252525; color: #777; }}
-  th:nth-child(n+2) {{ text-align: center; }}
-  td:nth-child(n+2) {{ text-align: center; }}
-  th:nth-child(2), th:nth-child(3) {{ text-align: left; }}
-  td:nth-child(2), td:nth-child(3) {{ text-align: left; }}
-  td:nth-child(5)  {{ font-variant-numeric: tabular-nums; color: #c9a96e; }}
-  td:nth-child(10) {{ font-variant-numeric: tabular-nums; color: #aaa; }}
-  td:nth-child(9)  {{ font-size: 0.78rem; color: #999; }}
-  .status-upcoming {{ background: #222236; color: #adadee; }}
-  .status-active    {{ background: #1a3a1a; color: #7dd87d; }}
-  .status-dormant   {{ background: #282828; color: #777; }}
-  tr.contacted-today td {{ opacity: 0.4; }}
-  .nav {{ display: flex; gap: 6px; margin-bottom: 18px; }}
-  .nav a {{ font-size: 0.78rem; padding: 4px 14px; border-radius: 4px; border: 1px solid #3a3a3a; color: #888; text-decoration: none; }}
-  .nav a.active {{ border-color: #c9a96e; color: #c9a96e; }}
-  .nav a:hover {{ border-color: #c9a96e; color: #c9a96e; }}
-  .dash-header {{ display: flex; gap: 0; margin-bottom: 22px; background: #1a1a1a; border: 1px solid #2e2e2e; border-radius: 8px; align-items: stretch; overflow: hidden; }}
-  .stat-group {{ display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 16px 20px; align-content: center; }}
-  .stat-card {{ padding: 8px 12px; }}
-  .stat-val {{ font-size: 1.35rem; font-weight: 700; line-height: 1; margin-bottom: 4px; }}
-  .stat-lbl {{ font-size: 0.7rem; color: #777; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }}
-  .stat-sub {{ font-size: 0.65rem; color: #555; margin-top: 2px; }}
-  .dash-divider {{ width: 1px; background: #2e2e2e; flex-shrink: 0; align-self: stretch; }}
-  .charts-row {{ display: flex; gap: 0; flex: 1; align-items: stretch; }}
-  .section-header {{ font-size: 0.72rem; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin: 26px 0 8px; display: flex; align-items: center; gap: 10px; }}
-  .section-header .section-count {{ background: #2a2a2a; color: #aaa; border-radius: 10px; padding: 1px 8px; font-size: 0.68rem; font-weight: 500; text-transform: none; letter-spacing: 0; }}
-  .section-header .section-dot {{ width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }}
-  .dot-today {{ background: #adadee; }}
-  .dot-whale {{ background: #c9a96e; }}
-  .dot-all   {{ background: #555; }}
-  .mini-table {{ width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-bottom: 6px; }}
-  .mini-table th {{ text-align: left; padding: 7px 12px; background: #1a1a1a; color: #999; font-weight: 500; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid #333; white-space: nowrap; }}
-  .mini-table td {{ padding: 7px 12px; border-bottom: 1px solid #222; vertical-align: middle; }}
-  .mini-table tr:hover td {{ background: #1c1c1c; }}
-  .mini-table th:nth-child(n+2) {{ text-align: center; }}
-  .mini-table td:nth-child(n+2) {{ text-align: center; }}
-  .mini-table td:nth-child(3) {{ font-variant-numeric: tabular-nums; color: #c9a96e; }}
-  .whale-amt {{ color: #c9a96e; font-weight: 700; font-size: 0.88rem; }}
-</style>
-<style>
-#pw-gate{{position:fixed;inset:0;background:#141414;display:flex;align-items:center;justify-content:center;z-index:9999}}
-#pw-gate.hidden{{display:none}}
-#pw-box{{background:#1e1e1e;border:1px solid #3a3a3a;border-radius:8px;padding:32px 40px;text-align:center;min-width:280px}}
-#pw-box h2{{margin:0 0 20px;color:#e8e8e8;font-size:16px;font-weight:500;letter-spacing:.05em}}
-#pw-input{{width:100%;padding:10px 14px;background:#111;border:1px solid #444;border-radius:5px;color:#e8e8e8;font-size:15px;outline:none;box-sizing:border-box}}
-#pw-input:focus{{border-color:#c9a96e}}
-#pw-err{{color:#e07070;font-size:13px;margin-top:10px;min-height:18px}}
-#pw-btn{{margin-top:14px;width:100%;padding:10px;background:#c9a96e;border:none;border-radius:5px;color:#111;font-size:14px;font-weight:600;cursor:pointer}}
-#pw-btn:hover{{background:#d4b87a}}
-</style>
+<link rel="stylesheet" href="pipeline.css">
 </head>
 <body>
 <div id="pw-gate">
@@ -1101,10 +1051,10 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 (function(){{
   var PW='{password}';
   var SK='pw_ok';
-  if(sessionStorage.getItem(SK)==='1')document.getElementById('pw-gate').classList.add('hidden');
+  if(localStorage.getItem(SK)==='1')document.getElementById('pw-gate').classList.add('hidden');
   window.checkPw=function(){{
     if(document.getElementById('pw-input').value===PW){{
-      sessionStorage.setItem(SK,'1');
+      localStorage.setItem(SK,'1');
       document.getElementById('pw-gate').classList.add('hidden');
     }}else{{
       document.getElementById('pw-err').textContent='Incorrect password';
@@ -1115,68 +1065,100 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 }})();
 </script>
 {nav_html}
-<div class="page-hdr">
-  <h1>Pipeline &mdash; {owner_name}</h1>
-  <div class="meta"><span>{count} contacts</span><span>Updated {now}</span></div>
-</div>
-<div class="dash-header">
-  <div class="stat-group">{stats_html}</div>
-  <div class="dash-divider"></div>
-  <div class="charts-row">
-    <div class="chart-box">
-      <h3>Active Deals by Stage</h3>
-      <div class="funnel">{funnel_html}</div>
-    </div>
-    <div class="dash-divider"></div>
-    <div class="cal-section">
-      <h3 class="cal-heading">Next 3 Days</h3>
-      <div class="cal-cards">{cal_cards_html}</div>
-    </div>
+<header class="page-header">
+  <div class="page-header-left">
+    <h1>Pipeline &mdash; {owner_name}</h1>
+    <div class="meta"><span>{count} contacts</span><span>Updated {now}</span></div>
   </div>
+  <div class="mw-mark">Masterworks<span class="mw-dot">&bull;</span>Advisory</div>
+</header>
+
+<section class="hero-band">
+  <div class="hero-top">
+    <div class="hero-core">
+      <div class="hero-eyebrow">Open Pipeline Value</div>
+      <div class="hero-val">{hero_val_html}</div>
+      <div class="hero-lbl">across {stat_active} active deals</div>
+    </div>
+    <div class="hero-sub-stats">{sub_stats_html}</div>
+  </div>
+  <div class="funnel-wrap">
+    <div class="funnel-eyebrow">Active Deals by Stage</div>
+    <div class="sf-track">{stacked_funnel_html}</div>
+    <div class="sf-legend">{stacked_funnel_legend_html}</div>
+  </div>
+</section>
+
+<div class="section-band cold">
+  <div class="section-title">Deals Slipping <span class="section-count">{len(cold_rows)}</span></div>
+  <div class="section-meta">Meeting Scheduled with no contact in 10+ days, Active Relationship at 14+ days</div>
 </div>
-<div class="section-header"><span class="section-dot dot-today"></span>Today<span class="section-count">{len(today_rows)}</span></div>
-<table class="mini-table">
-  <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
-  <tbody>{today_rows_html}</tbody>
+<table class="mini-table cold-table">
+  <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Days Cold</th><th>Last Contacted</th><th>Task Due</th></tr></thead>
+  <tbody>{cold_rows_html}</tbody>
 </table>
 
-<div class="section-header" style="margin-top:22px"><span class="section-dot dot-whale"></span>Whale Tracker &mdash; $50k+<span class="section-count">{len(whale_rows)}</span></div>
-<table class="mini-table">
+<div class="section-band whale">
+  <div class="section-title">Whale Tracker <span class="section-count">{len(whale_rows)}</span></div>
+  <div class="section-meta">Deals $50k and above, excluding Closed Lost</div>
+</div>
+<table class="mini-table whale-table">
   <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
   <tbody>{whale_rows_html}</tbody>
 </table>
 
-<div class="section-header" style="margin-top:22px"><span class="section-dot dot-all"></span>All Contacts<span class="section-count">{count}</span></div>
-<div class="controls">
-  <button id="btn-default" onclick="resetSort()">Default Sort</button>
-  <span class="sort-hint">deal stage &rarr; amount</span>
-  <label for="stage-filter">Stage:</label>
-  <select id="stage-filter" onchange="filterStage(this.value)">
-    <option value="">All Stages</option>
-{stage_options}
-  </select>
-  <button id="btn-dormant" onclick="toggleDormant()">Show dormant ({stat_dormant})</button>
-  <span id="visible-count" style="color:#555;font-size:0.78rem;"></span>
+<div class="section-band">
+  <div class="section-title">Today <span class="section-count">{len(today_rows)}</span></div>
+  <div class="section-meta">Meetings and tasks due today, plus the next three workdays</div>
 </div>
-<table id="pipeline-table">
-  <thead>
-    <tr>
-      <th onclick="sortTable(8,'number')">Status</th>
-      <th onclick="sortTable(0,'text')">Name</th>
-      <th>Title / Co</th>
-      <th onclick="sortTable(1,'stage')">Deal Stage</th>
-      <th onclick="sortTable(2,'number')">Deal Amount</th>
-      <th onclick="sortTable(3,'date')">Date Attended</th>
-      <th onclick="sortTable(4,'date')">Last Contacted</th>
-      <th onclick="sortTable(7,'date')">Upcoming Mtg</th>
-      <th onclick="sortTable(6,'number')">Task</th>
-      <th onclick="sortTable(5,'number')"># Contacted</th>
-    </tr>
-  </thead>
-  <tbody id="pipeline-body">
+<div class="today-layout">
+  <div class="today-main">
+    <table class="mini-table">
+      <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
+      <tbody>{today_rows_html}</tbody>
+    </table>
+  </div>
+  <aside class="today-sidebar">
+    <h3>Next 3 Days</h3>
+    <div class="cal-cards">{cal_cards_html}</div>
+  </aside>
+</div>
+
+<div class="section-band">
+  <div class="section-title">All Contacts <span class="section-count">{count}</span></div>
+  <button id="all-toggle" class="collapse-btn" onclick="toggleAll()"><span class="chev">&rsaquo;</span><span class="lbl">Show all contacts</span></button>
+</div>
+<div id="all-collapsible" class="collapsible">
+  <div class="controls">
+    <button id="btn-default" onclick="resetSort()">Default Sort</button>
+    <span class="sort-hint">deal stage &rarr; amount</span>
+    <label for="stage-filter">Stage:</label>
+    <select id="stage-filter" onchange="filterStage(this.value)">
+      <option value="">All Stages</option>
+{stage_options}
+    </select>
+    <span id="visible-count" style="color:var(--text-3);font-size:0.74rem;"></span>
+  </div>
+  <table id="pipeline-table">
+    <thead>
+      <tr>
+        <th onclick="sortTable(8,'number')">Status</th>
+        <th onclick="sortTable(0,'text')">Name</th>
+        <th>Title / Co</th>
+        <th onclick="sortTable(1,'stage')">Deal Stage</th>
+        <th onclick="sortTable(2,'number')">Deal Amount</th>
+        <th onclick="sortTable(3,'date')">Date Attended</th>
+        <th onclick="sortTable(4,'date')">Last Contacted</th>
+        <th onclick="sortTable(7,'date')">Upcoming Mtg</th>
+        <th onclick="sortTable(6,'number')">Task</th>
+        <th onclick="sortTable(5,'number')"># Contacted</th>
+      </tr>
+    </thead>
+    <tbody id="pipeline-body">
 {rows_html}
-  </tbody>
-</table>
+    </tbody>
+  </table>
+</div>
 <script>
 (function() {{
   var sortState = {{ col: -1, dir: 1 }};
@@ -1226,6 +1208,14 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     }});
   }};
 
+  window.toggleAll = function() {{
+    var btn = document.getElementById('all-toggle');
+    var box = document.getElementById('all-collapsible');
+    var open = box.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.querySelector('.lbl').textContent = open ? 'Hide all contacts' : 'Show all contacts';
+  }};
+
   window.resetSort = function() {{
     var tbody = document.getElementById('pipeline-body');
     var ths = document.querySelectorAll('#pipeline-table thead th');
@@ -1242,35 +1232,18 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   }};
 
   var stageFilter = '';
-  var hideDormant = true;
-  // hide dormant on load
-  (function() {{
-    document.querySelectorAll('#pipeline-body tr[data-status="Dormant"]').forEach(function(r) {{
-      r.classList.add('hidden');
-    }});
-    updateCount();
-  }})();
 
   function applyFilters() {{
     var rows = document.querySelectorAll('#pipeline-body tr');
     rows.forEach(function(r) {{
-      var stageHide   = stageFilter !== '' && r.dataset.stageLabel !== stageFilter;
-      var dormantHide = hideDormant && r.dataset.status === 'Dormant';
-      r.classList.toggle('hidden', stageHide || dormantHide);
+      var stageHide = stageFilter !== '' && r.dataset.stageLabel !== stageFilter;
+      r.classList.toggle('hidden', stageHide);
     }});
     updateCount();
   }}
 
   window.filterStage = function(val) {{
     stageFilter = val;
-    applyFilters();
-  }};
-
-  window.toggleDormant = function() {{
-    hideDormant = !hideDormant;
-    var dormantCount = document.querySelectorAll('#pipeline-body tr[data-status="Dormant"]').length;
-    document.getElementById('btn-dormant').textContent =
-      (hideDormant ? 'Show' : 'Hide') + ' dormant (' + dormantCount + ')';
     applyFilters();
   }};
 
@@ -1293,88 +1266,6 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 </html>'''
 
 
-_OVERVIEW_CSS = '''
-:root{--bg:#141414;--surface:#1e1e1e;--surface2:#242424;--border:#3a3a3a;--border2:#4a4a4a;
---text:#e8e8e8;--text2:#aaa;--text3:#777;--purple:#adadee;--green:#7dd87d;
---red:#dd6666;--amber:#c9a96e;}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);padding:24px;font-size:13px;}
-.dash{max-width:1100px;margin:0 auto;}
-.hdr{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:20px;}
-.hdr h1{font-size:20px;font-weight:600;color:#f0f0f0;}
-.slabel{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);border-bottom:1px solid var(--border);padding-bottom:4px;margin:0 0 10px;}
-.g6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:18px;}
-.kc{background:var(--surface);border-radius:6px;padding:12px;border:1px solid var(--border);border-top:2px solid var(--amber);}
-.kv{font-size:22px;font-weight:500;line-height:1.1;}
-.kl{font-size:11px;color:var(--text2);margin-top:4px;}
-.ks{font-size:10px;color:var(--text3);font-style:italic;margin-top:2px;}
-.frow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:18px;}
-.fc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
-.fc-bw{flex:1;}
-.fc-lbl{font-size:11px;color:var(--text2);margin-bottom:5px;}
-.fc-bg{height:4px;background:var(--border);border-radius:2px;}
-.fc-fill{height:4px;border-radius:2px;}
-.fc-nums{text-align:right;white-space:nowrap;}
-.fc-pct{font-size:17px;font-weight:500;line-height:1;}
-.fc-cnt{font-size:10px;color:var(--text3);margin-top:2px;}
-.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px;}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px;}
-.ctitle{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:9px;}
-.sbig{font-size:24px;font-weight:500;color:var(--amber);text-align:center;}
-.ssub{font-size:10px;color:var(--text3);text-align:center;margin-top:3px;border-bottom:1px solid var(--border);padding-bottom:9px;margin-bottom:11px;}
-table{width:100%;border-collapse:collapse;font-size:11px;}
-th{font-size:10px;color:var(--text2);text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);background:var(--surface2);font-weight:500;text-transform:uppercase;letter-spacing:.04em;}
-td{padding:6px 8px;border-bottom:1px solid #272727;color:var(--text);}
-tr:last-child td{border-bottom:none;}
-tr:nth-child(even) td{background:var(--surface2);}
-tr:hover td{background:#1c1c1c;}
-.badge{display:inline-block;font-size:9px;font-weight:600;padding:2px 6px;border-radius:3px;}
-.bp{background:#222236;color:#adadee;}
-.ba{background:#363618;color:#d9d97d;}
-.br{background:#2e1212;color:#dd6666;}
-.bg{background:#162a16;color:#7dd87d;}
-.fg{background:var(--surface2);border-radius:4px;padding:9px 11px;display:flex;justify-content:space-between;align-items:center;margin:7px 0;border:1px solid var(--border);}
-.goal-bar-bg{height:7px;background:var(--border);border-radius:4px;margin-bottom:4px;}
-.goal-bar-fill{height:7px;border-radius:4px;background:var(--amber);}
-.g4s{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:12px;}
-.stat{background:var(--surface2);border-radius:4px;padding:9px 6px;text-align:center;border:1px solid var(--border);}
-.sv{font-size:18px;font-weight:500;}
-.sl{font-size:10px;color:var(--text2);margin-top:3px;line-height:1.3;}
-.brow{display:grid;grid-template-columns:1fr 32px 74px 44px;align-items:center;padding:5px 0;border-bottom:1px solid #272727;font-size:11px;}
-.brow:last-child{border-bottom:none;}
-.or{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid #272727;font-size:11px;}
-.or:last-child{border-bottom:none;}
-.mb{height:3px;border-radius:2px;margin-top:3px;}
-.note{font-size:10px;color:var(--text3);font-style:italic;margin-top:6px;line-height:1.5;}
-.stale-note{font-size:10px;color:var(--amber);font-style:italic;margin-bottom:8px;padding:5px 8px;background:#2a2010;border-radius:4px;border-left:2px solid var(--amber);}
-.sr{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #272727;font-size:11px;gap:9px;}
-.sr:last-child{border-bottom:none;}
-.sbar{height:5px;border-radius:3px;margin-top:3px;}
-.act3{display:grid;grid-template-columns:1fr 150px 1fr;gap:12px;margin-bottom:16px;}
-.act-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:13px;}
-.act-rep{display:grid;grid-template-columns:80px 1fr 70px;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #272727;}
-.act-rep:last-of-type{border-bottom:none;}
-.act-bb{height:6px;background:var(--border);border-radius:3px;}
-.act-bf{height:6px;border-radius:3px;}
-.act-v{font-size:16px;font-weight:500;text-align:right;line-height:1;}
-.act-s{font-size:10px;color:var(--text2);margin-top:2px;text-align:right;}
-.mid-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
-.footer{margin-top:16px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:10px;color:var(--text3);font-style:italic;}
-.nav{display:flex;gap:6px;margin-bottom:20px;}
-.nav a{padding:4px 14px;font-size:0.78rem;border-radius:4px;border:1px solid var(--border);color:#888;text-decoration:none;}
-.nav a.active{border-color:var(--amber);color:var(--amber);}
-.nav a:hover{border-color:var(--amber);color:var(--amber);}
-#pw-gate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;}
-#pw-gate.hidden{display:none;}
-#pw-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:32px 40px;text-align:center;min-width:280px;}
-#pw-box h2{margin:0 0 20px;color:var(--text);font-size:16px;font-weight:500;letter-spacing:.05em;}
-#pw-input{width:100%;padding:10px 14px;background:#111;border:1px solid #444;border-radius:5px;color:var(--text);font-size:15px;outline:none;box-sizing:border-box;}
-#pw-input:focus{border-color:var(--amber);}
-#pw-btn{margin-top:14px;width:100%;padding:10px;background:var(--amber);border:none;border-radius:5px;color:#111;font-size:14px;font-weight:600;cursor:pointer;}
-#pw-btn:hover{background:#d4b87a;}
-#pw-err{color:var(--red);font-size:13px;margin-top:10px;min-height:18px;}
-'''
 
 _STATIC_STAGE_PROGRESSION = '''
 <div class="stale-note">Last updated: May 13, 2026 — stage progression history is not available via the HubSpot API.</div>
@@ -1665,7 +1556,7 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
         '<!DOCTYPE html><html lang="en"><head>',
         '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">',
         '<title>Pipeline Overview</title>',
-        f'<style>{_OVERVIEW_CSS}</style></head><body>',
+        f'<link rel="stylesheet" href="pipeline.css"></head><body>',
 
         # password gate
         f'<div id="pw-gate"><div id="pw-box">',
