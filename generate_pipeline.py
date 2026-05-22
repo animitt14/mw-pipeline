@@ -1047,51 +1047,53 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     mtg_items_html  = '\n'.join(_mtg_pieces)
     task_items_html = '\n'.join(task_item(r) for r in today_tasks_rows)   if today_tasks_rows   else '<div class="ti-empty">No tasks today</div>'
 
-    def whale_tile(r):
-        hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
-        # Amount: compact ($150k / $1.2M)
-        amt_short = fmt_stat_val(r['amount_val']) if r['amount_val'] > 0 else '—'
-        # Stage chip
-        stage_chip = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else ''
-        # Context line: title/co · attended date
-        ctx_parts = []
-        title = shorten_title(r['title'])[:30] if r['title'] else ''
-        company = r['company'][:30] if r['company'] else ''
-        who = ', '.join(p for p in [title, company] if p)
-        if who: ctx_parts.append(escape(who))
-        if r['rsvp_date']: ctx_parts.append(f'Attended {escape(r["rsvp_date"])}')
-        ctx_line = ' &middot; '.join(ctx_parts) if ctx_parts else ''
-        # Recency dot + label
+    REC_MADE_STAGE = '1321369502'
+    def whale_priority(r):
+        hs = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
+        inv = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
+        amt = escape(r['amount_fmt']) if r['amount_fmt'] else '—'
+        # Meta line: Stage · last X · task Y / mtg Y
+        meta_parts = []
+        if r['stage_label']: meta_parts.append(escape(r['stage_label']))
+        if r['last_contact']: meta_parts.append(f'last {escape(r["last_contact"])}')
+        if r['meeting_start'] and r['meeting_ms'] >= now_ms_ts:
+            meta_parts.append(f'mtg {escape(r["meeting_start"])}')
+        elif r['task_due']:
+            meta_parts.append(f'task {escape(r["task_due"])}')
+        meta_line = ' &middot; '.join(meta_parts)
+        # ONE badge: Meeting / Rec Made / Hot / Stale (or nothing)
         d = r.get('days_since')
-        if d is None:
-            recency_txt, recency_cls = 'No contact logged', 'cold'
-        elif d == 0:
-            recency_txt, recency_cls = 'Contacted today', 'warm'
-        elif d <= 7:
-            recency_txt, recency_cls = f'{d}d since last contact', 'warm'
-        elif d <= 21:
-            recency_txt, recency_cls = f'{d}d since last contact', 'cool'
-        else:
-            recency_txt, recency_cls = f'{d}d since last contact', 'cold'
-        # NEXT action: prefer upcoming meeting, else open task, else prompt
         if r['meeting_ms'] > 0 and r['meeting_ms'] >= now_ms_ts:
-            mtitle = (r['meeting_title'] or 'Meeting').strip()
-            next_line = f'<span class="wt-next-strong">{escape(mtitle[:50])}</span> &middot; {escape(r["meeting_start"])}'
-        elif r['task_due_ms'] > 0:
-            tsubj = (r['task_subject'] or 'Task').strip()
-            next_line = f'<span class="wt-next-strong">{escape(tsubj[:50])}</span> &middot; due {escape(r["task_due"])}'
+            badge_html = '<span class="wp-badge wp-meeting">Meeting</span>'
+        elif r['stage_id'] == REC_MADE_STAGE:
+            badge_html = '<span class="wp-badge wp-recmade">Rec Made</span>'
+        elif d is not None and d <= 7:
+            badge_html = '<span class="wp-badge wp-hot">Hot</span>'
+        elif d is None or d > 14:
+            badge_html = '<span class="wp-badge wp-stale">Stale</span>'
         else:
-            next_line = '<span class="wt-next-prompt">Book a follow-up</span>'
+            badge_html = ''
+        # NEXT line — concrete action
+        if r['meeting_ms'] > 0 and r['meeting_ms'] >= now_ms_ts:
+            next_text = escape((r['meeting_title'] or 'Meeting').strip()[:80])
+            next_cls = ''
+        elif r['task_due_ms'] > 0:
+            next_text = escape((r['task_subject'] or 'Task').strip()[:80])
+            next_cls = ''
+        else:
+            next_text = 'Book a follow-up'
+            next_cls = ' wp-next-prompt'
         return (
-            f'<div class="whale-tile">'
-            f'  <div class="wt-amount">{amt_short}</div>'
-            f'  <div class="wt-name">{hs_badge}{escape(r["name"])} {stage_chip}</div>'
-            + (f'  <div class="wt-ctx">{ctx_line}</div>' if ctx_line else '') +
-            f'  <div class="wt-recency"><span class="wt-dot wt-{recency_cls}"></span>{recency_txt}</div>'
-            f'  <div class="wt-next"><span class="wt-next-lbl">Next</span>{next_line}</div>'
+            f'<div class="whale-priority">'
+            f'<div class="wp-head">'
+            f'<div class="wp-id">{hs}<span class="wp-name">{escape(r["name"])}</span>{inv}</div>'
+            f'<div class="wp-amount">{amt}</div>'
+            f'</div>'
+            f'<div class="wp-meta">{meta_line}{badge_html}</div>'
+            f'<div class="wp-next"><span class="wp-next-lbl">Next</span><span class="wp-next-text{next_cls}">{next_text}</span></div>'
             f'</div>'
         )
-    top_whale_tiles_html = ''.join(whale_tile(r) for r in whale_rows[:3])
+    whale_priorities_html = '\n'.join(whale_priority(r) for r in whale_rows) if whale_rows else '<div class="ti-empty">No open whales above $50k</div>'
 
     # --- Chart data ---
     funnel_counts = [sum(1 for r in row_data if r['stage_id'] == sid) for sid, _ in FUNNEL_STAGES]
@@ -1323,11 +1325,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     <div class="section-title">Whale Tracker <span class="section-count">{len(whale_rows)}</span></div>
     <div class="section-meta">Open deals $50k and above &middot; excludes Closed Won + Closed Lost</div>
   </div>
-  <div class="whale-tiles">{top_whale_tiles_html}</div>
-  <table class="mini-table whale-table">
-    <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Next</th></tr></thead>
-    <tbody>{whale_rows_html}</tbody>
-  </table>
+  <div class="whale-priorities">{whale_priorities_html}</div>
 </section>
 
 <section class="page-section section-cold">

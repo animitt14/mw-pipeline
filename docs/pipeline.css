@@ -401,61 +401,51 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .cold-table td:nth-child(4) { font-variant-numeric: tabular-nums; color: var(--accent-2); font-weight: 500; }
 .cold-days { font-weight: 600; }
 
-/* Top-3 whale tiles — focus, weight, scannability */
-.whale-tiles {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 14px; margin: 18px 0 28px;
-}
-@media (max-width: 900px) { .whale-tiles { grid-template-columns: 1fr; } }
-.whale-tile {
+/* Whale priority tiles — compact horizontal strips */
+.whale-priorities { display: flex; flex-direction: column; gap: 8px; }
+.whale-priority {
   background: var(--surface);
-  border-radius: 12px;
-  padding: 24px 26px 20px;
-  display: flex; flex-direction: column; gap: 10px;
-  position: relative;
-  box-shadow: 0 1px 2px rgba(91, 33, 182, 0.04);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border-radius: 10px;
+  padding: 14px 18px 12px;
+  display: flex; flex-direction: column; gap: 4px;
+  transition: box-shadow 0.15s ease;
 }
-.whale-tile:hover {
-  transform: translateY(-1px);
+.whale-priority:hover {
   box-shadow:
     0 1px 2px rgba(91, 33, 182, 0.06),
-    0 8px 20px rgba(91, 33, 182, 0.10);
+    0 6px 16px rgba(91, 33, 182, 0.08);
 }
-.whale-tile::before {
-  content: ''; position: absolute; top: 0; left: 26px;
-  width: 44px; height: 3px; background: var(--accent);
-  border-radius: 0 0 3px 3px;
+.wp-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
 }
-.wt-amount {
-  font-size: 2.1rem; font-weight: 400; color: var(--accent-2);
-  line-height: 1; letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-  margin-bottom: 2px;
+.wp-id { display: flex; align-items: center; gap: 8px; min-width: 0; flex-wrap: wrap; }
+.wp-name { font-size: 1rem; font-weight: 500; color: var(--text); }
+.wp-amount {
+  font-size: 1.55rem; font-weight: 500; color: var(--accent-2);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+  line-height: 1; flex-shrink: 0;
 }
-.wt-name {
-  font-size: 0.95rem; font-weight: 500; color: var(--text);
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+.wp-meta {
+  font-size: 0.76rem; color: var(--text-2);
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
 }
-.wt-ctx { font-size: 0.78rem; color: var(--text-2); line-height: 1.4; }
-.wt-recency { font-size: 0.78rem; color: var(--text-2); display: flex; align-items: center; gap: 8px; }
-.wt-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.wt-warm { background: #16a34a; }
-.wt-cool { background: #ca8a04; }
-.wt-cold { background: #dc2626; }
-.wt-next {
-  font-size: 0.82rem; color: var(--text);
-  padding-top: 10px; margin-top: 4px;
-  border-top: 1px solid var(--border);
-  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+.wp-badge {
+  font-size: 0.6rem; font-weight: 700; padding: 2px 9px;
+  border-radius: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+  flex-shrink: 0; margin-left: auto;
 }
-.wt-next-lbl {
+.wp-hot     { background: #d1fae5; color: #065f46; }
+.wp-stale   { background: #fef3c7; color: #92400e; }
+.wp-meeting { background: var(--accent-bg); color: var(--accent-2); }
+.wp-recmade { background: #ccfbf1; color: #115e59; }
+.wp-next { font-size: 0.8rem; color: var(--text); display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.wp-next-lbl {
   font-size: 0.6rem; font-weight: 700; color: var(--text-3);
   letter-spacing: 0.16em; text-transform: uppercase;
   flex-shrink: 0;
 }
-.wt-next-strong { color: var(--text); font-weight: 500; }
-.wt-next-prompt { color: var(--red-2); font-style: italic; font-weight: 500; }
+.wp-next-text { color: var(--text); }
+.wp-next-text.wp-next-prompt { color: var(--red-2); font-style: italic; font-weight: 500; }
 
 /* Today table — small-caps label + inline detail, color does the lifting */
 .today-table td:nth-child(4) { text-align: left; font-variant-numeric: normal; color: var(--text); font-weight: 400; }
