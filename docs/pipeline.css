@@ -195,18 +195,19 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
   border-bottom: 1px solid var(--border);
 }
 .section-band .section-title {
-  font-size: 0.78rem; font-weight: 600; color: var(--text);
-  text-transform: uppercase; letter-spacing: 0.1em;
+  font-size: 1.2rem; font-weight: 600; color: var(--text);
+  text-transform: none; letter-spacing: -0.01em;
   display: flex; align-items: center; gap: 12px;
+  line-height: 1.2;
 }
 .section-band .section-count {
   background: var(--surface-2); color: var(--text-2);
-  border-radius: 10px; padding: 1px 9px; font-size: 0.66rem;
+  border-radius: 11px; padding: 2px 10px; font-size: 0.72rem;
   font-weight: 500; text-transform: none; letter-spacing: 0;
   font-variant-numeric: tabular-nums;
 }
 .section-band .section-meta {
-  font-size: 0.68rem; color: var(--text-3); text-transform: none; letter-spacing: 0;
+  font-size: 0.78rem; color: var(--text-3); text-transform: none; letter-spacing: 0;
 }
 .section-band.whale { border-bottom-color: var(--accent-border); }
 .section-band.whale .section-title { color: var(--accent-2); }
