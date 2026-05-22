@@ -896,21 +896,20 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         # Meeting takes priority when both fall on the same day
         if has_mtg_today:
             mtg_title = escape(r['meeting_title']) if r['meeting_title'] else 'Meeting'
-            # Strip any leading date if start_str includes it — show just time-ish detail
             mtg_detail = escape(r['meeting_start']) if r['meeting_start'] else ''
             activity_cell = (
-                f'<span class="act-pill act-mtg" title="{mtg_title}">Meeting</span>'
-                f'<span class="act-detail">{mtg_detail}</span>'
+                f'<span class="act act-mtg" title="{mtg_title}">'
+                f'<span class="act-kind">meeting</span>{mtg_detail}</span>'
             )
         elif has_task_today:
             task_title = escape(r['task_subject']) if r['task_subject'] else ''
-            detail = task_title[:60] if task_title else 'Task'
+            detail = task_title[:60] if task_title else ''
             activity_cell = (
-                f'<span class="act-pill act-task" title="{task_title}">Task</span>'
-                f'<span class="act-detail">{detail}</span>'
+                f'<span class="act act-task" title="{task_title}">'
+                f'<span class="act-kind">task</span>{detail}</span>'
             )
         else:
-            activity_cell = '<span class="act-detail">&mdash;</span>'
+            activity_cell = '<span class="act-empty">&mdash;</span>'
         cls = heat_cls(r.get('days_since'))
         cls_attr = f' class="{cls}"' if cls else ''
         return (f'<tr{cls_attr}>'
