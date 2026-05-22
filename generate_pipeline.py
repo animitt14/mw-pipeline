@@ -1088,7 +1088,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
             f'<div class="wp-amount">{amt}</div>'
             f'<div class="wp-text">'
             f'<div class="wp-id">{hs}<span class="wp-name">{escape(r["name"])}</span>{inv}</div>'
-            f'<div class="wp-meta">{meta_line}{badge_html}</div>'
+            f'<div class="wp-meta">{badge_html}{meta_line}</div>'
             f'<div class="wp-next"><span class="wp-next-lbl">Next</span><span class="wp-next-text{next_cls}">{next_text}</span></div>'
             f'</div>'
             f'</div>'

@@ -430,7 +430,6 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 }
 .wp-icon {
   font-size: 0.95rem;
-  margin-left: auto;
   flex-shrink: 0;
   line-height: 1;
   filter: saturate(0.85);
