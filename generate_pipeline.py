@@ -548,7 +548,10 @@ def fmt_amount(amount_str):
     if not amount_str:
         return ''
     try:
-        return f'${float(amount_str):,.0f}'
+        n = float(amount_str)
+        if n >= 1_000_000: return f'${n/1_000_000:.1f}M'
+        if n >= 1_000:     return f'${n/1_000:.0f}k'
+        return f'${int(n):,}'
     except Exception:
         return amount_str
 
