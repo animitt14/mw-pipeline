@@ -1132,15 +1132,10 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         bar_empty = 10 - bar_filled
         bar_str = '&#9608;' * bar_filled + '&#9617;' * bar_empty
         card_class = 'cal-card cal-today' if is_today else 'cal-card'
+        total_tasks = email_n + call_n + other_n
         cal_cards_html += f'''<div class="{card_class}">
   <div class="cal-day-label">{day_label}</div>
-  <div class="cal-mtg">&#128197; {mtg_label}</div>
-  <div class="cal-tasks-section">
-    <div class="cal-row"><span class="cal-icon">&#9993;</span><span class="cal-num">{email_n}</span><span class="cal-lbl">email</span></div>
-    <div class="cal-row"><span class="cal-icon">&#9990;</span><span class="cal-num">{call_n}</span><span class="cal-lbl">call</span></div>
-    <div class="cal-row"><span class="cal-icon">&#183;</span><span class="cal-num">{other_n}</span><span class="cal-lbl">other</span></div>
-  </div>
-  <div class="cal-cap"><span class="cal-bar">{bar_str}</span><span class="cal-cap-label">{free_h:.1f}h open</span></div>
+  <div class="cal-mini">{mtg_count} mtg &middot; {total_tasks} tasks &middot; {free_h:.1f}h open</div>
 </div>'''
 
     # Stacked horizontal funnel — colors mirror the .stage-* badge text colors
@@ -1313,10 +1308,10 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
       <h3>Tasks <span class="t3-count">{len(today_tasks_rows)}</span></h3>
       <div class="ti-list">{task_items_html}</div>
     </div>
-  </div>
-  <div class="t3-cal-strip">
-    <h3>Next 3 Days</h3>
-    <div class="cal-strip">{cal_cards_html}</div>
+    <aside class="t3-col t3-calendar">
+      <h3>Next 3 Days</h3>
+      <div class="cal-cards">{cal_cards_html}</div>
+    </aside>
   </div>
 </section>
 
