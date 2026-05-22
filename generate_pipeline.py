@@ -813,6 +813,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
                 f'</div>')
 
     sub_stats_html = (
+        sub_stat(str(stat_active), 'Active') +
+        sub_stat(str(stat_dormant), 'Dormant') +
+        sub_stat(str(stat_closed), 'Closed') +
         sub_stat(str(stat_mtg_count), 'Meetings') +
         sub_stat(str(stat_tasks_week), 'Tasks / 7d') +
         sub_stat(str(stat_whales), 'Whales')
@@ -888,18 +891,33 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         inv_badge = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
         stage_cell = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else '—'
         amt_cell = escape(r['amount_fmt']) if r['amount_fmt'] else '—'
-        mtg_title = escape(r['meeting_title']) if r['meeting_title'] else ''
-        mtg_cell = f'<span title="{mtg_title}">{r["meeting_start"]}</span>' if r['meeting_start'] else '—'
-        task_title = escape(r['task_subject']) if r['task_subject'] else ''
-        task_cell = f'<span title="{task_title}">{r["task_due"]}</span>' if r['task_due'] else '—'
+        has_mtg_today = r['meeting_ms'] > 0 and today_start_ms <= r['meeting_ms'] < today_end_ms
+        has_task_today = r['task_due_ms'] > 0 and today_start_ms <= r['task_due_ms'] < today_end_ms
+        # Meeting takes priority when both fall on the same day
+        if has_mtg_today:
+            mtg_title = escape(r['meeting_title']) if r['meeting_title'] else 'Meeting'
+            # Strip any leading date if start_str includes it — show just time-ish detail
+            mtg_detail = escape(r['meeting_start']) if r['meeting_start'] else ''
+            activity_cell = (
+                f'<span class="act-pill act-mtg" title="{mtg_title}">Meeting</span>'
+                f'<span class="act-detail">{mtg_detail}</span>'
+            )
+        elif has_task_today:
+            task_title = escape(r['task_subject']) if r['task_subject'] else ''
+            detail = task_title[:60] if task_title else 'Task'
+            activity_cell = (
+                f'<span class="act-pill act-task" title="{task_title}">Task</span>'
+                f'<span class="act-detail">{detail}</span>'
+            )
+        else:
+            activity_cell = '<span class="act-detail">&mdash;</span>'
         cls = heat_cls(r.get('days_since'))
         cls_attr = f' class="{cls}"' if cls else ''
         return (f'<tr{cls_attr}>'
                 f'<td>{hs_badge}{r["name"]}{inv_badge}</td>'
                 f'<td>{stage_cell}</td>'
                 f'<td>{amt_cell}</td>'
-                f'<td>{mtg_cell}</td>'
-                f'<td>{task_cell}</td>'
+                f'<td class="act-cell">{activity_cell}</td>'
                 f'</tr>')
 
     def cold_row(r):
@@ -922,7 +940,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
                 f'<td>{task_cell}</td>'
                 f'</tr>')
 
-    today_rows_html  = '\n'.join(today_row(r) for r in today_rows)  if today_rows  else '<tr><td colspan="5" style="color:var(--text-3);text-align:center;padding:18px">No meetings or tasks due today</td></tr>'
+    today_rows_html  = '\n'.join(today_row(r) for r in today_rows)  if today_rows  else '<tr><td colspan="4" style="color:var(--text-3);text-align:center;padding:18px">No meetings or tasks due today</td></tr>'
     whale_rows_html  = '\n'.join(mini_row(r) for r in whale_rows)  if whale_rows  else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals at $50k+</td></tr>'
     cold_rows_html   = '\n'.join(cold_row(r) for r in cold_rows)   if cold_rows   else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals are slipping</td></tr>'
 
@@ -1119,7 +1137,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     <div class="hero-core">
       <div class="hero-eyebrow">Open Pipeline Value</div>
       <div class="hero-val">{hero_val_html}</div>
-      <div class="hero-lbl">{stat_active} active &middot; {stat_dormant} dormant &middot; {stat_closed} closed &nbsp;=&nbsp; {count} total</div>
+      <div class="hero-lbl">across {stat_active} active deals</div>
     </div>
     <div class="hero-sub-stats">{sub_stats_html}</div>
   </div>
@@ -1141,7 +1159,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   </aside>
   <div class="today-main">
     <table class="mini-table today-table">
-      <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Meeting</th><th>Task Due</th></tr></thead>
+      <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Activity</th></tr></thead>
       <tbody>{today_rows_html}</tbody>
     </table>
   </div>

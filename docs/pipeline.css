@@ -264,6 +264,18 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .cold-table td:nth-child(4) { font-variant-numeric: tabular-nums; color: var(--red-2); font-weight: 600; }
 .cold-days { font-weight: 600; }
 
+/* Today table — activity pill + detail */
+.today-table td:nth-child(4) { text-align: left; font-variant-numeric: normal; color: var(--text); font-weight: 400; }
+.act-cell { display: flex; align-items: center; gap: 8px; }
+.act-pill {
+  display: inline-block; padding: 2px 7px; border-radius: 3px;
+  font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.act-mtg  { background: var(--accent-bg); color: var(--accent-2); }
+.act-task { background: #eef0f4; color: #4b5563; }
+.act-detail { color: var(--text-2); font-size: 0.78rem; }
+
 /* --- TABLE LINK / BADGE STYLES --- */
 a { color: var(--accent-2); text-decoration: none; }
 a:hover { text-decoration: underline; }
