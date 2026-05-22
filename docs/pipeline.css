@@ -236,8 +236,6 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
   text-transform: uppercase; letter-spacing: 0.1em;
   margin: 0 0 14px;
   display: flex; align-items: center; gap: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--row-divider);
 }
 .t3-count {
   font-size: 0.66rem; font-weight: 500; color: var(--text-3);
