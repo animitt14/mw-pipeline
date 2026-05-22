@@ -18,12 +18,12 @@
   --text-2:    #6e6660;
   --text-3:    #a39c93;
 
-  /* Accent — deep aubergine */
-  --accent:        #5e2c63;
-  --accent-2:      #3f1c4a;
-  --accent-deep:   #2e123a;
-  --accent-bg:     rgba(94, 44, 99, 0.10);
-  --accent-border: rgba(94, 44, 99, 0.30);
+  /* Accent — Masterworks deep navy */
+  --accent:        #1e2a40;
+  --accent-2:      #11203a;
+  --accent-deep:   #0a1730;
+  --accent-bg:     rgba(30, 42, 64, 0.10);
+  --accent-border: rgba(30, 42, 64, 0.30);
 
   /* Semantic — earth tones (sparingly used) */
   --green:    #5f7a52;
@@ -36,13 +36,13 @@
   --blue-2:   #455a66;
   --purple:   var(--accent);
 
-  /* Heat — dusty rose family (no yellow) */
-  --heat-1:        #f6efe7;
-  --heat-1-hover:  #ede4d6;
-  --heat-2:        #f1e4d8;
-  --heat-2-hover:  #e6d4c4;
-  --heat-3:        #edd4c3;
-  --heat-3-hover:  #e1c2af;
+  /* Heat — warm sand to clay (no pink) */
+  --heat-1:        #f5ede0;
+  --heat-1-hover:  #ecdfca;
+  --heat-2:        #ecdcc0;
+  --heat-2-hover:  #ddcca8;
+  --heat-3:        #dec8a4;
+  --heat-3-hover:  #d0b788;
 
   /* Legacy aliases (overview compatibility) */
   --surface2: var(--surface-2);
@@ -104,12 +104,11 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
   text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 12px;
 }
 .hero-val {
-  font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-  font-size: 5.2rem;
-  font-weight: 300;
+  font-size: 4.6rem;
+  font-weight: 200;
   color: var(--accent-2);
   line-height: 0.95;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
 }
 .hero-lbl {

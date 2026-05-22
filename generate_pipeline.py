@@ -1117,10 +1117,10 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   <div class="cal-cap"><span class="cal-bar">{bar_str}</span><span class="cal-cap-label">{free_h:.1f}h open</span></div>
 </div>'''
 
-    # Stacked horizontal funnel — gallery earth tones
+    # Stacked horizontal funnel — Masterworks navy + earth palette
     total_funnel = sum(funnel_counts) or 1
     # Order matches FUNNEL_STAGES: Advisor, Active, LongTerm, Mtg, Nurture, Rec Made
-    SF_COLORS = ['#a08862', '#8b8260', '#7c7062', '#5e2c63', '#a07a3b', '#3f1c4a']
+    SF_COLORS = ['#a08862', '#5d7286', '#3d556e', '#1e2a40', '#a07a3b', '#11203a']
     sf_segs = []
     sf_keys = []
     for i, (c, (sid, lbl)) in enumerate(zip(funnel_counts, FUNNEL_STAGES)):
@@ -1220,9 +1220,6 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pipeline — {owner_name}</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="pipeline.css">
 </head>
 <body>
@@ -1855,9 +1852,6 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
         '<!DOCTYPE html><html lang="en"><head>',
         '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">',
         '<title>Pipeline Overview</title>',
-        f'<link rel="preconnect" href="https://fonts.googleapis.com">'
-        f'<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
-        f'<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">'
         f'<link rel="stylesheet" href="pipeline.css"></head><body>',
 
         # password gate
