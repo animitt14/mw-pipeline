@@ -488,7 +488,7 @@ a:hover { text-decoration: underline; }
 .note-toggle { cursor: pointer; color: var(--text-2); font-size: 0.75rem; margin-left: 5px; user-select: none; }
 .note-toggle:hover { color: var(--text); }
 .note-snippet { font-size: 0.72rem; color: var(--text-2); font-style: italic; margin-top: 4px; line-height: 1.4; white-space: normal; }
-.tc-text { font-size: 0.76rem; color: var(--text-3); }
+.tc-text { font-size: 0.76rem; color: #a5a8b0; }
 .li-inline { font-size: 0.65rem; font-weight: 600; color: var(--text-3); background: var(--surface-2); border-radius: 3px; padding: 2px 5px; margin-right: 4px; }
 .li-inline:hover { color: var(--accent-2) !important; background: var(--accent-bg) !important; text-decoration: none !important; }
 
