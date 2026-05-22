@@ -284,7 +284,7 @@ def fmt_date(iso):
         return ''
     try:
         dt = datetime.fromisoformat(iso.replace('Z', '+00:00'))
-        return dt.strftime('%#m/%#d/%y') if sys.platform == 'win32' else dt.strftime('%-m/%-d/%y')
+        return dt.strftime('%#m/%#d') if sys.platform == 'win32' else dt.strftime('%-m/%-d')
     except Exception:
         return iso[:10] if len(iso) >= 10 else iso
 
@@ -302,7 +302,7 @@ def fmt_date_ms(ts_str):
             ms = dt.timestamp() * 1000
         except Exception:
             return '', 0
-    s = dt.strftime('%#m/%#d/%y') if sys.platform == 'win32' else dt.strftime('%-m/%-d/%y')
+    s = dt.strftime('%#m/%#d') if sys.platform == 'win32' else dt.strftime('%-m/%-d')
     return s, int(ms)
 
 
