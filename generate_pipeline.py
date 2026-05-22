@@ -835,7 +835,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 
     whale_rows = sorted(
         [r for r in all_row_data
-         if r['amount_val'] >= 50_000 and r['stage_id'] != CLOSED_LOST_STAGE],
+         if r['amount_val'] >= 50_000
+         and r['stage_id'] != CLOSED_LOST_STAGE
+         and r['stage_id'] != CLOSED_WON_STAGE],
         key=lambda r: -r['amount_val'])
 
     # Cold deals — Meeting Sched 7+ days, Active Rel 10+ days, amount > $15k
@@ -1212,7 +1214,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 
 <div class="section-band whale">
   <div class="section-title">Whale Tracker <span class="section-count">{len(whale_rows)}</span></div>
-  <div class="section-meta">Deals $50k and above, excluding Closed Lost</div>
+  <div class="section-meta">Open deals $50k and above &middot; excludes Closed Won + Closed Lost</div>
 </div>
 <div class="whale-tiles">{top_whale_tiles_html}</div>
 <table class="mini-table whale-table">
