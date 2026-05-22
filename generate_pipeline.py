@@ -1168,7 +1168,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 
 <div class="section-band">
   <div class="section-title">All Contacts <span class="section-count">{count}</span></div>
-  <button id="hidden-toggle" class="collapse-btn" onclick="toggleHidden()"><span class="lbl">Show dormant + Advisor Assigned</span></button>
+  <button id="hidden-toggle" class="collapse-btn" onclick="toggleHidden()"><span class="lbl">Show all contacts</span></button>
 </div>
 <div class="controls">
   <button id="btn-default" onclick="resetSort()">Default Sort</button>
@@ -1248,20 +1248,18 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     }});
   }};
 
-  var showHidden = false;  // by default hide dormant + Advisor Assigned
+  var showHidden = false;  // by default hide dormant, Advisor Assigned, Long Term Relationship
 
   function isMasked(r) {{
-    return r.dataset.status === 'Dormant' || r.dataset.stageLabel === 'Advisor Assigned';
+    return r.dataset.status === 'Dormant'
+        || r.dataset.stageLabel === 'Advisor Assigned'
+        || r.dataset.stageLabel === 'Long Term Relationship';
   }}
-
-  var maskedCount = Array.from(document.querySelectorAll('#pipeline-body tr')).filter(isMasked).length;
 
   window.toggleHidden = function() {{
     showHidden = !showHidden;
     var btn = document.getElementById('hidden-toggle');
-    btn.querySelector('.lbl').textContent = showHidden
-      ? 'Hide dormant + Advisor Assigned'
-      : 'Show dormant + Advisor Assigned (' + maskedCount + ')';
+    btn.querySelector('.lbl').textContent = showHidden ? 'Hide some contacts' : 'Show all contacts';
     applyFilters();
   }};
 
@@ -1298,12 +1296,8 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     applyFilters();
   }};
 
-  // Initial state: mask dormant + AA and set the button label
-  (function() {{
-    document.getElementById('hidden-toggle').querySelector('.lbl').textContent =
-      'Show dormant + Advisor Assigned (' + maskedCount + ')';
-    applyFilters();
-  }})();
+  // Initial state: mask dormant + AA + LTR
+  applyFilters();
 
   function updateCount() {{
     var rows = document.querySelectorAll('#pipeline-body tr:not(.hidden)');

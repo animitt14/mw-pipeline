@@ -37,7 +37,7 @@
 <header class="page-header">
   <div class="page-header-left">
     <h1>Pipeline &mdash; Ani</h1>
-    <div class="meta"><span>269 contacts</span><span>Updated May 22, 2026 00:38 UTC</span></div>
+    <div class="meta"><span>269 contacts</span><span>Updated May 22, 2026 00:43 UTC</span></div>
   </div>
   <div class="mw-mark">Masterworks<span class="mw-dot">&bull;</span>Advisory</div>
 </header>
@@ -138,7 +138,7 @@
 
 <div class="section-band">
   <div class="section-title">All Contacts <span class="section-count">269</span></div>
-  <button id="hidden-toggle" class="collapse-btn" onclick="toggleHidden()"><span class="lbl">Show dormant + Advisor Assigned</span></button>
+  <button id="hidden-toggle" class="collapse-btn" onclick="toggleHidden()"><span class="lbl">Show all contacts</span></button>
 </div>
 <div class="controls">
   <button id="btn-default" onclick="resetSort()">Default Sort</button>
@@ -2671,20 +2671,18 @@
     });
   };
 
-  var showHidden = false;  // by default hide dormant + Advisor Assigned
+  var showHidden = false;  // by default hide dormant, Advisor Assigned, Long Term Relationship
 
   function isMasked(r) {
-    return r.dataset.status === 'Dormant' || r.dataset.stageLabel === 'Advisor Assigned';
+    return r.dataset.status === 'Dormant'
+        || r.dataset.stageLabel === 'Advisor Assigned'
+        || r.dataset.stageLabel === 'Long Term Relationship';
   }
-
-  var maskedCount = Array.from(document.querySelectorAll('#pipeline-body tr')).filter(isMasked).length;
 
   window.toggleHidden = function() {
     showHidden = !showHidden;
     var btn = document.getElementById('hidden-toggle');
-    btn.querySelector('.lbl').textContent = showHidden
-      ? 'Hide dormant + Advisor Assigned'
-      : 'Show dormant + Advisor Assigned (' + maskedCount + ')';
+    btn.querySelector('.lbl').textContent = showHidden ? 'Hide some contacts' : 'Show all contacts';
     applyFilters();
   };
 
@@ -2721,12 +2719,8 @@
     applyFilters();
   };
 
-  // Initial state: mask dormant + AA and set the button label
-  (function() {
-    document.getElementById('hidden-toggle').querySelector('.lbl').textContent =
-      'Show dormant + Advisor Assigned (' + maskedCount + ')';
-    applyFilters();
-  })();
+  // Initial state: mask dormant + AA + LTR
+  applyFilters();
 
   function updateCount() {
     var rows = document.querySelectorAll('#pipeline-body tr:not(.hidden)');
