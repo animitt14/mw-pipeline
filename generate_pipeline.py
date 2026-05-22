@@ -827,11 +827,12 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     today_rows = [r for r in row_data if
         (r['meeting_ms'] > 0 and today_start_ms <= r['meeting_ms'] < today_end_ms) or
         (r['task_due_ms'] > 0 and today_start_ms <= r['task_due_ms'] < today_end_ms)]
-    def _today_sort_key(r):
-        has_mtg_today = r['meeting_ms'] > 0 and today_start_ms <= r['meeting_ms'] < today_end_ms
-        # bucket 0 = has meeting today (first), 1 = task only (second); then amount desc within bucket
-        return (0 if has_mtg_today else 1, -r['amount_val'])
-    today_rows.sort(key=_today_sort_key)
+    today_meetings_rows = [r for r in today_rows
+        if r['meeting_ms'] > 0 and today_start_ms <= r['meeting_ms'] < today_end_ms]
+    today_meetings_rows.sort(key=lambda r: r['meeting_ms'])  # chronological for timeline
+    today_tasks_rows = [r for r in today_rows
+        if not (r['meeting_ms'] > 0 and today_start_ms <= r['meeting_ms'] < today_end_ms)]
+    today_tasks_rows.sort(key=lambda r: -r['amount_val'])
 
     whale_rows = sorted(
         [r for r in all_row_data
@@ -972,9 +973,54 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 
     # Whale table excludes the top 3 already shown as tiles
     whale_table_rows = whale_rows[3:]
-    today_rows_html      = '\n'.join(today_row(r) for r in today_rows)       if today_rows       else '<tr><td colspan="4" style="color:var(--text-3);text-align:center;padding:18px">No meetings or tasks due today</td></tr>'
     whale_rows_html      = '\n'.join(whale_row(r) for r in whale_table_rows) if whale_table_rows else '<tr><td colspan="5" style="color:var(--text-3);text-align:center;padding:18px">All whales above are in the tiles</td></tr>'
     cold_rows_html       = '\n'.join(cold_row(r) for r in cold_rows)         if cold_rows        else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals are slipping</td></tr>'
+
+    # --- Today: vertical meeting timeline + tasks bucket ---
+    try:
+        from zoneinfo import ZoneInfo
+        _NYC = ZoneInfo('America/New_York')
+    except Exception:
+        _NYC = None
+
+    def fmt_local_time(ms):
+        if not ms:
+            return ''
+        dt = datetime.fromtimestamp(ms / 1000, tz=timezone.utc)
+        if _NYC: dt = dt.astimezone(_NYC)
+        fmt = '%#I:%M %p' if sys.platform == 'win32' else '%-I:%M %p'
+        return dt.strftime(fmt)
+
+    def mtg_item(r):
+        hs = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
+        time_str = fmt_local_time(r['meeting_ms']) or '—'
+        title = escape(r['meeting_title']) if r['meeting_title'] else ''
+        stage = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else ''
+        amt = f'<span class="ti-amt">{escape(r["amount_fmt"])}</span>' if r['amount_fmt'] else ''
+        return (
+            f'<div class="ti mtg-item" title="{title}">'
+            f'<div class="ti-time">{time_str}</div>'
+            f'<div class="ti-body">'
+            f'<div class="ti-name">{hs}{escape(r["name"])}</div>'
+            f'<div class="ti-meta">{stage}{amt}</div>'
+            f'</div></div>'
+        )
+
+    def task_item(r):
+        hs = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
+        subj = (r['task_subject'] or '').strip()
+        amt = f'<span class="ti-amt">{escape(r["amount_fmt"])}</span>' if r['amount_fmt'] else ''
+        stage = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else ''
+        return (
+            f'<div class="ti task-item">'
+            f'<div class="ti-name">{hs}{escape(r["name"])}{amt}</div>'
+            f'<div class="ti-subj">{escape(subj[:90])}</div>'
+            f'<div class="ti-meta">{stage}</div>'
+            f'</div>'
+        )
+
+    mtg_items_html  = '\n'.join(mtg_item(r) for r in today_meetings_rows) if today_meetings_rows else '<div class="ti-empty">No meetings today</div>'
+    task_items_html = '\n'.join(task_item(r) for r in today_tasks_rows)   if today_tasks_rows   else '<div class="ti-empty">No tasks today</div>'
 
     def whale_tile(r):
         hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
@@ -1229,18 +1275,20 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 <section class="page-section section-today">
   <div class="section-band">
     <div class="section-title">Today <span class="section-count">{len(today_rows)}</span></div>
-    <div class="section-meta">Meetings and tasks due today, plus the next three workdays</div>
+    <div class="section-meta">Meetings on schedule, tasks to clear, next 3 days for context</div>
   </div>
-  <div class="today-layout">
-    <aside class="today-sidebar">
+  <div class="today-3col">
+    <aside class="t3-col t3-calendar">
       <h3>Next 3 Days</h3>
       <div class="cal-cards">{cal_cards_html}</div>
     </aside>
-    <div class="today-main">
-      <table class="mini-table today-table">
-        <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Activity</th></tr></thead>
-        <tbody>{today_rows_html}</tbody>
-      </table>
+    <div class="t3-col t3-meetings">
+      <h3>Meetings <span class="t3-count">{len(today_meetings_rows)}</span></h3>
+      <div class="ti-list">{mtg_items_html}</div>
+    </div>
+    <div class="t3-col t3-tasks">
+      <h3>Tasks <span class="t3-count">{len(today_tasks_rows)}</span></h3>
+      <div class="ti-list">{task_items_html}</div>
     </div>
   </div>
 </section>
