@@ -1085,12 +1085,12 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
             next_cls = ' wp-next-prompt'
         return (
             f'<div class="whale-priority">'
-            f'<div class="wp-head">'
             f'<div class="wp-amount">{amt}</div>'
+            f'<div class="wp-text">'
             f'<div class="wp-id">{hs}<span class="wp-name">{escape(r["name"])}</span>{inv}</div>'
-            f'</div>'
             f'<div class="wp-meta">{meta_line}{badge_html}</div>'
             f'<div class="wp-next"><span class="wp-next-lbl">Next</span><span class="wp-next-text{next_cls}">{next_text}</span></div>'
+            f'</div>'
             f'</div>'
         )
     whale_priorities_html = '\n'.join(whale_priority(r) for r in whale_rows) if whale_rows else '<div class="ti-empty">No open whales above $50k</div>'

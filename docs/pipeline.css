@@ -427,7 +427,8 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
   background: var(--surface);
   border-radius: 10px;
   padding: 14px 18px 12px;
-  display: flex; flex-direction: column; gap: 4px;
+  display: grid; grid-template-columns: auto 1fr;
+  gap: 16px; align-items: center;
   transition: box-shadow 0.15s ease;
 }
 .whale-priority:hover {
@@ -435,15 +436,14 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
     0 1px 2px rgba(91, 33, 182, 0.06),
     0 6px 16px rgba(91, 33, 182, 0.08);
 }
-.wp-head {
-  display: flex; align-items: baseline; gap: 14px;
-}
+.wp-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .wp-id { display: flex; align-items: center; gap: 8px; min-width: 0; flex-wrap: wrap; }
-.wp-name { font-size: 1rem; font-weight: 500; color: var(--text); }
+.wp-name { font-size: 0.95rem; font-weight: 500; color: var(--text); }
 .wp-amount {
   font-size: 1.55rem; font-weight: 500; color: var(--accent-2);
   font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
   line-height: 1; flex-shrink: 0;
+  min-width: 70px;
 }
 .wp-meta {
   font-size: 0.76rem; color: var(--text-2);
