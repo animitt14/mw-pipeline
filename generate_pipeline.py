@@ -615,7 +615,7 @@ def fmt_days_ago(days):
     if days is None: return '—'
     if days == 0:    return 'today'
     if days == 1:    return 'yesterday'
-    return f'{days}d ago'
+    return f'{days}d'
 
 
 FUNNEL_STAGES = [
