@@ -12,6 +12,7 @@ import re
 import sys
 import time
 import requests
+from collections import defaultdict
 from datetime import datetime, timezone, timedelta, date as date_type
 from html import escape
 from pathlib import Path
@@ -122,6 +123,10 @@ def fetch_all_contacts(owner_id):
 def fetch_deals_live():
     """Fetch all Gallery Leads deals live from HubSpot API."""
     url = 'https://api.hubapi.com/crm/v3/objects/deals/search'
+    # Include per-stage entry-date properties so we can compute stage progression
+    stage_entry_props = [f'hs_v2_date_entered_{sid}' for sid in DEAL_STAGES.keys()]
+    base_props = ['dealname', 'dealstage', 'amount', 'num_contacted_notes',
+                  'hubspot_owner_id', 'closedate', 'createdate', 'notes_last_updated']
     deals = []
     after = None
     while True:
@@ -129,8 +134,7 @@ def fetch_deals_live():
             'filterGroups': [{'filters': [
                 {'propertyName': 'pipeline', 'operator': 'EQ', 'value': GALLERY_LEADS_PIPELINE}
             ]}],
-            'properties': ['dealname', 'dealstage', 'amount', 'num_contacted_notes',
-                           'hubspot_owner_id', 'closedate', 'createdate', 'notes_last_updated'],
+            'properties': base_props + stage_entry_props,
             'limit': 200,
         }
         if after:
@@ -1784,6 +1788,152 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
 
     month_name = today_d.strftime('%B')
 
+    # ── Section 4: Stage Progression (dynamic from hs_v2_date_entered_*) ──
+    FORWARD_STAGES_OV = [
+        '1339121714',  # Advisor Assigned
+        '1321369496',  # Active Rel
+        '1363474599',  # Long Term Rel
+        '1321369497',  # Mtg Sch
+        '1321369500',  # Nurture
+        '1321369502',  # Rec Made
+        '1321369499',  # Closed Won
+    ]
+    STAGE_ARRIVED_LABELS = {
+        '1339121714': 'Advisor Assigned',
+        '1321369496': 'Active Rel',
+        '1363474599': 'Long Term Rel',
+        '1321369497': 'Mtg Sch',
+        '1321369500': 'Nurture',
+        '1321369502': 'Rec Made',
+        '1321369499': 'Closed Won',
+    }
+    advance_events = []
+    for d in team:
+        p = d['properties']
+        owner = p.get('hubspot_owner_id', '')
+        if owner not in OVERVIEW_OWNER_IDS:
+            continue
+        for sid in FORWARD_STAGES_OV:
+            ts = p.get(f'hs_v2_date_entered_{sid}', '')
+            if not ts:
+                continue
+            dt = pd(ts)
+            if not dt:
+                continue
+            advance_events.append((dt, owner, sid))
+
+    def _workdays_back(end, n):
+        out, d = [], end
+        while len(out) < n:
+            if d.weekday() < 5:
+                out.append(d)
+            d -= timedelta(days=1)
+        return list(reversed(out))
+
+    WD_BACK = 10
+    chart_days = _workdays_back(today_d, WD_BACK)
+    chart_days_set = set(chart_days)
+    daily_owner_count = defaultdict(int)
+    for dt, owner, sid in advance_events:
+        if dt in chart_days_set:
+            daily_owner_count[(dt, owner)] += 1
+    last5_days = chart_days[-5:]
+    last5_set = set(last5_days)
+    per_owner_5wd = defaultdict(int)
+    per_stage_5wd = defaultdict(int)
+    for dt, owner, sid in advance_events:
+        if dt in last5_set:
+            per_owner_5wd[owner] += 1
+            per_stage_5wd[sid] += 1
+    total_5wd = sum(per_owner_5wd.values())
+
+    ANI_COLOR_OV  = '#7c3aed'   # purple
+    ERIK_COLOR_OV = '#16a34a'   # green
+    OWNER_COLORS_OV = {'77771452': ANI_COLOR_OV, '73613833': ERIK_COLOR_OV}
+    _date_fmt = '%b %#d' if sys.platform == 'win32' else '%b %-d'
+
+    max_daily = max(daily_owner_count.values()) if daily_owner_count else 1
+    day_headers_html = '<div></div>' + ''.join(
+        f'<div style="font-size:9px;color:var(--text3);text-align:center;padding-bottom:5px;border-bottom:.5px solid var(--border)">{dt.strftime(_date_fmt)}</div>'
+        for dt in chart_days
+    )
+    owner_rows_html = ''
+    for oid in ['77771452', '73613833']:
+        name = OVERVIEW_OWNER_NAMES.get(oid, oid)
+        color = OWNER_COLORS_OV.get(oid, '#888')
+        owner_rows_html += f'<div style="font-size:11px;font-weight:500;padding:3px 0;color:var(--text)">{name}</div>'
+        for dt in chart_days:
+            count = daily_owner_count.get((dt, oid), 0)
+            if count == 0:
+                owner_rows_html += '<div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px"></div>'
+            else:
+                h_pct = max(int(count / max_daily * 95), 8)
+                owner_rows_html += (
+                    f'<div style="display:flex;align-items:flex-end;justify-content:center;height:34px;padding:1px">'
+                    f'<div style="border-radius:3px 3px 0 0;width:100%;display:flex;align-items:center;justify-content:center;'
+                    f'font-size:9px;font-weight:600;color:rgba(255,255,255,.95);min-height:3px;height:{h_pct}%;background:{color}">{count}</div>'
+                    f'</div>'
+                )
+    chart_cols = f'76px repeat({WD_BACK},minmax(0,1fr))'
+
+    # Last-5 panel: per-advisor bars + by-stage destinations
+    max_owner_5wd = max(per_owner_5wd.values()) if per_owner_5wd else 1
+    last5_owner_rows = ''
+    for oid in ['77771452', '73613833']:
+        name = OVERVIEW_OWNER_NAMES.get(oid, oid)
+        color = OWNER_COLORS_OV.get(oid, '#888')
+        cnt = per_owner_5wd.get(oid, 0)
+        pct = int(cnt / max_owner_5wd * 100) if max_owner_5wd else 0
+        last5_owner_rows += (
+            f'<div style="display:grid;grid-template-columns:76px 1fr 26px;gap:5px;align-items:center;padding:5px 0;'
+            f'border-bottom:.5px solid var(--border);font-size:11px">'
+            f'<span style="font-weight:500">{name}</span>'
+            f'<div><div style="height:5px;background:{color};border-radius:3px;width:{pct}%"></div></div>'
+            f'<span style="text-align:right;font-weight:500;color:{color}">{cnt}</span></div>'
+        )
+    stage_sorted_5wd = sorted(per_stage_5wd.items(), key=lambda x: -x[1])
+    max_stage_5wd = max(per_stage_5wd.values()) if per_stage_5wd else 1
+    last5_stage_rows = ''
+    for sid, cnt in stage_sorted_5wd:
+        if cnt == 0: continue
+        lbl = STAGE_ARRIVED_LABELS.get(sid, sid)
+        width = int(cnt / max_stage_5wd * 100)
+        last5_stage_rows += (
+            f'<div class="sr"><div style="flex:1"><span>{lbl}</span>'
+            f'<div class="sbar" style="width:{width}%;background:var(--purple)"></div></div>'
+            f'<span style="font-weight:500;white-space:nowrap">{cnt}</span></div>'
+        )
+
+    last5_range = f'{last5_days[0].strftime(_date_fmt)}–{last5_days[-1].strftime(_date_fmt)}' if last5_days else ''
+    stage_progression_html = f'''
+<div class="g2">
+  <div class="card">
+    <div class="ctitle">Daily advances by advisor</div>
+    <div style="display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)"><div style="width:10px;height:10px;border-radius:2px;background:{ANI_COLOR_OV}"></div>Mittal</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)"><div style="width:10px;height:10px;border-radius:2px;background:{ERIK_COLOR_OV}"></div>Bringsjord</div>
+    </div>
+    <div style="display:grid;grid-template-columns:{chart_cols};gap:3px;align-items:center;">
+      {day_headers_html}
+      {owner_rows_html}
+    </div>
+    <div class="note">Forward stage entries (Advisor Assigned → Closed Won) · last {WD_BACK} working days</div>
+  </div>
+  <div class="card">
+    <div class="ctitle" style="margin-bottom:11px">Last 5 working days ({last5_range})</div>
+    <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px">Advances by advisor</div>
+    <div style="display:grid;grid-template-columns:76px 1fr 26px;gap:5px;align-items:center;padding:5px 0;border-bottom:.5px solid var(--border);font-size:10px;color:var(--text3)"><span>Advisor</span><span></span><span style="text-align:right">Wk</span></div>
+    {last5_owner_rows}
+    <div style="margin-top:14px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px">Where deals moved to</div>
+    {last5_stage_rows}
+    <div style="margin-top:11px;padding-top:9px;border-top:.5px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <div><div style="font-size:12px;color:var(--text2)">Total advances (last 5 working days)</div></div>
+      <span style="font-size:24px;font-weight:500;color:var(--purple)">{total_5wd}</span>
+    </div>
+  </div>
+</div>
+'''
+
     html_parts = [
         '<!DOCTYPE html><html lang="en"><head>',
         '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">',
@@ -1862,9 +2012,9 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
         f'</tbody></table></div>',
         '</div>',
 
-        # 4. Stage Progression (static)
+        # 4. Stage Progression (computed from hs_v2_date_entered_*)
         '<p class="slabel">4 · stage progression — deals advancing</p>',
-        _STATIC_STAGE_PROGRESSION,
+        stage_progression_html,
 
         # 5. Whale Tracker
         '<p class="slabel">5 · whale tracker — $100k+ deals</p>',
