@@ -330,14 +330,11 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .cal-today { background: var(--accent-bg); }
 .cal-day-label { font-size: 0.76rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
 .cal-today .cal-day-label { color: var(--accent-2); }
-.cal-mtg { font-size: 0.72rem; color: var(--text-2); margin-bottom: 4px; }
-.cal-tasks-section { margin-bottom: 4px; }
-.cal-row { display: flex; align-items: center; font-size: 0.7rem; color: var(--text-2); gap: 6px; line-height: 1.5; }
-.cal-icon { width: 1.1em; flex-shrink: 0; text-align: center; color: var(--text-3); }
-.cal-lbl { color: var(--text-2); }
-.cal-num { min-width: 1.4em; font-variant-numeric: tabular-nums; color: var(--text); font-weight: 600; }
-.cal-cap { margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--row-divider); }
-.cal-cap-label { font-size: 0.68rem; color: var(--text-3); }
+.cal-mini { font-size: 0.72rem; color: var(--text-2); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+.cal-cap { display: flex; align-items: center; gap: 8px; }
+.cal-bar { font-size: 0.6rem; color: var(--accent); letter-spacing: -1px; line-height: 1; }
+.cal-today .cal-bar { color: var(--accent-2); }
+.cal-cap-label { font-size: 0.68rem; color: var(--text-3); font-variant-numeric: tabular-nums; }
 
 /* --- CONTROLS --- */
 .controls { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
