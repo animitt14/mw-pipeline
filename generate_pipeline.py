@@ -1061,16 +1061,16 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         elif r['task_due']:
             meta_parts.append(f'task {escape(r["task_due"])}')
         meta_line = ' &middot; '.join(meta_parts)
-        # ONE badge: Meeting / Rec Made / Hot / Stale (or nothing)
+        # ONE icon: Meeting / Rec Made / Hot / Stale (or nothing)
         d = r.get('days_since')
         if r['meeting_ms'] > 0 and r['meeting_ms'] >= now_ms_ts:
-            badge_html = '<span class="wp-badge wp-meeting">Meeting</span>'
+            badge_html = '<span class="wp-icon" title="Upcoming meeting">&#128197;</span>'
         elif r['stage_id'] == REC_MADE_STAGE:
-            badge_html = '<span class="wp-badge wp-recmade">Rec Made</span>'
+            badge_html = '<span class="wp-icon" title="Recommendation made">&#127919;</span>'
         elif d is not None and d <= 7:
-            badge_html = '<span class="wp-badge wp-hot">Hot</span>'
+            badge_html = '<span class="wp-icon" title="Hot — recent contact">&#128293;</span>'
         elif d is None or d > 14:
-            badge_html = '<span class="wp-badge wp-stale">Stale</span>'
+            badge_html = '<span class="wp-icon" title="Stale — no contact in 14+ days">&#10052;</span>'
         else:
             badge_html = ''
         # NEXT line — concrete action

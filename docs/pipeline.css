@@ -431,15 +431,13 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
   font-size: 0.76rem; color: var(--text-2);
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
 }
-.wp-badge {
-  font-size: 0.6rem; font-weight: 700; padding: 2px 9px;
-  border-radius: 11px; text-transform: uppercase; letter-spacing: 0.1em;
-  flex-shrink: 0; margin-left: auto;
+.wp-icon {
+  font-size: 0.95rem;
+  margin-left: auto;
+  flex-shrink: 0;
+  line-height: 1;
+  filter: saturate(0.85);
 }
-.wp-hot     { background: #d1fae5; color: #065f46; }
-.wp-stale   { background: #fef3c7; color: #92400e; }
-.wp-meeting { background: var(--accent-bg); color: var(--accent-2); }
-.wp-recmade { background: #ccfbf1; color: #115e59; }
 .wp-next { font-size: 0.8rem; color: var(--text); display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .wp-next-lbl {
   font-size: 0.6rem; font-weight: 700; color: var(--text-3);
