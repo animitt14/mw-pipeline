@@ -943,6 +943,52 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     whale_rows_html  = '\n'.join(mini_row(r) for r in whale_rows)  if whale_rows  else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals at $50k+</td></tr>'
     cold_rows_html   = '\n'.join(cold_row(r) for r in cold_rows)   if cold_rows   else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals are slipping</td></tr>'
 
+    def whale_tile(r):
+        hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
+        # Amount: compact ($150k / $1.2M)
+        amt_short = fmt_stat_val(r['amount_val']) if r['amount_val'] > 0 else '—'
+        # Stage chip
+        stage_chip = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else ''
+        # Context line: title/co · attended date
+        ctx_parts = []
+        title = shorten_title(r['title'])[:30] if r['title'] else ''
+        company = r['company'][:30] if r['company'] else ''
+        who = ', '.join(p for p in [title, company] if p)
+        if who: ctx_parts.append(escape(who))
+        if r['rsvp_date']: ctx_parts.append(f'Attended {escape(r["rsvp_date"])}')
+        ctx_line = ' &middot; '.join(ctx_parts) if ctx_parts else ''
+        # Recency dot + label
+        d = r.get('days_since')
+        if d is None:
+            recency_txt, recency_cls = 'No contact logged', 'cold'
+        elif d == 0:
+            recency_txt, recency_cls = 'Contacted today', 'warm'
+        elif d <= 7:
+            recency_txt, recency_cls = f'{d}d since last contact', 'warm'
+        elif d <= 21:
+            recency_txt, recency_cls = f'{d}d since last contact', 'cool'
+        else:
+            recency_txt, recency_cls = f'{d}d since last contact', 'cold'
+        # NEXT action: prefer upcoming meeting, else open task, else prompt
+        if r['meeting_ms'] > 0 and r['meeting_ms'] >= now_ms_ts:
+            mtitle = (r['meeting_title'] or 'Meeting').strip()
+            next_line = f'<span class="wt-next-strong">{escape(mtitle[:50])}</span> &middot; {escape(r["meeting_start"])}'
+        elif r['task_due_ms'] > 0:
+            tsubj = (r['task_subject'] or 'Task').strip()
+            next_line = f'<span class="wt-next-strong">{escape(tsubj[:50])}</span> &middot; due {escape(r["task_due"])}'
+        else:
+            next_line = '<span class="wt-next-prompt">Book a follow-up</span>'
+        return (
+            f'<div class="whale-tile">'
+            f'  <div class="wt-amount">{amt_short}</div>'
+            f'  <div class="wt-name">{hs_badge}{escape(r["name"])} {stage_chip}</div>'
+            + (f'  <div class="wt-ctx">{ctx_line}</div>' if ctx_line else '') +
+            f'  <div class="wt-recency"><span class="wt-dot wt-{recency_cls}"></span>{recency_txt}</div>'
+            f'  <div class="wt-next"><span class="wt-next-lbl">Next</span>{next_line}</div>'
+            f'</div>'
+        )
+    top_whale_tiles_html = ''.join(whale_tile(r) for r in whale_rows[:3])
+
     # --- Chart data ---
     funnel_counts = [sum(1 for r in row_data if r['stage_id'] == sid) for sid, _ in FUNNEL_STAGES]
 
@@ -1168,6 +1214,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   <div class="section-title">Whale Tracker <span class="section-count">{len(whale_rows)}</span></div>
   <div class="section-meta">Deals $50k and above, excluding Closed Lost</div>
 </div>
+<div class="whale-tiles">{top_whale_tiles_html}</div>
 <table class="mini-table whale-table">
   <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
   <tbody>{whale_rows_html}</tbody>
