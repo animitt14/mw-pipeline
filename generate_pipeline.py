@@ -1313,10 +1313,10 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
       <h3>Tasks <span class="t3-count">{len(today_tasks_rows)}</span></h3>
       <div class="ti-list">{task_items_html}</div>
     </div>
-    <aside class="t3-col t3-calendar">
-      <h3>Next 3 Days</h3>
-      <div class="cal-cards">{cal_cards_html}</div>
-    </aside>
+  </div>
+  <div class="t3-cal-strip">
+    <h3>Next 3 Days</h3>
+    <div class="cal-strip">{cal_cards_html}</div>
   </div>
 </section>
 

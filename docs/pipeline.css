@@ -216,21 +216,38 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .section-band.cold .section-title { color: var(--red-2); }
 .section-band.cold .section-count { background: #fee2e2; color: var(--red-2); }
 
-/* --- TODAY: 3-column layout (calendar | meetings | tasks) --- */
+/* --- TODAY: meetings + tasks side by side, calendar horizontal strip below --- */
 .today-3col {
-  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  display: grid; grid-template-columns: 1fr 1fr;
   gap: 0; align-items: stretch;
 }
-@media (max-width: 840px) { .today-3col { grid-template-columns: 1fr; gap: 22px; } }
+@media (max-width: 720px) { .today-3col { grid-template-columns: 1fr; gap: 22px; } }
 .t3-col {
   min-width: 0;
   padding: 0 22px;
 }
 .t3-col:first-child { padding-left: 0; }
 .t3-col:last-child  { padding-right: 0; }
-@media (max-width: 840px) {
+@media (max-width: 720px) {
   .t3-col { padding: 0; }
 }
+
+/* Horizontal calendar strip — 3 day-cards in a row below the main today body */
+.t3-cal-strip {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--row-divider);
+}
+.t3-cal-strip h3 {
+  font-size: 0.78rem; font-weight: 600; color: var(--text);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin: 0 0 12px;
+}
+.cal-strip {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.cal-strip .cal-card { padding: 10px 14px; }
 .t3-col h3 {
   font-size: 0.78rem; font-weight: 600; color: var(--text);
   text-transform: uppercase; letter-spacing: 0.1em;
@@ -400,8 +417,12 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .cold-table td:nth-child(4) { font-variant-numeric: tabular-nums; color: var(--accent-2); font-weight: 500; }
 .cold-days { font-weight: 600; }
 
-/* Whale priority tiles — compact horizontal strips */
-.whale-priorities { display: flex; flex-direction: column; gap: 8px; }
+/* Whale priority tiles — compact horizontal strips in 2-column grid */
+.whale-priorities {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 720px) { .whale-priorities { grid-template-columns: 1fr; } }
 .whale-priority {
   background: var(--surface);
   border-radius: 10px;
