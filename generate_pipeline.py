@@ -1033,7 +1033,6 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         '<div class="mtg-time">4:00 PM</div>'
         '<div class="ti-body">'
         '<div class="ti-name">Gallery Event</div>'
-        '<div class="ti-meta">4&ndash;7pm &middot; Open to all leads</div>'
         '</div></div>'
     )
     _mtg_pieces = []
