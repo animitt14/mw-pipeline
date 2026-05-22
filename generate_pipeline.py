@@ -888,6 +888,36 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
                 f'<td>{task_cell}</td>'
                 f'</tr>')
 
+    def whale_row(r):
+        hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
+        inv_badge = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
+        stage_cell = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else '—'
+        amt_cell = escape(r['amount_fmt']) if r['amount_fmt'] else '—'
+        # Next action — same logic as the whale tiles
+        if r['meeting_ms'] > 0 and r['meeting_ms'] >= now_ms_ts:
+            mtitle = (r['meeting_title'] or 'Meeting').strip()
+            next_cell = (
+                f'<span class="next-strong" title="{escape(mtitle)}">{escape(mtitle[:32])}</span>'
+                f'<span class="next-meta"> &middot; {escape(r["meeting_start"])}</span>'
+            )
+        elif r['task_due_ms'] > 0:
+            tsubj = (r['task_subject'] or 'Task').strip()
+            next_cell = (
+                f'<span class="next-strong" title="{escape(tsubj)}">{escape(tsubj[:32])}</span>'
+                f'<span class="next-meta"> &middot; due {escape(r["task_due"])}</span>'
+            )
+        else:
+            next_cell = '<span class="next-prompt">Book follow-up</span>'
+        cls = heat_cls(r.get('days_since'))
+        cls_attr = f' class="{cls}"' if cls else ''
+        return (f'<tr{cls_attr}>'
+                f'<td>{hs_badge}{r["name"]}{inv_badge}</td>'
+                f'<td>{stage_cell}</td>'
+                f'<td>{amt_cell}</td>'
+                f'<td>{r["last_contact"] or "—"}</td>'
+                f'<td class="next-cell">{next_cell}</td>'
+                f'</tr>')
+
     def today_row(r):
         hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
         inv_badge = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
@@ -943,7 +973,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     # Whale table excludes the top 3 already shown as tiles
     whale_table_rows = whale_rows[3:]
     today_rows_html      = '\n'.join(today_row(r) for r in today_rows)       if today_rows       else '<tr><td colspan="4" style="color:var(--text-3);text-align:center;padding:18px">No meetings or tasks due today</td></tr>'
-    whale_rows_html      = '\n'.join(mini_row(r) for r in whale_table_rows) if whale_table_rows else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">All whales above are in the tiles</td></tr>'
+    whale_rows_html      = '\n'.join(whale_row(r) for r in whale_table_rows) if whale_table_rows else '<tr><td colspan="5" style="color:var(--text-3);text-align:center;padding:18px">All whales above are in the tiles</td></tr>'
     cold_rows_html       = '\n'.join(cold_row(r) for r in cold_rows)         if cold_rows        else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals are slipping</td></tr>'
 
     def whale_tile(r):
@@ -1222,7 +1252,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   </div>
   <div class="whale-tiles">{top_whale_tiles_html}</div>
   <table class="mini-table whale-table">
-    <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
+    <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Next</th></tr></thead>
     <tbody>{whale_rows_html}</tbody>
   </table>
 </section>
