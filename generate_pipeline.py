@@ -812,7 +812,11 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     today_rows = [r for r in row_data if
         (r['meeting_ms'] > 0 and today_start_ms <= r['meeting_ms'] < today_end_ms) or
         (r['task_due_ms'] > 0 and today_start_ms <= r['task_due_ms'] < today_end_ms)]
-    today_rows.sort(key=lambda r: -r['amount_val'])
+    def _today_sort_key(r):
+        has_mtg_today = r['meeting_ms'] > 0 and today_start_ms <= r['meeting_ms'] < today_end_ms
+        # bucket 0 = has meeting today (first), 1 = task only (second); then amount desc within bucket
+        return (0 if has_mtg_today else 1, -r['amount_val'])
+    today_rows.sort(key=_today_sort_key)
 
     whale_rows = sorted(
         [r for r in all_row_data
