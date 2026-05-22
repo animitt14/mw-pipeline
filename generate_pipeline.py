@@ -933,16 +933,18 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         cls_attr = f' class="{cls}"' if cls else ''
         return (f'<tr{cls_attr}>'
                 f'<td>{hs_badge}{r["name"]}{inv_badge}</td>'
+                f'<td>{days_cell}</td>'
                 f'<td>{stage_cell}</td>'
                 f'<td>{amt_cell}</td>'
-                f'<td>{days_cell}</td>'
                 f'<td>{r["last_contact"] or "—"}</td>'
                 f'<td>{task_cell}</td>'
                 f'</tr>')
 
-    today_rows_html  = '\n'.join(today_row(r) for r in today_rows)  if today_rows  else '<tr><td colspan="4" style="color:var(--text-3);text-align:center;padding:18px">No meetings or tasks due today</td></tr>'
-    whale_rows_html  = '\n'.join(mini_row(r) for r in whale_rows)  if whale_rows  else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals at $50k+</td></tr>'
-    cold_rows_html   = '\n'.join(cold_row(r) for r in cold_rows)   if cold_rows   else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals are slipping</td></tr>'
+    # Whale table excludes the top 3 already shown as tiles
+    whale_table_rows = whale_rows[3:]
+    today_rows_html      = '\n'.join(today_row(r) for r in today_rows)       if today_rows       else '<tr><td colspan="4" style="color:var(--text-3);text-align:center;padding:18px">No meetings or tasks due today</td></tr>'
+    whale_rows_html      = '\n'.join(mini_row(r) for r in whale_table_rows) if whale_table_rows else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">All whales above are in the tiles</td></tr>'
+    cold_rows_html       = '\n'.join(cold_row(r) for r in cold_rows)         if cold_rows        else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals are slipping</td></tr>'
 
     def whale_tile(r):
         hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
@@ -1231,7 +1233,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     <div class="section-meta">Top 5 by days cold &middot; Meeting Scheduled 7+ days, Active Relationship 10+ days &middot; over $15k, no upcoming task (overdue counts)</div>
   </div>
   <table class="mini-table cold-table">
-    <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Days Cold</th><th>Last Contacted</th><th>Task Due</th></tr></thead>
+    <thead><tr><th>Name</th><th>Days Cold</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Task Due</th></tr></thead>
     <tbody>{cold_rows_html}</tbody>
   </table>
 </section>

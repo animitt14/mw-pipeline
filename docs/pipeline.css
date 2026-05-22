@@ -280,7 +280,10 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .mini-table td:nth-child(n+2) { text-align: center; }
 .mini-table td:nth-child(3) { font-variant-numeric: tabular-nums; color: var(--accent-2); font-weight: 500; }
 .whale-table td:nth-child(3) { color: var(--accent-2); font-weight: 600; }
-.cold-table td:nth-child(4) { font-variant-numeric: tabular-nums; color: var(--red-2); font-weight: 600; }
+/* Cold table layout: Name | Days Cold | Stage | Amount | Last | Task */
+.cold-table td:nth-child(2) { font-variant-numeric: tabular-nums; color: var(--red-2); font-weight: 600; }
+.cold-table td:nth-child(3) { color: inherit; font-weight: inherit; font-variant-numeric: normal; }
+.cold-table td:nth-child(4) { font-variant-numeric: tabular-nums; color: var(--accent-2); font-weight: 500; }
 .cold-days { font-weight: 600; }
 
 /* Top-3 whale tiles — focus, weight, scannability */
