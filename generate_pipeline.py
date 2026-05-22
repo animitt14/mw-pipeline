@@ -998,14 +998,12 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         hs = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
         time_str = fmt_local_time(r['meeting_ms']) or '—'
         title = escape(r['meeting_title']) if r['meeting_title'] else ''
-        stage = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else ''
         amt = f'<span class="ti-amt">{escape(r["amount_fmt"])}</span>' if r['amount_fmt'] else ''
         return (
             f'<div class="ti mtg-item" title="{title}">'
             f'<div class="mtg-time">{time_str}</div>'
             f'<div class="ti-body">'
-            f'<div class="ti-name">{hs}{escape(r["name"])}</div>'
-            f'<div class="ti-meta">{stage}{amt}</div>'
+            f'<div class="ti-name">{hs}{escape(r["name"])}{amt}</div>'
             f'</div></div>'
         )
 
@@ -1013,12 +1011,14 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         hs = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
         subj = (r['task_subject'] or '').strip()
         amt = f'<span class="ti-amt">{escape(r["amount_fmt"])}</span>' if r['amount_fmt'] else ''
-        stage = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else ''
+        stage_dot = f'<span class="stage-dot {r["stage_css"]}" title="{escape(r["stage_label"])}"></span>' if r['stage_css'] else '<span class="stage-dot stage-disq"></span>'
+        subj_html = f'<span class="task-subj-inline">{escape(subj[:60])}</span>' if subj else ''
         return (
             f'<div class="ti task-item">'
-            f'<div class="ti-name">{hs}{escape(r["name"])}{amt}</div>'
-            f'<div class="ti-subj">{escape(subj[:90])}</div>'
-            f'<div class="ti-meta">{stage}</div>'
+            f'{stage_dot}{hs}'
+            f'<span class="task-name">{escape(r["name"])}</span>'
+            f'{amt}'
+            f'{subj_html}'
             f'</div>'
         )
 
