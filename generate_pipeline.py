@@ -766,6 +766,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
             row_data[-1]['days_since'] = max(0, int((now_ms_ts - _cont_ms) // 86_400_000))
         else:
             row_data[-1]['days_since'] = None
+        row_data[-1]['rsvp_ms'] = _rsvp_ms
 
     # Save pre-filter rows for whale tracker (includes Collector etc.)
     all_row_data = row_data[:]
@@ -773,8 +774,20 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     # Remove disqualified and closed won
     row_data = [r for r in row_data if r['stage_id'] not in TERMINAL_STAGES]
 
-    # Default sort: stage priority order, then amount descending within group
-    row_data.sort(key=lambda r: (r['status_order'], STAGE_SORT_ORDER.get(r['stage_id'], 9), r['meeting_ms'] if (r['status_order'] == 0 and r['meeting_ms'] > 0) else 0, -r['amount_val']))
+    # Default sort: status, stage priority, meeting time (if upcoming), amount desc.
+    # Extra tiebreak for Advisor Assigned: more recent attendees first (older attendees lower).
+    ADV_ASSIGNED_STAGE = '1339121714'
+    def _default_sort_key(r):
+        base = (
+            r['status_order'],
+            STAGE_SORT_ORDER.get(r['stage_id'], 9),
+            r['meeting_ms'] if (r['status_order'] == 0 and r['meeting_ms'] > 0) else 0,
+            -r['amount_val'],
+        )
+        # AA bucket: tiebreak by rsvp_ms descending (recent first = lower number when negated)
+        aa_tiebreak = -r.get('rsvp_ms', 0) if r['stage_id'] == ADV_ASSIGNED_STAGE else 0
+        return base + (aa_tiebreak,)
+    row_data.sort(key=_default_sort_key)
 
     # --- Summary stats ---
     ms_7d = 7 * 24 * 3600 * 1000
