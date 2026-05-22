@@ -809,19 +809,20 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 
     hero_val_html = fmt_stat_val(stat_pipeline_val)
 
-    def sub_stat(value, label):
+    def sub_stat(value, label, icon=''):
+        icon_html = f'<span class="ss-icon">{icon}</span>' if icon else ''
         return (f'<div class="sub-stat">'
                 f'<div class="sub-val">{value}</div>'
-                f'<div class="sub-lbl">{label}</div>'
+                f'<div class="sub-lbl">{icon_html}{label}</div>'
                 f'</div>')
 
     sub_stats_html = (
-        sub_stat(str(stat_active), 'Working') +
-        sub_stat(str(stat_dormant), 'Dormant') +
-        sub_stat(str(stat_closed), 'Closed') +
-        sub_stat(str(stat_mtg_count), 'Meetings') +
-        sub_stat(str(stat_tasks_week), 'Tasks this week') +
-        sub_stat(str(stat_whales), 'Whales')
+        sub_stat(str(stat_active),       'Working',         '&#128293;') +   # fire
+        sub_stat(str(stat_dormant),      'Dormant',         '&#128564;') +   # sleeping face
+        sub_stat(str(stat_closed),       'Closed',          '&#9989;')   +   # check mark
+        sub_stat(str(stat_mtg_count),    'Meetings',        '&#128197;') +   # calendar
+        sub_stat(str(stat_tasks_week),   'Tasks this week', '&#128203;') +   # clipboard
+        sub_stat(str(stat_whales),       'Whales',          '&#128011;')     # whale
     )
 
     # --- Today / Whale subsets ---

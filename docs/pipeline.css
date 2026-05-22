@@ -127,6 +127,13 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .sub-lbl {
   font-size: 0.62rem; color: var(--text-3); margin-top: 6px;
   text-transform: uppercase; letter-spacing: 0.1em;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.ss-icon {
+  display: inline-block;
+  font-size: 0.78rem;
+  line-height: 1;
+  filter: grayscale(0.75) opacity(0.75);
 }
 
 /* --- STACKED FUNNEL --- */
@@ -168,12 +175,12 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
     0 1px 2px rgba(20, 22, 30, 0.04),
     0 4px 12px rgba(20, 22, 30, 0.04);
 }
-/* Today = blue-tinted panel */
+/* Today = subtle cool gray panel (less saturated blue) */
 .section-today {
-  background: #eef3fa;
+  background: #eef0f4;
   box-shadow:
-    0 1px 2px rgba(29, 78, 216, 0.05),
-    0 4px 12px rgba(29, 78, 216, 0.05);
+    0 1px 2px rgba(29, 78, 216, 0.04),
+    0 4px 12px rgba(29, 78, 216, 0.04);
 }
 /* Whale = purple-tinted panel */
 .section-whale {
