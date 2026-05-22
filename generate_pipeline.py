@@ -796,6 +796,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     stat_tasks_week    = sum(1 for r in row_data if 0 < r['task_due_ms'] <= now_ms_ts + ms_7d)
     stat_active        = sum(1 for r in row_data if r['status'] in ('Active', 'Upcoming'))
     stat_dormant       = sum(1 for r in row_data if r['status'] == 'Dormant')
+    stat_closed        = sum(1 for r in all_row_data if r['stage_id'] in TERMINAL_STAGES)
     stat_whales        = len([r for r in all_row_data if r['amount_val'] >= 50_000])
 
     def fmt_stat_val(n):
@@ -812,8 +813,6 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
                 f'</div>')
 
     sub_stats_html = (
-        sub_stat(str(stat_active), 'Active') +
-        sub_stat(str(stat_dormant), 'Dormant') +
         sub_stat(str(stat_mtg_count), 'Meetings') +
         sub_stat(str(stat_tasks_week), 'Tasks / 7d') +
         sub_stat(str(stat_whales), 'Whales')
@@ -1120,7 +1119,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     <div class="hero-core">
       <div class="hero-eyebrow">Open Pipeline Value</div>
       <div class="hero-val">{hero_val_html}</div>
-      <div class="hero-lbl">across {stat_active} active deals</div>
+      <div class="hero-lbl">{stat_active} active &middot; {stat_dormant} dormant &middot; {stat_closed} closed &nbsp;=&nbsp; {count} total</div>
     </div>
     <div class="hero-sub-stats">{sub_stats_html}</div>
   </div>
