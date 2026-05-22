@@ -184,7 +184,7 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 
 /* --- TODAY LAYOUT (table + sidebar) --- */
 .today-layout {
-  display: grid; grid-template-columns: 1fr 280px;
+  display: grid; grid-template-columns: 280px 1fr;
   gap: 18px; align-items: start; margin-bottom: 8px;
 }
 @media (max-width: 980px) { .today-layout { grid-template-columns: 1fr; } }

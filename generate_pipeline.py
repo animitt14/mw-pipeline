@@ -871,6 +871,25 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
                 f'<td>{task_cell}</td>'
                 f'</tr>')
 
+    def today_row(r):
+        hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
+        inv_badge = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
+        stage_cell = f'<span class="badge {r["stage_css"]}">{escape(r["stage_label"])}</span>' if r['stage_label'] else '—'
+        amt_cell = escape(r['amount_fmt']) if r['amount_fmt'] else '—'
+        mtg_title = escape(r['meeting_title']) if r['meeting_title'] else ''
+        mtg_cell = f'<span title="{mtg_title}">{r["meeting_start"]}</span>' if r['meeting_start'] else '—'
+        task_title = escape(r['task_subject']) if r['task_subject'] else ''
+        task_cell = f'<span title="{task_title}">{r["task_due"]}</span>' if r['task_due'] else '—'
+        cls = heat_cls(r.get('days_since'))
+        cls_attr = f' class="{cls}"' if cls else ''
+        return (f'<tr{cls_attr}>'
+                f'<td>{hs_badge}{r["name"]}{inv_badge}</td>'
+                f'<td>{stage_cell}</td>'
+                f'<td>{amt_cell}</td>'
+                f'<td>{mtg_cell}</td>'
+                f'<td>{task_cell}</td>'
+                f'</tr>')
+
     def cold_row(r):
         hs_badge = f'<a href="{escape(r["hs_url"])}" target="_blank" class="hs-badge">HS</a>'
         inv_badge = '<span class="inv-badge">INV</span>' if r['prior_invested'] else ''
@@ -891,7 +910,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
                 f'<td>{task_cell}</td>'
                 f'</tr>')
 
-    today_rows_html  = '\n'.join(mini_row(r) for r in today_rows)  if today_rows  else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No meetings or tasks due today</td></tr>'
+    today_rows_html  = '\n'.join(today_row(r) for r in today_rows)  if today_rows  else '<tr><td colspan="5" style="color:var(--text-3);text-align:center;padding:18px">No meetings or tasks due today</td></tr>'
     whale_rows_html  = '\n'.join(mini_row(r) for r in whale_rows)  if whale_rows  else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals at $50k+</td></tr>'
     cold_rows_html   = '\n'.join(cold_row(r) for r in cold_rows)   if cold_rows   else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals are slipping</td></tr>'
 
@@ -1104,16 +1123,16 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   <div class="section-meta">Meetings and tasks due today, plus the next three workdays</div>
 </div>
 <div class="today-layout">
-  <div class="today-main">
-    <table class="mini-table">
-      <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
-      <tbody>{today_rows_html}</tbody>
-    </table>
-  </div>
   <aside class="today-sidebar">
     <h3>Next 3 Days</h3>
     <div class="cal-cards">{cal_cards_html}</div>
   </aside>
+  <div class="today-main">
+    <table class="mini-table today-table">
+      <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Meeting</th><th>Task Due</th></tr></thead>
+      <tbody>{today_rows_html}</tbody>
+    </table>
+  </div>
 </div>
 
 <div class="section-band whale">
