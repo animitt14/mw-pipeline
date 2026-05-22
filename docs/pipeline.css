@@ -7,13 +7,13 @@
    ============================================================ */
 
 :root {
-  /* Masterworks gallery — warm paper neutrals + aubergine accent */
-  --bg:        #f4f1ea;   /* paper cream */
-  --surface:   #fbf9f4;   /* slightly lighter, panel */
-  --surface-2: #ece6da;   /* warm hover gray */
-  --border:    #e1dbcc;
-  --border-2:  #cbc4b3;
-  --row-divider: rgba(50, 40, 30, 0.08);
+  /* Masterworks — cool stone neutrals + navy accent */
+  --bg:        #ebedf0;   /* cool gray stone */
+  --surface:   #ffffff;
+  --surface-2: #dfe2e7;
+  --border:    #d4d8de;
+  --border-2:  #b6bcc6;
+  --row-divider: rgba(14, 20, 34, 0.08);
   --text:      #0e1422;
   --text-2:    #4a5363;
   --text-3:    #8a8d96;
@@ -36,13 +36,13 @@
   --blue-2:   #455a66;
   --purple:   var(--accent);
 
-  /* Heat — warm sand to clay (no pink) */
-  --heat-1:        #f5ede0;
-  --heat-1-hover:  #ecdfca;
-  --heat-2:        #ecdcc0;
-  --heat-2-hover:  #ddcca8;
-  --heat-3:        #dec8a4;
-  --heat-3-hover:  #d0b788;
+  /* Heat — cool gray gradient (no warm tones) */
+  --heat-1:        #eff1f4;
+  --heat-1-hover:  #e3e6ec;
+  --heat-2:        #e3e6ec;
+  --heat-2-hover:  #d4d8e0;
+  --heat-3:        #cdd3dc;
+  --heat-3-hover:  #bbc2cd;
 
   /* Legacy aliases (overview compatibility) */
   --surface2: var(--surface-2);
@@ -83,7 +83,7 @@ h1 { font-size: 1.2rem; font-weight: 600; margin: 0; color: var(--accent-2); let
 
 /* --- HERO BAND --- */
 .hero-band {
-  background: linear-gradient(180deg, var(--surface) 0%, #f5ede0 100%);
+  background: linear-gradient(180deg, var(--surface) 0%, #ecedf2 100%);
   border-radius: 12px;
   padding: 36px 40px 30px;
   margin: 18px 0 32px;
@@ -478,19 +478,19 @@ a:hover { text-decoration: underline; }
 .li-inline:hover { color: var(--accent-2) !important; background: var(--accent-bg) !important; text-decoration: none !important; }
 
 .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: 500; white-space: nowrap; letter-spacing: 0.01em; }
-.stage-event     { background: #ede7d8; color: #76695c; }
-.stage-advisor   { background: #ede7d8; color: #76695c; }
-.stage-active    { background: #ede7d8; color: #76695c; }
-.stage-longterm  { background: #ede7d8; color: #76695c; }
+.stage-event     { background: #e2e5ea; color: #4a5363; }
+.stage-advisor   { background: #e2e5ea; color: #4a5363; }
+.stage-active    { background: #e2e5ea; color: #4a5363; }
+.stage-longterm  { background: #e2e5ea; color: #4a5363; }
 .stage-meeting   { background: var(--accent-bg); color: var(--accent-2); }
-.stage-nurture   { background: #ede7d8; color: #76695c; }
+.stage-nurture   { background: #e2e5ea; color: #4a5363; }
 .stage-rec       { background: var(--accent-bg); color: var(--accent-2); }
-.stage-won       { background: #dde6d4; color: var(--green-2); }
-.stage-lost      { background: #ecd9ce; color: var(--red-2); }
-.stage-disq      { background: #efe9dc; color: #8e8576; }
+.stage-won       { background: #d8e3d5; color: var(--green-2); }
+.stage-lost      { background: #e5d3ce; color: var(--red-2); }
+.stage-disq      { background: #ebedf0; color: #8a8d96; }
 .status-upcoming { background: var(--accent-bg); color: var(--accent-2); }
-.status-active   { background: #dde6d4; color: var(--green-2); }
-.status-dormant  { background: #efe9dc; color: #8e8576; }
+.status-active   { background: #d8e3d5; color: var(--green-2); }
+.status-dormant  { background: #ebedf0; color: #8a8d96; }
 
 /* --- HEAT COLORING (days since last contact) --- */
 tr.heat-1 td { background: var(--heat-1); }

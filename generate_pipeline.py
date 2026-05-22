@@ -1117,10 +1117,10 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   <div class="cal-cap"><span class="cal-bar">{bar_str}</span><span class="cal-cap-label">{free_h:.1f}h open</span></div>
 </div>'''
 
-    # Stacked horizontal funnel — Masterworks navy + earth palette
+    # Stacked horizontal funnel — Masterworks navy gradient
     total_funnel = sum(funnel_counts) or 1
     # Order matches FUNNEL_STAGES: Advisor, Active, LongTerm, Mtg, Nurture, Rec Made
-    SF_COLORS = ['#a08862', '#5d7286', '#3d556e', '#1e2a40', '#a07a3b', '#11203a']
+    SF_COLORS = ['#8a96a8', '#6e7d92', '#54657c', '#3d556e', '#26405e', '#11203a']
     sf_segs = []
     sf_keys = []
     for i, (c, (sid, lbl)) in enumerate(zip(funnel_counts, FUNNEL_STAGES)):
