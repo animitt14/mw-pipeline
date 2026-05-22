@@ -829,10 +829,13 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         threshold = COLD_RULES.get(r['stage_id'])
         if threshold is None:
             continue
+        if r['amount_val'] <= 10_000:
+            continue
         d = r.get('days_since')
         if d is None or d >= threshold:
             cold_rows.append(r)
     cold_rows.sort(key=lambda r: -(r.get('days_since') if r.get('days_since') is not None else 9_999))
+    cold_rows = cold_rows[:5]
 
     def heat_cls(d):
         if d is None:    return 'heat-3'
@@ -1089,24 +1092,6 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   </div>
 </section>
 
-<div class="section-band cold">
-  <div class="section-title">Deals Slipping <span class="section-count">{len(cold_rows)}</span></div>
-  <div class="section-meta">Meeting Scheduled with no contact in 10+ days, Active Relationship at 14+ days</div>
-</div>
-<table class="mini-table cold-table">
-  <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Days Cold</th><th>Last Contacted</th><th>Task Due</th></tr></thead>
-  <tbody>{cold_rows_html}</tbody>
-</table>
-
-<div class="section-band whale">
-  <div class="section-title">Whale Tracker <span class="section-count">{len(whale_rows)}</span></div>
-  <div class="section-meta">Deals $50k and above, excluding Closed Lost</div>
-</div>
-<table class="mini-table whale-table">
-  <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
-  <tbody>{whale_rows_html}</tbody>
-</table>
-
 <div class="section-band">
   <div class="section-title">Today <span class="section-count">{len(today_rows)}</span></div>
   <div class="section-meta">Meetings and tasks due today, plus the next three workdays</div>
@@ -1123,6 +1108,24 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     <div class="cal-cards">{cal_cards_html}</div>
   </aside>
 </div>
+
+<div class="section-band cold">
+  <div class="section-title">Deals Slipping <span class="section-count">{len(cold_rows)}</span></div>
+  <div class="section-meta">Top 5 by days cold &middot; Meeting Scheduled 10+ days, Active Relationship 14+ days &middot; deals over $10k only</div>
+</div>
+<table class="mini-table cold-table">
+  <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Days Cold</th><th>Last Contacted</th><th>Task Due</th></tr></thead>
+  <tbody>{cold_rows_html}</tbody>
+</table>
+
+<div class="section-band whale">
+  <div class="section-title">Whale Tracker <span class="section-count">{len(whale_rows)}</span></div>
+  <div class="section-meta">Deals $50k and above, excluding Closed Lost</div>
+</div>
+<table class="mini-table whale-table">
+  <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
+  <tbody>{whale_rows_html}</tbody>
+</table>
 
 <div class="section-band">
   <div class="section-title">All Contacts <span class="section-count">{count}</span></div>
