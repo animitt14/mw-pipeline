@@ -322,15 +322,22 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .stage-dot.stage-won      { background: #065f46; }
 .stage-dot.stage-lost     { background: #b91c1c; }
 .stage-dot.stage-disq     { background: #8b8b94; }
-.cal-cards { display: flex; flex-direction: column; gap: 6px; }
+.cal-cards { display: flex; flex-direction: column; gap: 8px; }
 .cal-card {
   background: var(--bg);
-  border-radius: 6px; padding: 8px 12px;
+  border-radius: 6px; padding: 10px 14px;
 }
 .cal-today { background: var(--accent-bg); }
-.cal-day-label { font-size: 0.78rem; font-weight: 600; color: var(--text); }
+.cal-day-label { font-size: 0.76rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
 .cal-today .cal-day-label { color: var(--accent-2); }
-.cal-mini { font-size: 0.72rem; color: var(--text-2); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.cal-mtg { font-size: 0.72rem; color: var(--text-2); margin-bottom: 4px; }
+.cal-tasks-section { margin-bottom: 4px; }
+.cal-row { display: flex; align-items: center; font-size: 0.7rem; color: var(--text-2); gap: 6px; line-height: 1.5; }
+.cal-icon { width: 1.1em; flex-shrink: 0; text-align: center; color: var(--text-3); }
+.cal-lbl { color: var(--text-2); }
+.cal-num { min-width: 1.4em; font-variant-numeric: tabular-nums; color: var(--text); font-weight: 600; }
+.cal-cap { margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--row-divider); }
+.cal-cap-label { font-size: 0.68rem; color: var(--text-3); }
 
 /* --- CONTROLS --- */
 .controls { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }

@@ -24,11 +24,11 @@ SEARCH_URL = 'https://api.hubapi.com/crm/v3/objects/contacts/search'
 DEAL_STAGES = {
     '1321369495': 'Event Attended',
     '1339121714': 'Advisor Assigned',
-    '1321369496': 'Active Relationship',
-    '1363474599': 'Long Term Relationship',
-    '1321369497': 'Meeting Scheduled',
+    '1321369496': 'Active Rel',
+    '1363474599': 'Long Term Rel',
+    '1321369497': 'Mtg Sch',
     '1321369500': 'Nurture',
-    '1321369502': 'Recommendation Made',
+    '1321369502': 'Rec Made',
     '1321369499': 'Closed Won',
     '1321369501': 'Closed Lost',
     '1341309466': 'Self Serve',
@@ -558,9 +558,9 @@ def fmt_amount(amount_str):
 
 FUNNEL_STAGES = [
     ('1339121714', 'Advisor Assigned'),
-    ('1321369496', 'Active Rel.'),
-    ('1363474599', 'Long Term Rel.'),
-    ('1321369497', 'Mtg Scheduled'),
+    ('1321369496', 'Active Rel'),
+    ('1363474599', 'Long Term Rel'),
+    ('1321369497', 'Mtg Sch'),
     ('1321369500', 'Nurture'),
     ('1321369502', 'Rec Made'),
 ]
@@ -1132,10 +1132,15 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         bar_empty = 10 - bar_filled
         bar_str = '&#9608;' * bar_filled + '&#9617;' * bar_empty
         card_class = 'cal-card cal-today' if is_today else 'cal-card'
-        total_tasks = email_n + call_n + other_n
         cal_cards_html += f'''<div class="{card_class}">
   <div class="cal-day-label">{day_label}</div>
-  <div class="cal-mini">{mtg_count} mtg &middot; {total_tasks} tasks &middot; {free_h:.1f}h open</div>
+  <div class="cal-mtg">&#128197; {mtg_label}</div>
+  <div class="cal-tasks-section">
+    <div class="cal-row"><span class="cal-icon">&#9993;</span><span class="cal-num">{email_n}</span><span class="cal-lbl">email</span></div>
+    <div class="cal-row"><span class="cal-icon">&#9990;</span><span class="cal-num">{call_n}</span><span class="cal-lbl">call</span></div>
+    <div class="cal-row"><span class="cal-icon">&#183;</span><span class="cal-num">{other_n}</span><span class="cal-lbl">other</span></div>
+  </div>
+  <div class="cal-cap"><span class="cal-cap-label">{free_h:.1f}h open</span></div>
 </div>'''
 
     # Stacked horizontal funnel — colors mirror the .stage-* badge text colors
