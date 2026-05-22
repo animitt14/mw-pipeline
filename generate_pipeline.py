@@ -1321,7 +1321,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     <div class="section-title">Whale Tracker <span class="section-count">{len(whale_rows)}</span></div>
     <div class="section-meta">Open deals $50k and above &middot; excludes Closed Won + Closed Lost</div>
   </div>
-  <div class="whale-priorities">{whale_priorities_html}</div>
+  <div class="whale-priorities" data-owner="{owner_name}">{whale_priorities_html}</div>
 </section>
 
 <section class="page-section section-cold">

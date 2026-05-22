@@ -396,12 +396,17 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .cold-table td:nth-child(4) { font-variant-numeric: tabular-nums; color: var(--accent-2); font-weight: 500; }
 .cold-days { font-weight: 600; }
 
-/* Whale priority tiles — compact horizontal strips in 2-column grid */
+/* Whale priority tiles — compact horizontal strips in 2-column grid (default) */
 .whale-priorities {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 @media (max-width: 720px) { .whale-priorities { grid-template-columns: 1fr; } }
+
+/* Erik has more whales — denser 3-column grid */
+.whale-priorities[data-owner="Erik"] { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 1100px) { .whale-priorities[data-owner="Erik"] { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 720px)  { .whale-priorities[data-owner="Erik"] { grid-template-columns: 1fr; } }
 .whale-priority {
   background: var(--surface);
   border-radius: 10px;
