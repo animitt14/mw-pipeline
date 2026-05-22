@@ -13,6 +13,7 @@
   --surface-2: #dee1e7;
   --border:    #d8dbe1;
   --border-2:  #c6c9d0;
+  --row-divider: rgba(20, 22, 30, 0.05);
   --text:      #1a1c20;
   --text-2:    #52555c;
   --text-3:    #7e828b;
@@ -272,7 +273,7 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 #pipeline-table th:last-child { cursor: default; }
 #pipeline-table th.sort-asc::after  { content: " \25B2"; font-size: 0.55rem; color: var(--accent-2); }
 #pipeline-table th.sort-desc::after { content: " \25BC"; font-size: 0.55rem; color: var(--accent-2); }
-#pipeline-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+#pipeline-table td { padding: 8px 12px; border-bottom: 1px solid var(--row-divider); vertical-align: middle; }
 #pipeline-table tr:hover td { background: var(--surface-2); }
 #pipeline-table tr.hidden { display: none; }
 
@@ -288,12 +289,12 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 /* --- MINI TABLES (today / whale / cold) --- */
 .mini-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
 .mini-table th { text-align: left; padding: 9px 14px; background: transparent; color: var(--text-3); font-weight: 500; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); white-space: nowrap; position: static; cursor: default; }
-.mini-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.mini-table td { padding: 10px 14px; border-bottom: 1px solid var(--row-divider); vertical-align: middle; }
 .mini-table tr:hover td { background: rgba(20, 22, 30, 0.035); }
 .section-whale .mini-table th { border-bottom-color: rgba(124, 58, 237, 0.18); }
-.section-whale .mini-table td { border-bottom-color: rgba(124, 58, 237, 0.12); }
+.section-whale .mini-table td { border-bottom-color: rgba(124, 58, 237, 0.06); }
 .section-cold .mini-table th  { border-bottom-color: rgba(185, 28, 28, 0.18); }
-.section-cold .mini-table td  { border-bottom-color: rgba(185, 28, 28, 0.10); }
+.section-cold .mini-table td  { border-bottom-color: rgba(185, 28, 28, 0.05); }
 .mini-table th:nth-child(n+2) { text-align: center; }
 .mini-table td:nth-child(n+2) { text-align: center; }
 .mini-table td:nth-child(3) { font-variant-numeric: tabular-nums; color: var(--accent-2); font-weight: 500; }
