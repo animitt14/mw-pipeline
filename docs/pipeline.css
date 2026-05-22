@@ -488,7 +488,7 @@ a:hover { text-decoration: underline; }
 .note-toggle { cursor: pointer; color: var(--text-2); font-size: 0.75rem; margin-left: 5px; user-select: none; }
 .note-toggle:hover { color: var(--text); }
 .note-snippet { font-size: 0.72rem; color: var(--text-2); font-style: italic; margin-top: 4px; line-height: 1.4; white-space: normal; }
-.tc-text { font-size: 0.76rem; color: var(--text-2); }
+.tc-text { font-size: 0.76rem; color: var(--text-3); }
 .li-inline { font-size: 0.65rem; font-weight: 600; color: var(--text-3); background: var(--surface-2); border-radius: 3px; padding: 2px 5px; margin-right: 4px; }
 .li-inline:hover { color: var(--accent-2) !important; background: var(--accent-bg) !important; text-decoration: none !important; }
 
@@ -538,6 +538,27 @@ tr.contacted-today td { opacity: 0.4; }
 .collapse-btn.open .chev { transform: rotate(90deg); color: var(--accent-2); }
 .collapsible { display: none; margin-top: 14px; }
 .collapsible.open { display: block; }
+
+/* Horizontal scroll for the wide All Contacts table on narrow screens */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* --- MOBILE RESPONSIVE --- */
+@media (max-width: 720px) {
+  body { padding: 14px 12px; }
+  .page-section { padding: 16px 14px 18px; margin-bottom: 14px; }
+  .hero-band { padding: 22px 18px 18px; margin: 12px 0 18px; }
+  .hero-band::before { left: 18px; }
+  .hero-val { font-size: 3rem; }
+  .hero-sub-stats { gap: 18px; margin-left: 0; margin-top: 14px; }
+  .sub-val { font-size: 1.2rem; }
+  .section-band { flex-wrap: wrap; gap: 6px; }
+  .section-band .section-meta { width: 100%; }
+  .t3-col { padding: 0; }
+  .whale-priority { padding: 12px 14px 10px; gap: 10px; }
+  .wp-amount { font-size: 1.3rem; min-width: 56px; }
+  .wp-name { font-size: 0.9rem; }
+  .nav { flex-wrap: wrap; }
+}
 
 /* ============================================================
    OVERVIEW PAGE — analytics dashboard layouts

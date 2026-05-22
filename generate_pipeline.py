@@ -556,6 +556,13 @@ def fmt_amount(amount_str):
         return amount_str
 
 
+def fmt_days_ago(days):
+    if days is None: return '—'
+    if days == 0:    return 'today'
+    if days == 1:    return 'yesterday'
+    return f'{days}d ago'
+
+
 FUNNEL_STAGES = [
     ('1339121714', 'Advisor Assigned'),
     ('1321369496', 'Active Rel'),
@@ -971,14 +978,13 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
                 f'<td>{days_cell}</td>'
                 f'<td>{stage_cell}</td>'
                 f'<td>{amt_cell}</td>'
-                f'<td>{r["last_contact"] or "—"}</td>'
                 f'<td>{task_cell}</td>'
                 f'</tr>')
 
     # Whale table excludes the top 3 already shown as tiles
     whale_table_rows = whale_rows[3:]
     whale_rows_html      = '\n'.join(whale_row(r) for r in whale_table_rows) if whale_table_rows else '<tr><td colspan="5" style="color:var(--text-3);text-align:center;padding:18px">All whales above are in the tiles</td></tr>'
-    cold_rows_html       = '\n'.join(cold_row(r) for r in cold_rows)         if cold_rows        else '<tr><td colspan="6" style="color:var(--text-3);text-align:center;padding:18px">No deals are slipping</td></tr>'
+    cold_rows_html       = '\n'.join(cold_row(r) for r in cold_rows)         if cold_rows        else '<tr><td colspan="5" style="color:var(--text-3);text-align:center;padding:18px">No deals are slipping</td></tr>'
 
     # --- Today: vertical meeting timeline + tasks bucket ---
     try:
@@ -1056,7 +1062,8 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         # Meta line: Stage · last X · task Y / mtg Y
         meta_parts = []
         if r['stage_label']: meta_parts.append(escape(r['stage_label']))
-        if r['last_contact']: meta_parts.append(f'last {escape(r["last_contact"])}')
+        d = r.get('days_since')
+        if d is not None: meta_parts.append(f'last {fmt_days_ago(d)}')
         if r['meeting_start'] and r['meeting_ms'] >= now_ms_ts:
             meta_parts.append(f'mtg {escape(r["meeting_start"])}')
         elif r['task_due']:
@@ -1222,7 +1229,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
             f'      <td>{stage_cell}</td>\n'
             f'      <td>{escape(r["amount_fmt"])}</td>\n'
             f'      <td>{r["rsvp_date"]}</td>\n'
-            f'      <td>{r["last_contact"]}</td>\n'
+            f'      <td>{fmt_days_ago(r.get("days_since"))}</td>\n'
             f'      <td>{mtg_cell}</td>\n'
             f'      <td>{task_cell}</td>\n'
             f'      <td>{escape(r["times_contacted"])}</td>\n'
@@ -1330,7 +1337,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     <div class="section-meta">Top 5 by days cold &middot; Meeting Scheduled 7+ days, Active Relationship 10+ days &middot; over $15k, no upcoming task (overdue counts)</div>
   </div>
   <table class="mini-table cold-table">
-    <thead><tr><th>Name</th><th>Days Cold</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Task Due</th></tr></thead>
+    <thead><tr><th>Name</th><th>Days Cold</th><th>Stage</th><th>Amount</th><th>Task Due</th></tr></thead>
     <tbody>{cold_rows_html}</tbody>
   </table>
 </section>
@@ -1350,25 +1357,27 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     </select>
     <span id="visible-count" style="color:var(--text-3);font-size:0.74rem;"></span>
   </div>
-  <table id="pipeline-table">
-    <thead>
-      <tr>
-        <th onclick="sortTable(8,'number')">Status</th>
-        <th onclick="sortTable(0,'text')">Name</th>
-        <th>Title / Co</th>
-        <th onclick="sortTable(1,'stage')">Deal Stage</th>
-        <th onclick="sortTable(2,'number')">Deal Amount</th>
-        <th onclick="sortTable(3,'date')">Date Attended</th>
-        <th onclick="sortTable(4,'date')">Last Contacted</th>
-        <th onclick="sortTable(7,'date')">Upcoming Mtg</th>
-        <th onclick="sortTable(6,'number')">Task</th>
-        <th onclick="sortTable(5,'number')"># Contacted</th>
-      </tr>
-    </thead>
-    <tbody id="pipeline-body">
+  <div class="table-scroll">
+    <table id="pipeline-table">
+      <thead>
+        <tr>
+          <th onclick="sortTable(8,'number')">Status</th>
+          <th onclick="sortTable(0,'text')">Name</th>
+          <th>Title / Co</th>
+          <th onclick="sortTable(1,'stage')">Deal Stage</th>
+          <th onclick="sortTable(2,'number')">Deal Amount</th>
+          <th onclick="sortTable(3,'date')">Date Attended</th>
+          <th onclick="sortTable(4,'date')">Last Contacted</th>
+          <th onclick="sortTable(7,'date')">Upcoming Mtg</th>
+          <th onclick="sortTable(6,'number')">Task</th>
+          <th onclick="sortTable(5,'number')"># Contacted</th>
+        </tr>
+      </thead>
+      <tbody id="pipeline-body">
 {rows_html}
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 </section>
 <script>
 (function() {{
