@@ -999,7 +999,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         amt = f'<span class="ti-amt">{escape(r["amount_fmt"])}</span>' if r['amount_fmt'] else ''
         return (
             f'<div class="ti mtg-item" title="{title}">'
-            f'<div class="ti-time">{time_str}</div>'
+            f'<div class="mtg-time">{time_str}</div>'
             f'<div class="ti-body">'
             f'<div class="ti-name">{hs}{escape(r["name"])}</div>'
             f'<div class="ti-meta">{stage}{amt}</div>'
