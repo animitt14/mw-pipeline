@@ -157,10 +157,26 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .sf-key-n { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
 .sf-key-empty .sf-key-n { color: var(--text-3); font-weight: 400; }
 
+/* --- SECTION PANELS (Option A: each section is a white surface) --- */
+.page-section {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 22px 26px 26px;
+  margin-bottom: 22px;
+  box-shadow:
+    0 1px 2px rgba(20, 22, 30, 0.04),
+    0 4px 12px rgba(20, 22, 30, 0.04);
+}
+.page-section > .section-band { margin: 0 0 18px; }
+.page-section > .section-band + .today-layout,
+.page-section > .section-band + .whale-tiles,
+.page-section > .section-band + .mini-table,
+.page-section > .section-band + .controls { margin-top: 0; }
+
 /* --- SECTION HEADERS --- */
 .section-band {
   display: flex; align-items: baseline; justify-content: space-between;
-  margin: 44px 0 14px; padding-bottom: 8px;
+  margin: 44px 0 14px; padding-bottom: 10px;
   border-bottom: 1px solid var(--border);
 }
 .section-band .section-title {
@@ -204,7 +220,7 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 }
 .cal-cards { display: flex; flex-direction: column; gap: 8px; }
 .cal-card {
-  background: var(--surface);
+  background: var(--bg);
   border-radius: 6px; padding: 10px 14px;
 }
 .cal-today { background: var(--accent-bg); }
@@ -234,7 +250,7 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 /* --- PIPELINE TABLE --- */
 #pipeline-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
 #pipeline-table th {
-  text-align: left; padding: 10px 12px; background: var(--bg); color: var(--text-3);
+  text-align: left; padding: 10px 12px; background: var(--surface); color: var(--text-3);
   font-weight: 500; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em;
   border-bottom: 1px solid var(--border); white-space: nowrap; position: sticky; top: 0;
   cursor: pointer; user-select: none;
@@ -274,21 +290,16 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 }
 @media (max-width: 900px) { .whale-tiles { grid-template-columns: 1fr; } }
 .whale-tile {
-  background: var(--surface);
+  background: linear-gradient(180deg, #fbfaff 0%, #f5f1fc 100%);
   border-radius: 12px;
   padding: 24px 26px 20px;
   display: flex; flex-direction: column; gap: 10px;
-  box-shadow:
-    0 1px 2px rgba(20, 22, 30, 0.05),
-    0 6px 16px rgba(20, 22, 30, 0.06);
   position: relative;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .whale-tile:hover {
   transform: translateY(-1px);
-  box-shadow:
-    0 1px 2px rgba(20, 22, 30, 0.06),
-    0 10px 24px rgba(20, 22, 30, 0.09);
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.08);
 }
 .whale-tile::before {
   content: ''; position: absolute; top: 0; left: 26px;

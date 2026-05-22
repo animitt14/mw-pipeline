@@ -898,10 +898,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         # Meeting takes priority when both fall on the same day
         if has_mtg_today:
             mtg_title = escape(r['meeting_title']) if r['meeting_title'] else 'Meeting'
-            mtg_detail = escape(r['meeting_start']) if r['meeting_start'] else ''
             activity_cell = (
                 f'<span class="act act-mtg" title="{mtg_title}">'
-                f'<span class="act-kind">meeting</span>{mtg_detail}</span>'
+                f'<span class="act-kind">meeting</span></span>'
             )
         elif has_task_today:
             task_title = escape(r['task_subject']) if r['task_subject'] else ''
@@ -1195,75 +1194,83 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
   </div>
 </section>
 
-<div class="section-band">
-  <div class="section-title">Today <span class="section-count">{len(today_rows)}</span></div>
-  <div class="section-meta">Meetings and tasks due today, plus the next three workdays</div>
-</div>
-<div class="today-layout">
-  <aside class="today-sidebar">
-    <h3>Next 3 Days</h3>
-    <div class="cal-cards">{cal_cards_html}</div>
-  </aside>
-  <div class="today-main">
-    <table class="mini-table today-table">
-      <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Activity</th></tr></thead>
-      <tbody>{today_rows_html}</tbody>
-    </table>
+<section class="page-section section-today">
+  <div class="section-band">
+    <div class="section-title">Today <span class="section-count">{len(today_rows)}</span></div>
+    <div class="section-meta">Meetings and tasks due today, plus the next three workdays</div>
   </div>
-</div>
+  <div class="today-layout">
+    <aside class="today-sidebar">
+      <h3>Next 3 Days</h3>
+      <div class="cal-cards">{cal_cards_html}</div>
+    </aside>
+    <div class="today-main">
+      <table class="mini-table today-table">
+        <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Activity</th></tr></thead>
+        <tbody>{today_rows_html}</tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
-<div class="section-band whale">
-  <div class="section-title">Whale Tracker <span class="section-count">{len(whale_rows)}</span></div>
-  <div class="section-meta">Open deals $50k and above &middot; excludes Closed Won + Closed Lost</div>
-</div>
-<div class="whale-tiles">{top_whale_tiles_html}</div>
-<table class="mini-table whale-table">
-  <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
-  <tbody>{whale_rows_html}</tbody>
-</table>
+<section class="page-section section-whale">
+  <div class="section-band whale">
+    <div class="section-title">Whale Tracker <span class="section-count">{len(whale_rows)}</span></div>
+    <div class="section-meta">Open deals $50k and above &middot; excludes Closed Won + Closed Lost</div>
+  </div>
+  <div class="whale-tiles">{top_whale_tiles_html}</div>
+  <table class="mini-table whale-table">
+    <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Last Contacted</th><th>Meeting</th><th>Task Due</th></tr></thead>
+    <tbody>{whale_rows_html}</tbody>
+  </table>
+</section>
 
-<div class="section-band cold">
-  <div class="section-title">Deals Slipping <span class="section-count">{len(cold_rows)}</span></div>
-  <div class="section-meta">Top 5 by days cold &middot; Meeting Scheduled 7+ days, Active Relationship 10+ days &middot; over $15k, no upcoming task (overdue counts)</div>
-</div>
-<table class="mini-table cold-table">
-  <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Days Cold</th><th>Last Contacted</th><th>Task Due</th></tr></thead>
-  <tbody>{cold_rows_html}</tbody>
-</table>
+<section class="page-section section-cold">
+  <div class="section-band cold">
+    <div class="section-title">Deals Slipping <span class="section-count">{len(cold_rows)}</span></div>
+    <div class="section-meta">Top 5 by days cold &middot; Meeting Scheduled 7+ days, Active Relationship 10+ days &middot; over $15k, no upcoming task (overdue counts)</div>
+  </div>
+  <table class="mini-table cold-table">
+    <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Days Cold</th><th>Last Contacted</th><th>Task Due</th></tr></thead>
+    <tbody>{cold_rows_html}</tbody>
+  </table>
+</section>
 
-<div class="section-band">
-  <div class="section-title">All Contacts <span class="section-count">{count}</span></div>
-  <button id="hidden-toggle" class="collapse-btn" onclick="toggleHidden()"><span class="lbl">Show all contacts</span></button>
-</div>
-<div class="controls">
-  <button id="btn-default" onclick="resetSort()">Default Sort</button>
-  <span class="sort-hint">status &rarr; deal stage &rarr; amount</span>
-  <label for="stage-filter">Stage:</label>
-  <select id="stage-filter" onchange="filterStage(this.value)">
-    <option value="">All Stages</option>
+<section class="page-section section-all">
+  <div class="section-band">
+    <div class="section-title">All Contacts <span class="section-count">{count}</span></div>
+    <button id="hidden-toggle" class="collapse-btn" onclick="toggleHidden()"><span class="lbl">Show all contacts</span></button>
+  </div>
+  <div class="controls">
+    <button id="btn-default" onclick="resetSort()">Default Sort</button>
+    <span class="sort-hint">status &rarr; deal stage &rarr; amount</span>
+    <label for="stage-filter">Stage:</label>
+    <select id="stage-filter" onchange="filterStage(this.value)">
+      <option value="">All Stages</option>
 {stage_options}
-  </select>
-  <span id="visible-count" style="color:var(--text-3);font-size:0.74rem;"></span>
-</div>
-<table id="pipeline-table">
-  <thead>
-    <tr>
-      <th onclick="sortTable(8,'number')">Status</th>
-      <th onclick="sortTable(0,'text')">Name</th>
-      <th>Title / Co</th>
-      <th onclick="sortTable(1,'stage')">Deal Stage</th>
-      <th onclick="sortTable(2,'number')">Deal Amount</th>
-      <th onclick="sortTable(3,'date')">Date Attended</th>
-      <th onclick="sortTable(4,'date')">Last Contacted</th>
-      <th onclick="sortTable(7,'date')">Upcoming Mtg</th>
-      <th onclick="sortTable(6,'number')">Task</th>
-      <th onclick="sortTable(5,'number')"># Contacted</th>
-    </tr>
-  </thead>
-  <tbody id="pipeline-body">
+    </select>
+    <span id="visible-count" style="color:var(--text-3);font-size:0.74rem;"></span>
+  </div>
+  <table id="pipeline-table">
+    <thead>
+      <tr>
+        <th onclick="sortTable(8,'number')">Status</th>
+        <th onclick="sortTable(0,'text')">Name</th>
+        <th>Title / Co</th>
+        <th onclick="sortTable(1,'stage')">Deal Stage</th>
+        <th onclick="sortTable(2,'number')">Deal Amount</th>
+        <th onclick="sortTable(3,'date')">Date Attended</th>
+        <th onclick="sortTable(4,'date')">Last Contacted</th>
+        <th onclick="sortTable(7,'date')">Upcoming Mtg</th>
+        <th onclick="sortTable(6,'number')">Task</th>
+        <th onclick="sortTable(5,'number')"># Contacted</th>
+      </tr>
+    </thead>
+    <tbody id="pipeline-body">
 {rows_html}
-  </tbody>
-</table>
+    </tbody>
+  </table>
+</section>
 <script>
 (function() {{
   var sortState = {{ col: -1, dir: 1 }};
