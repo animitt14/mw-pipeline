@@ -759,7 +759,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         elif ((_task_ms > 0 and _task_ms <= now_ms_ts + ms_30d) or
               (_rsvp_ms > 0 and now_ms_ts - _rsvp_ms <= ms_21d) or
               (_cont_ms > 0 and now_ms_ts - _cont_ms <= ms_21d)):
-            _status, _status_order = 'Active', 1
+            _status, _status_order = 'Working', 1
         else:
             _status, _status_order = 'Dormant', 2
         row_data[-1]['status'] = _status
@@ -797,7 +797,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     stat_pipeline_val  = sum(r['amount_val'] for r in row_data if r['amount_val'] > 0)
     stat_mtg_count     = sum(1 for r in row_data if r['meeting_ms'] > 0)
     stat_tasks_week    = sum(1 for r in row_data if 0 < r['task_due_ms'] <= now_ms_ts + ms_7d)
-    stat_active        = sum(1 for r in row_data if r['status'] in ('Active', 'Upcoming'))
+    stat_active        = sum(1 for r in row_data if r['status'] in ('Working', 'Upcoming'))
     stat_dormant       = sum(1 for r in row_data if r['status'] == 'Dormant')
     stat_closed        = sum(1 for r in all_row_data if r['stage_id'] in TERMINAL_STAGES)
     stat_whales        = len([r for r in all_row_data if r['amount_val'] >= 50_000])
@@ -816,7 +816,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
                 f'</div>')
 
     sub_stats_html = (
-        sub_stat(str(stat_active), 'Active') +
+        sub_stat(str(stat_active), 'Working') +
         sub_stat(str(stat_dormant), 'Dormant') +
         sub_stat(str(stat_closed), 'Closed') +
         sub_stat(str(stat_mtg_count), 'Meetings') +
@@ -1188,7 +1188,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
         note_snippet = notes.get(r['cid'], '') if r['stage_id'] == '1321369496' else ''
         note_html = (f'<span class="note-toggle" onclick="var n=this.nextElementSibling;n.style.display=n.style.display===\'block\'?\'none\':\'block\'">&#9662;</span>'
                      f'<div class="note-snippet" style="display:none">{escape(note_snippet)}</div>') if note_snippet else ''
-        status_css = {'Upcoming': 'status-upcoming', 'Active': 'status-active', 'Dormant': 'status-dormant'}.get(r['status'], '')
+        status_css = {'Upcoming': 'status-upcoming', 'Working': 'status-active', 'Dormant': 'status-dormant'}.get(r['status'], '')
         status_cell = f'<span class="badge {status_css}">{r["status"]}</span>'
         contacted_today = False
         if r['contacted_raw']:
