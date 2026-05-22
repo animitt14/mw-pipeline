@@ -7,42 +7,42 @@
    ============================================================ */
 
 :root {
-  /* Neutral palette — cool gray bg, white surfaces pop forward */
-  --bg:        #ebedf1;
-  --surface:   #ffffff;
-  --surface-2: #dee1e7;
-  --border:    #d8dbe1;
-  --border-2:  #c6c9d0;
-  --row-divider: rgba(20, 22, 30, 0.10);
-  --text:      #1a1c20;
-  --text-2:    #52555c;
-  --text-3:    #7e828b;
+  /* Masterworks gallery — warm paper neutrals + aubergine accent */
+  --bg:        #f4f1ea;   /* paper cream */
+  --surface:   #fbf9f4;   /* slightly lighter, panel */
+  --surface-2: #ece6da;   /* warm hover gray */
+  --border:    #e1dbcc;
+  --border-2:  #cbc4b3;
+  --row-divider: rgba(50, 40, 30, 0.08);
+  --text:      #2a2520;
+  --text-2:    #6e6660;
+  --text-3:    #a39c93;
 
-  /* Accent — Masterworks deep purple */
-  --accent:        #7c3aed;
-  --accent-2:      #5b21b6;
-  --accent-deep:   #4c1d95;
-  --accent-bg:     rgba(124, 58, 237, 0.08);
-  --accent-border: rgba(124, 58, 237, 0.3);
+  /* Accent — deep aubergine */
+  --accent:        #5e2c63;
+  --accent-2:      #3f1c4a;
+  --accent-deep:   #2e123a;
+  --accent-bg:     rgba(94, 44, 99, 0.10);
+  --accent-border: rgba(94, 44, 99, 0.30);
 
-  /* Semantic colors (used by overview funnel + stage badges) */
-  --green:  #16a34a;
-  --green-2:#065f46;
-  --red:    #dc2626;
-  --red-2:  #b91c1c;
-  --amber:  #ca8a04;
-  --amber-2:#854d0e;
-  --blue:   #1d4ed8;
-  --blue-2: #1e40af;
-  --purple: var(--accent);
+  /* Semantic — earth tones (sparingly used) */
+  --green:    #5f7a52;
+  --green-2:  #455c3a;
+  --red:      #a04e2c;   /* terracotta */
+  --red-2:    #7a3b22;
+  --amber:    #a07a3b;   /* ochre */
+  --amber-2:  #6e5226;
+  --blue:     #5d6f7a;   /* muted blue-gray */
+  --blue-2:   #455a66;
+  --purple:   var(--accent);
 
-  /* Heat tints — days since last contact (very subtle, barely perceptible) */
-  --heat-1: #fbfaf3;  /* 8-14 days  — hint of warm */
-  --heat-1-hover: #f4f2e8;
-  --heat-2: #faf5e8;  /* 15-28 days — soft cream */
-  --heat-2-hover: #f1ebd9;
-  --heat-3: #faeeec;  /* 29+ days / never — soft blush */
-  --heat-3-hover: #f1e0dd;
+  /* Heat — dusty rose family (no yellow) */
+  --heat-1:        #f6efe7;
+  --heat-1-hover:  #ede4d6;
+  --heat-2:        #f1e4d8;
+  --heat-2-hover:  #e6d4c4;
+  --heat-3:        #edd4c3;
+  --heat-3-hover:  #e1c2af;
 
   /* Legacy aliases (overview compatibility) */
   --surface2: var(--surface-2);
@@ -83,15 +83,15 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 
 /* --- HERO BAND --- */
 .hero-band {
-  background: linear-gradient(180deg, #ffffff 0%, #fafaff 100%);
+  background: linear-gradient(180deg, var(--surface) 0%, #f5ede0 100%);
   border-radius: 12px;
   padding: 36px 40px 30px;
   margin: 18px 0 32px;
   position: relative;
   overflow: hidden;
   box-shadow:
-    0 1px 2px rgba(20, 22, 30, 0.04),
-    0 8px 20px rgba(20, 22, 30, 0.05);
+    0 1px 2px rgba(50, 40, 30, 0.05),
+    0 8px 20px rgba(50, 40, 30, 0.05);
 }
 .hero-band::before {
   content: ''; position: absolute; top: 0; left: 36px; width: 28px; height: 1px;
@@ -104,11 +104,12 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
   text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 12px;
 }
 .hero-val {
-  font-size: 4.4rem;
+  font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  font-size: 5.2rem;
   font-weight: 300;
   color: var(--accent-2);
-  line-height: 0.92;
-  letter-spacing: -0.035em;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
 .hero-lbl {
@@ -180,27 +181,12 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
     0 1px 2px rgba(20, 22, 30, 0.04),
     0 4px 12px rgba(20, 22, 30, 0.04);
 }
-/* Today = subtle cool gray panel (less saturated blue) */
-.section-today {
-  background: #eef0f4;
-  box-shadow:
-    0 1px 2px rgba(29, 78, 216, 0.04),
-    0 4px 12px rgba(29, 78, 216, 0.04);
+/* All section panels: same warm paper surface. Identity via heading color + left rule. */
+.section-today, .section-whale, .section-cold, .section-all {
+  background: var(--surface);
 }
-/* Whale = purple-tinted panel */
-.section-whale {
-  background: #f6f1fc;
-  box-shadow:
-    0 1px 2px rgba(91, 33, 182, 0.06),
-    0 4px 12px rgba(91, 33, 182, 0.06);
-}
-/* Cold = red-tinted panel */
-.section-cold {
-  background: #fdf3f3;
-  box-shadow:
-    0 1px 2px rgba(185, 28, 28, 0.05),
-    0 4px 12px rgba(185, 28, 28, 0.05);
-}
+.section-whale { border-left: 3px solid var(--accent); padding-left: 24px; }
+.section-cold  { border-left: 3px solid var(--red);    padding-left: 24px; }
 .page-section > .section-band { margin: 0 0 18px; }
 .page-section > .section-band + .today-layout,
 .page-section > .section-band + .whale-tiles,
@@ -331,16 +317,16 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 }
 
 /* Stage dot colors mirror .stage-* badge text colors */
-.stage-dot.stage-event    { background: #047857; }
-.stage-dot.stage-advisor  { background: #854d0e; }
-.stage-dot.stage-active   { background: #1d4ed8; }
-.stage-dot.stage-longterm { background: #4338ca; }
-.stage-dot.stage-meeting  { background: var(--accent-2); }
-.stage-dot.stage-nurture  { background: #9a3412; }
-.stage-dot.stage-rec      { background: #115e59; }
-.stage-dot.stage-won      { background: #065f46; }
-.stage-dot.stage-lost     { background: #b91c1c; }
-.stage-dot.stage-disq     { background: #8b8b94; }
+.stage-dot.stage-event    { background: #76695c; }
+.stage-dot.stage-advisor  { background: #76695c; }
+.stage-dot.stage-active   { background: #76695c; }
+.stage-dot.stage-longterm { background: #76695c; }
+.stage-dot.stage-meeting  { background: var(--accent); }
+.stage-dot.stage-nurture  { background: #76695c; }
+.stage-dot.stage-rec      { background: var(--accent); }
+.stage-dot.stage-won      { background: var(--green); }
+.stage-dot.stage-lost     { background: var(--red); }
+.stage-dot.stage-disq     { background: var(--text-3); }
 .cal-cards { display: flex; flex-direction: column; gap: 8px; }
 .cal-card {
   background: var(--bg);
@@ -395,10 +381,8 @@ h1 { font-size: 1.05rem; font-weight: 500; margin: 0; color: var(--text); letter
 .mini-table th { text-align: left; padding: 9px 14px; background: transparent; color: var(--text-3); font-weight: 500; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); white-space: nowrap; position: static; cursor: default; }
 .mini-table td { padding: 10px 14px; border-bottom: 1px solid var(--row-divider); vertical-align: middle; }
 .mini-table tr:hover td { background: rgba(20, 22, 30, 0.035); }
-.section-whale .mini-table th { border-bottom-color: rgba(124, 58, 237, 0.18); }
-.section-whale .mini-table td { border-bottom-color: rgba(124, 58, 237, 0.06); }
-.section-cold .mini-table th  { border-bottom-color: rgba(185, 28, 28, 0.18); }
-.section-cold .mini-table td  { border-bottom-color: rgba(185, 28, 28, 0.05); }
+.section-whale .mini-table th { border-bottom-color: var(--accent-border); }
+.section-cold .mini-table th  { border-bottom-color: rgba(160, 78, 44, 0.30); }
 .mini-table th:nth-child(n+2) { text-align: center; }
 .mini-table td:nth-child(n+2) { text-align: center; }
 .mini-table td:nth-child(3) { font-variant-numeric: tabular-nums; color: var(--accent-2); font-weight: 500; }
@@ -493,19 +477,19 @@ a:hover { text-decoration: underline; }
 .li-inline:hover { color: var(--accent-2) !important; background: var(--accent-bg) !important; text-decoration: none !important; }
 
 .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: 500; white-space: nowrap; letter-spacing: 0.01em; }
-.stage-event     { background: #f0faf3; color: #047857; }
-.stage-advisor   { background: #faf6dc; color: #854d0e; }
-.stage-active    { background: #ecf1fa; color: #1d4ed8; }
-.stage-longterm  { background: #ededf8; color: #4338ca; }
+.stage-event     { background: #ede7d8; color: #76695c; }
+.stage-advisor   { background: #ede7d8; color: #76695c; }
+.stage-active    { background: #ede7d8; color: #76695c; }
+.stage-longterm  { background: #ede7d8; color: #76695c; }
 .stage-meeting   { background: var(--accent-bg); color: var(--accent-2); }
-.stage-nurture   { background: #faece0; color: #9a3412; }
-.stage-rec       { background: #e1f5f1; color: #115e59; }
-.stage-won       { background: #e4f5ec; color: #065f46; }
-.stage-lost      { background: #faeae8; color: #b91c1c; }
-.stage-disq      { background: #f4f4f7; color: #6b7280; }
+.stage-nurture   { background: #ede7d8; color: #76695c; }
+.stage-rec       { background: var(--accent-bg); color: var(--accent-2); }
+.stage-won       { background: #dde6d4; color: var(--green-2); }
+.stage-lost      { background: #ecd9ce; color: var(--red-2); }
+.stage-disq      { background: #efe9dc; color: #8e8576; }
 .status-upcoming { background: var(--accent-bg); color: var(--accent-2); }
-.status-active   { background: #e4f5ec; color: #065f46; }
-.status-dormant  { background: #f4f4f7; color: #6b7280; }
+.status-active   { background: #dde6d4; color: var(--green-2); }
+.status-dormant  { background: #efe9dc; color: #8e8576; }
 
 /* --- HEAT COLORING (days since last contact) --- */
 tr.heat-1 td { background: var(--heat-1); }
