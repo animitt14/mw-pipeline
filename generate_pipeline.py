@@ -819,19 +819,20 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
          if r['amount_val'] >= 50_000 and r['stage_id'] != CLOSED_LOST_STAGE],
         key=lambda r: -r['amount_val'])
 
-    # Cold deals — Meeting Sched 10+ days since contact, Active Rel 14+ days
+    # Cold deals — Meeting Sched 7+ days, Active Rel 10+ days, amount > $15k
     COLD_RULES = {
-        '1321369497': 10,  # Meeting Scheduled
-        '1321369496': 14,  # Active Relationship
+        '1321369497': 7,   # Meeting Scheduled
+        '1321369496': 10,  # Active Relationship
     }
     cold_rows = []
     for r in row_data:
         threshold = COLD_RULES.get(r['stage_id'])
         if threshold is None:
             continue
-        if r['amount_val'] <= 10_000:
+        if r['amount_val'] <= 15_000:
             continue
-        if r['task_due_ms'] > 0:  # already on the schedule — not slipping
+        # Skip only if a task is scheduled in the future — overdue tasks still count as slipping
+        if r['task_due_ms'] > now_ms_ts:
             continue
         d = r.get('days_since')
         if d is None or d >= threshold:
@@ -1122,7 +1123,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 
 <div class="section-band cold">
   <div class="section-title">Deals Slipping <span class="section-count">{len(cold_rows)}</span></div>
-  <div class="section-meta">Top 5 by days cold &middot; Meeting Scheduled 10+ days, Active Relationship 14+ days &middot; over $10k, no upcoming task</div>
+  <div class="section-meta">Top 5 by days cold &middot; Meeting Scheduled 7+ days, Active Relationship 10+ days &middot; over $15k, no upcoming task (overdue counts)</div>
 </div>
 <table class="mini-table cold-table">
   <thead><tr><th>Name</th><th>Stage</th><th>Amount</th><th>Days Cold</th><th>Last Contacted</th><th>Task Due</th></tr></thead>
