@@ -549,9 +549,9 @@ def fmt_amount(amount_str):
         return ''
     try:
         n = float(amount_str)
-        if n >= 1_000_000: return f'${n/1_000_000:.1f}M'
-        if n >= 1_000:     return f'${n/1_000:.0f}k'
-        return f'${int(n):,}'
+        if n >= 1_000_000: return f'{n/1_000_000:.1f}M'
+        if n >= 1_000:     return f'{n/1_000:.0f}k'
+        return f'{int(n):,}'
     except Exception:
         return amount_str
 
@@ -803,9 +803,9 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
     stat_whales        = len([r for r in all_row_data if r['amount_val'] >= 50_000])
 
     def fmt_stat_val(n):
-        if n >= 1_000_000: return f'${n/1_000_000:.2f}M'
-        if n >= 1_000:     return f'${n/1_000:.0f}k'
-        return f'${int(n):,}'
+        if n >= 1_000_000: return f'{n/1_000_000:.2f}M'
+        if n >= 1_000:     return f'{n/1_000:.0f}k'
+        return f'{int(n):,}'
 
     hero_val_html = fmt_stat_val(stat_pipeline_val)
 
