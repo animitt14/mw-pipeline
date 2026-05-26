@@ -313,7 +313,7 @@ tr:hover td{{background:#f9fafb}}
   document.getElementById('pw-input').addEventListener('keydown',function(e){{if(e.key==='Enter')checkPw();}});
 }})();
 </script>
-<div class="nav"><a href="index.html">Ani</a><a href="erik.html">Erik</a><a href="overview.html">Overview</a><a href="advisor_assigned_scored.html" class="active">Scored</a></div>
+<div class="nav"><a href="index.html">Ani</a><a href="erik.html">Erik</a><a href="overview.html">Overview</a><a href="advisor_assigned_scored.html" class="active">Adv Assigned</a></div>
 <div style="padding:20px">
 <h1>GL Advisor Assigned — All Contacts Scored</h1>
 <div class="meta">Generated {now} &nbsp;·&nbsp; {len(rows)} contacts</div>
