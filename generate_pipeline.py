@@ -76,7 +76,8 @@ OWNERS = [
     {'name': 'Erik', 'id': '73613833', 'out': 'docs/erik.html',  'pw': 'banksy'},
 ]
 OVERVIEW_CFG = {'name': 'Overview', 'out': 'docs/overview.html', 'pw': 'banksy'}
-ALL_PAGES = OWNERS + [OVERVIEW_CFG]
+SCORED_CFG   = {'name': 'Scored',   'out': 'docs/advisor_assigned_scored.html', 'pw': 'banksy'}
+ALL_PAGES = OWNERS + [OVERVIEW_CFG, SCORED_CFG]
 
 OVERVIEW_OWNER_IDS = {'77771452', '73613833'}
 OVERVIEW_OWNER_NAMES = {'77771452': 'Mittal', '73613833': 'Bringsjord'}

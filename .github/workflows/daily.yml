@@ -27,6 +27,11 @@ jobs:
           HUBSPOT_API_KEY: ${{ secrets.HUBSPOT_API_KEY }}
         run: python generate_pipeline.py
 
+      - name: Generate scored HTML
+        env:
+          HUBSPOT_API_KEY: ${{ secrets.HUBSPOT_API_KEY }}
+        run: python score_advisor_assigned.py
+
       - name: Commit and push
         run: |
           git config user.name  "github-actions[bot]"
