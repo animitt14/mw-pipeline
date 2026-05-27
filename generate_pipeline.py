@@ -269,7 +269,13 @@ def fetch_advisor_activity():
                 ts_val = p.get('hs_timestamp')
                 if ts_val:
                     try:
-                        if int(float(ts_val)) >= ts_5wd:
+                        # API returns ISO string ("2026-05-27T19:36:29Z") not epoch ms
+                        if str(ts_val).lstrip('-').isdigit():
+                            ts_ms = int(ts_val)
+                        else:
+                            from datetime import datetime as _dt
+                            ts_ms = int(_dt.fromisoformat(str(ts_val).replace('Z', '+00:00')).timestamp() * 1000)
+                        if ts_ms >= ts_5wd:
                             counts[owner][f'{key}_5wd'] += 1
                     except (ValueError, TypeError):
                         pass
