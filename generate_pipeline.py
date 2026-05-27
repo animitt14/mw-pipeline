@@ -2123,7 +2123,7 @@ def main():
             '</head>',
             '<link rel="stylesheet" href="pipeline.css"></head>',
             1,
-        ).replace('<body>', f'<body>{mag_nav}<style>@media print{{.nav{{display:none!important}}}}</style>', 1)
+        ).replace('<body>', f'<body>{mag_nav}<style>@media print{{.nav{{display:none!important}}body{{margin:0!important;padding:0!important}}}}</style>', 1)
         mag_out = Path(__file__).parent / MAGAZINE_CFG['out']
         mag_out.parent.mkdir(parents=True, exist_ok=True)
         mag_out.write_text(mag_html, encoding='utf-8')
