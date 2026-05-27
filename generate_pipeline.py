@@ -203,8 +203,21 @@ def fetch_deals_live():
     return deals
 
 
+ACTIVITY_CACHE_FILE = Path(__file__).parent / 'activity_cache.json'
+
+def _load_activity_cache() -> dict:
+    try:
+        return json.loads(ACTIVITY_CACHE_FILE.read_text(encoding='utf-8'))
+    except Exception:
+        return {}
+
 def fetch_advisor_activity():
-    """Fetch call and email counts for Ani + Erik, last 30 days."""
+    """Fetch call and email counts for Ani + Erik, last 30 days.
+
+    Calls are fetched live. Emails fall back to activity_cache.json when the
+    token lacks crm.objects.emails.read scope (403). Cache is updated manually
+    via Claude MCP queries and committed alongside the script.
+    """
     today = datetime.now(timezone.utc)
     ts_30d = int((today - timedelta(days=30)).timestamp() * 1000)
 
@@ -221,10 +234,12 @@ def fetch_advisor_activity():
 
     counts = {oid: {'calls_30': 0, 'emails_30': 0, 'calls_5wd': 0, 'emails_5wd': 0}
               for oid in OVERVIEW_OWNER_IDS}
+    email_cache_ts = None
 
     for obj_type, key in [('calls', 'calls'), ('emails', 'emails')]:
         url = f'https://api.hubapi.com/crm/v3/objects/{obj_type}/search'
         after = None
+        failed = False
         while True:
             body = {
                 'filterGroups': [
@@ -242,6 +257,7 @@ def fetch_advisor_activity():
             r = requests.post(url, headers=HEADERS, json=body, timeout=30)
             if not r.ok:
                 print(f'  Activity fetch error {obj_type}: {r.status_code}', file=sys.stderr)
+                failed = True
                 break
             data = r.json()
             for item in data.get('results', []):
@@ -262,9 +278,19 @@ def fetch_advisor_activity():
                 break
             time.sleep(0.1)
 
+        if failed and key == 'emails':
+            cache = _load_activity_cache()
+            if cache:
+                email_cache_ts = cache.get('fetched_at', '')
+                for oid in OVERVIEW_OWNER_IDS:
+                    cached = cache.get(oid, {})
+                    counts[oid]['emails_30'] = cached.get('emails_30', 0)
+                    counts[oid]['emails_5wd'] = cached.get('emails_5wd', 0)
+                print(f'  Emails: loaded from cache (last updated {email_cache_ts})', flush=True)
+
     print(f'  Activity: Ani calls={counts["77771452"]["calls_30"]} emails={counts["77771452"]["emails_30"]} '
           f'| Erik calls={counts["73613833"]["calls_30"]} emails={counts["73613833"]["emails_30"]}', flush=True)
-    return counts, n_5wd_days
+    return counts, n_5wd_days, email_cache_ts
 
 
 def normalize(s):
@@ -1470,7 +1496,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 
 
 
-def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password='banksy'):
+def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password='banksy', email_cache_ts=None):
     today = datetime.now(timezone.utc)
     today_d = today.date()
     month_start  = today_d.replace(day=1)
@@ -1986,7 +2012,8 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
         f'<div style="width:100%;border-top:.5px solid var(--border);margin:16px 0"></div>',
         f'<div style="font-size:10px;color:var(--text2);line-height:1.7">~{total_touches:,} logged touches<br>{fmtamt(rev_ytd)} confirmed YTD revenue</div></div>',
         # Emails card
-        '<div class="act-card"><div class="ctitle">Emails</div>',
+        f'<div class="act-card"><div class="ctitle">Emails</div>'
+        + (f'<div style="font-size:9px;color:var(--text3);margin-bottom:4px">last updated {email_cache_ts[:10] if email_cache_ts else "live"}</div>' if email_cache_ts else ''),
         '<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Last 30 days</div>',
         f'<div class="act-rep"><span style="font-size:12px;font-weight:500">Bringsjord</span><div><div class="act-bb"><div class="act-bf" style="width:{int(erik_e30/max_e30*100)}%;background:#534AB7"></div></div></div><div><div class="act-v" style="color:#534AB7">{erik_e30/30:.1f}<span style="font-size:10px;font-weight:400">/day</span></div><div class="act-s">{erik_e30} total</div></div></div>',
         f'<div class="act-rep" style="border-bottom:.5px solid var(--border);padding-bottom:10px"><span style="font-size:12px;font-weight:500">Mittal</span><div><div class="act-bb"><div class="act-bf" style="width:{int(ani_e30/max_e30*100)}%;background:#3B6D11"></div></div></div><div><div class="act-v" style="color:#3B6D11">{ani_e30/30:.1f}<span style="font-size:10px;font-weight:400">/day</span></div><div class="act-s">{ani_e30} total</div></div></div>',
@@ -2063,11 +2090,11 @@ def main():
     ) + '</div>'
 
     print('Fetching advisor activity...', flush=True)
-    activity, n_5wd_days = fetch_advisor_activity()
+    activity, n_5wd_days, email_cache_ts = fetch_advisor_activity()
 
     now_str = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
     print('Building Overview HTML...', flush=True)
-    ov_html = build_overview_html(deals, activity, n_5wd_days, now_str, ov_nav, password=OVERVIEW_CFG['pw'])
+    ov_html = build_overview_html(deals, activity, n_5wd_days, now_str, ov_nav, password=OVERVIEW_CFG['pw'], email_cache_ts=email_cache_ts)
 
     ov_out = Path(__file__).parent / OVERVIEW_CFG['out']
     ov_out.parent.mkdir(parents=True, exist_ok=True)
