@@ -1,0 +1,44 @@
+/* ============================================================
+   Shared top-nav — single source of truth for ALL dashboard tabs
+   (Ani, Erik, Overview, Adv Assigned, Magazine).
+
+   Self-contained: hard-coded colors + explicit font so it renders
+   identically even on pages that don't use pipeline.css (e.g. the
+   magazine, which has its own serif body + cream background).
+
+   To add / rename / reorder a tab: edit ALL_PAGES in
+   generate_pipeline.py — the nav is emitted from there by render_nav().
+   ============================================================ */
+.nav {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin: 0 0 18px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.nav a {
+  font-size: 0.76rem;
+  padding: 5px 14px;
+  border-radius: 5px;
+  background: #dfe2e7;
+  color: #4a5363;
+  text-decoration: none;
+}
+.nav a.active,
+.nav a:hover {
+  background: rgba(30, 42, 64, 0.10);
+  color: #11203a;
+}
+
+/* Chrome strip — for pages whose body isn't the dashboard gray
+   (the magazine's body is cream). Keeps the nav on a consistent
+   band so the chrome matches the other tabs. */
+.nav-shell {
+  background: #ebedf0;
+  padding: 24px 28px;
+}
+.nav-shell .nav { margin-bottom: 0; }
+
+@media print {
+  .nav, .nav-shell { display: none !important; }
+}

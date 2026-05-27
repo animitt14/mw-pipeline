@@ -5,6 +5,7 @@
    generate_pipeline.py. Any cross-page change should be made
    here so all dashboards stay in sync.
    ============================================================ */
+@import "nav.css";
 
 :root {
   /* Masterworks — cool stone neutrals + navy accent */
@@ -501,11 +502,7 @@ tr.heat-3 td { background: var(--heat-3); }
 tr.heat-3:hover td { background: var(--heat-3-hover); }
 tr.contacted-today td { opacity: 0.4; }
 
-/* --- NAV (top-of-page links) --- */
-.nav { display: flex; gap: 4px; margin-bottom: 18px; }
-.nav a { font-size: 0.76rem; padding: 5px 14px; border-radius: 5px; background: var(--surface-2); color: var(--text-2); text-decoration: none; }
-.nav a.active { background: var(--accent-bg); color: var(--accent-2); }
-.nav a:hover { background: var(--accent-bg); color: var(--accent-2); }
+/* --- NAV (top-of-page links): see nav.css (imported at top) --- */
 
 /* --- COLLAPSIBLE ALL CONTACTS --- */
 .collapse-btn {
@@ -542,7 +539,6 @@ tr.contacted-today td { opacity: 0.4; }
   .whale-priority { padding: 12px 14px 10px; gap: 10px; }
   .wp-amount { font-size: 1.3rem; min-width: 56px; }
   .wp-name { font-size: 0.9rem; }
-  .nav { flex-wrap: wrap; }
 }
 
 /* ============================================================
