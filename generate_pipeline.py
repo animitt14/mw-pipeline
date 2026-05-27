@@ -2137,6 +2137,21 @@ def main():
     else:
         print('magazine_src.html not found — skipping', flush=True)
 
+    # Patch nav in scored HTML (static file, not rebuilt by this script)
+    scored_out = Path(__file__).parent / SCORED_CFG['out']
+    if scored_out.exists():
+        scored_nav = '<div class="nav">' + ''.join(
+            f'<a href="{Path(o["out"]).name}" class="active">{o["name"]}</a>'
+            if o is SCORED_CFG else
+            f'<a href="{Path(o["out"]).name}">{o["name"]}</a>'
+            for o in ALL_PAGES
+        ) + '</div>'
+        scored_text = scored_out.read_text(encoding='utf-8')
+        import re as _re
+        scored_text = _re.sub(r'<div class="nav">.*?</div>', scored_nav, scored_text, count=1)
+        scored_out.write_text(scored_text, encoding='utf-8')
+        print(f'Patched nav: {scored_out}', flush=True)
+
 
 if __name__ == '__main__':
     main()
