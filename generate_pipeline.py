@@ -75,9 +75,10 @@ OWNERS = [
     {'name': 'Ani',  'id': '77771452', 'out': 'docs/index.html', 'pw': 'banksy'},
     {'name': 'Erik', 'id': '73613833', 'out': 'docs/erik.html',  'pw': 'banksy'},
 ]
-OVERVIEW_CFG = {'name': 'Overview', 'out': 'docs/overview.html', 'pw': 'banksy'}
-SCORED_CFG   = {'name': 'Adv Assigned',   'out': 'docs/advisor_assigned_scored.html', 'pw': 'banksy'}
-ALL_PAGES = OWNERS + [OVERVIEW_CFG, SCORED_CFG]
+OVERVIEW_CFG  = {'name': 'Overview',     'out': 'docs/overview.html',                 'pw': 'banksy'}
+SCORED_CFG    = {'name': 'Adv Assigned', 'out': 'docs/advisor_assigned_scored.html',  'pw': 'banksy'}
+MAGAZINE_CFG  = {'name': 'Magazine',     'out': 'docs/magazine.html'}
+ALL_PAGES = OWNERS + [OVERVIEW_CFG, SCORED_CFG, MAGAZINE_CFG]
 
 OVERVIEW_OWNER_IDS = {'77771452', '73613833'}
 OVERVIEW_OWNER_NAMES = {'77771452': 'Mittal', '73613833': 'Bringsjord'}
@@ -2106,6 +2107,29 @@ def main():
     ov_out.parent.mkdir(parents=True, exist_ok=True)
     ov_out.write_text(ov_html, encoding='utf-8')
     print(f'Written: {ov_out}', flush=True)
+
+    # Magazine — inject nav into static source file
+    print('\n=== Magazine ===', flush=True)
+    mag_src = Path(__file__).parent / 'magazine_src.html'
+    if mag_src.exists():
+        mag_nav = '<div class="nav">' + ''.join(
+            f'<a href="{Path(o["out"]).name}" class="active">{o["name"]}</a>'
+            if o is MAGAZINE_CFG else
+            f'<a href="{Path(o["out"]).name}">{o["name"]}</a>'
+            for o in ALL_PAGES
+        ) + '</div>'
+        mag_html = mag_src.read_text(encoding='utf-8')
+        mag_html = mag_html.replace(
+            '</head>',
+            '<link rel="stylesheet" href="pipeline.css"></head>',
+            1,
+        ).replace('<body>', f'<body>{mag_nav}', 1)
+        mag_out = Path(__file__).parent / MAGAZINE_CFG['out']
+        mag_out.parent.mkdir(parents=True, exist_ok=True)
+        mag_out.write_text(mag_html, encoding='utf-8')
+        print(f'Written: {mag_out}', flush=True)
+    else:
+        print('magazine_src.html not found — skipping', flush=True)
 
 
 if __name__ == '__main__':
