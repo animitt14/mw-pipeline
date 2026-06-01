@@ -1,10 +1,14 @@
 """
 Score all contacts in GL Advisor Assigned and render an HTML table.
 """
-import json, os, re, requests, time
+import json, os, re, requests, sys, time
 from pathlib import Path
 from html import escape
 from datetime import datetime, timezone, timedelta
+
+# Pull render_nav + SCORED_CFG from generate_pipeline so the nav is never hardcoded here.
+sys.path.insert(0, str(Path(__file__).parent))
+from generate_pipeline import render_nav, SCORED_CFG
 
 # Dashboard timestamps display in New York wall-clock time (DST-aware: EST winter, EDT summer).
 def eastern_now():
@@ -323,7 +327,7 @@ tr:hover td{{background:#f9fafb}}
   document.getElementById('pw-input').addEventListener('keydown',function(e){{if(e.key==='Enter')checkPw();}});
 }})();
 </script>
-<div class="nav"><a href="index.html">Ani</a><a href="erik.html">Erik</a><a href="overview.html">Overview</a><a href="velocity.html">Velocity</a><a href="advisor_assigned_scored.html" class="active">Adv Assigned</a><a href="magazine.html">Magazine</a></div>
+{render_nav(SCORED_CFG)}
 <h1>GL Advisor Assigned — All Contacts Scored</h1>
 <div class="meta">Generated {now} &nbsp;·&nbsp; {len(rows)} contacts</div>
 
