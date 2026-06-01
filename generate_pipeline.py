@@ -92,7 +92,8 @@ OVERVIEW_CFG  = {'name': 'Overview',     'out': 'docs/overview.html',           
 VELOCITY_CFG  = {'name': 'Velocity',     'out': 'docs/velocity.html',                 'pw': 'banksy'}
 SCORED_CFG    = {'name': 'Adv Assigned', 'out': 'docs/advisor_assigned_scored.html',  'pw': 'banksy'}
 MAGAZINE_CFG  = {'name': 'Magazine',     'out': 'docs/magazine.html'}
-ALL_PAGES = OWNERS + [OVERVIEW_CFG, VELOCITY_CFG, SCORED_CFG, MAGAZINE_CFG]
+DELIVERABLES_CFG = {'name': 'Deliverables', 'out': 'docs/deliverables.html'}
+ALL_PAGES = OWNERS + [OVERVIEW_CFG, VELOCITY_CFG, SCORED_CFG, MAGAZINE_CFG, DELIVERABLES_CFG]
 
 
 def render_nav(active_cfg):
@@ -2597,6 +2598,22 @@ def main():
         print(f'Written: {mag_out}', flush=True)
     else:
         print('magazine_src.html not found — skipping', flush=True)
+
+    # Deliverables — inject nav into static source file (same pattern as Magazine)
+    print('\n=== Deliverables ===', flush=True)
+    del_src = Path(__file__).parent / 'deliverables_src.html'
+    if del_src.exists():
+        del_nav = render_nav(DELIVERABLES_CFG)
+        del_html = del_src.read_text(encoding='utf-8')
+        del_html = del_html.replace(
+            '</head>', '<link rel="stylesheet" href="nav.css"></head>', 1,
+        ).replace('<body>', f'<body><div class="nav-shell">{del_nav}</div>', 1)
+        del_out = Path(__file__).parent / DELIVERABLES_CFG['out']
+        del_out.parent.mkdir(parents=True, exist_ok=True)
+        del_out.write_text(del_html, encoding='utf-8')
+        print(f'Written: {del_out}', flush=True)
+    else:
+        print('deliverables_src.html not found — skipping', flush=True)
 
 
 
