@@ -84,21 +84,39 @@ h1 { font-size: 1.2rem; font-weight: 600; margin: 0; color: var(--accent-2); let
 
 /* --- HERO BAND --- */
 .hero-band {
-  background: linear-gradient(180deg, var(--surface) 0%, #ecedf2 100%);
+  background: #1e2a40;
   border-radius: 12px;
   padding: 36px 40px 30px;
   margin: 18px 0 32px;
   position: relative;
   overflow: hidden;
   box-shadow:
-    0 1px 2px rgba(50, 40, 30, 0.05),
-    0 8px 20px rgba(50, 40, 30, 0.05);
+    0 1px 3px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.20);
 }
 .hero-band::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0;
-  height: 5px;
-  background: var(--accent);
+  height: 4px;
+  background: rgba(255, 255, 255, 0.12);
 }
+
+/* Hero band — inverted (dark bg) text overrides */
+.hero-band .hero-eyebrow   { color: rgba(255, 255, 255, 0.50); }
+.hero-band .hero-val       { color: #fff; }
+.hero-band .hero-lbl       { color: rgba(255, 255, 255, 0.60); }
+.hero-band .sub-val        { color: #fff; }
+.hero-band .sub-lbl        { color: rgba(255, 255, 255, 0.50); }
+.hero-band .ss-icon        { filter: brightness(2) opacity(0.75); }
+.hero-band .funnel-wrap    { border-top-color: rgba(255, 255, 255, 0.14); }
+.hero-band .funnel-eyebrow { color: rgba(255, 255, 255, 0.50); }
+.hero-band .funnel-hint    { color: rgba(255, 255, 255, 0.40); }
+.hero-band .sf-track       { background: rgba(255, 255, 255, 0.14); }
+.hero-band .sf-key         { color: rgba(255, 255, 255, 0.72); }
+.hero-band .sf-key-lbl     { color: rgba(255, 255, 255, 0.72); }
+.hero-band .sf-key-n       { color: #fff; }
+.hero-band .sf-key-empty   { color: rgba(255, 255, 255, 0.38); }
+.hero-band .sf-key-empty .sf-key-lbl { color: rgba(255, 255, 255, 0.38); }
+.hero-band .sf-key-empty .sf-key-n   { color: rgba(255, 255, 255, 0.38); }
 .hero-top { display: flex; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
 .hero-core { flex: 0 1 auto; min-width: 240px; }
 .hero-eyebrow {
@@ -183,12 +201,12 @@ h1 { font-size: 1.2rem; font-weight: 600; margin: 0; color: var(--accent-2); let
     0 1px 2px rgba(14, 20, 34, 0.05),
     0 4px 12px rgba(14, 20, 34, 0.05);
 }
-/* All section panels: same warm paper surface. Identity via heading color + left rule. */
-.section-today, .section-whale, .section-cold, .section-all {
+/* Section panel backgrounds — neutral default; whale/cold get brand tints */
+.section-today, .section-all {
   background: var(--surface);
 }
-.section-whale { border-left: 3px solid var(--accent); padding-left: 24px; }
-.section-cold  { border-left: 3px solid var(--red);    padding-left: 24px; }
+.section-whale { background: rgba(30, 42, 64, 0.045); border-left: 3px solid var(--accent); padding-left: 24px; }
+.section-cold  { background: rgba(160, 78, 44, 0.045); border-left: 3px solid var(--red);    padding-left: 24px; }
 .page-section > .section-band { margin: 0 0 18px; }
 .page-section > .section-band + .today-layout,
 .page-section > .section-band + .whale-tiles,
