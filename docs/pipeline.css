@@ -610,6 +610,55 @@ tr.contacted-today td { opacity: 0.4; }
 .dash .footer { margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 10px; color: var(--text-3); font-style: italic; }
 
 /* ============================================================
+   VELOCITY PAGE — KPI cards + Chart.js trend charts
+   Scoped to .velo wrapper. Light theme via shared vars.
+   ============================================================ */
+.velo { max-width: 1100px; margin: 0 auto; }
+.velo .v-hdr { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; gap: 16px; flex-wrap: wrap; }
+.velo .v-hdr h1 { font-size: 20px; font-weight: 600; color: var(--accent-2); letter-spacing: -0.01em; }
+.velo .v-hdr p { font-size: 11px; color: var(--text-3); margin-top: 5px; letter-spacing: 0.03em; }
+.velo .signal-pill { display: flex; align-items: center; gap: 8px; border-radius: 99px; padding: 8px 16px; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
+.velo .signal-pill.danger { background: #f2e2dc; border: 1px solid rgba(160,78,44,0.35); color: var(--red-2); }
+.velo .signal-pill.warn   { background: #f1e9d8; border: 1px solid rgba(160,122,59,0.35); color: var(--amber-2); }
+.velo .signal-pill.ok     { background: #dde7d8; border: 1px solid rgba(95,122,82,0.35); color: var(--green-2); }
+.velo .signal-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.velo .signal-pill.danger .signal-dot { background: var(--red); }
+.velo .signal-pill.warn   .signal-dot { background: var(--amber); }
+.velo .signal-pill.ok     .signal-dot { background: var(--green); }
+.velo .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+.velo .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; position: relative; overflow: hidden; }
+.velo .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.velo .kpi.blue::before   { background: var(--accent); }
+.velo .kpi.green::before  { background: var(--green); }
+.velo .kpi.warn::before   { background: var(--amber); }
+.velo .kpi.danger::before { background: var(--red); }
+.velo .kpi-label { font-size: 10px; color: var(--text-3); letter-spacing: 0.07em; text-transform: uppercase; font-weight: 600; margin-bottom: 10px; }
+.velo .kpi-value { font-size: 34px; font-weight: 300; line-height: 1; margin-bottom: 6px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.velo .kpi.blue   .kpi-value { color: var(--accent-2); }
+.velo .kpi.green  .kpi-value { color: var(--green-2); }
+.velo .kpi.warn   .kpi-value { color: var(--amber-2); }
+.velo .kpi.danger .kpi-value { color: var(--red-2); }
+.velo .kpi-sub { font-size: 11px; color: var(--text-3); line-height: 1.5; }
+.velo .v-section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 18px; }
+.velo .v-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+.velo .v-section-title { font-size: 15px; font-weight: 600; color: var(--accent-2); }
+.velo .v-section-meta { font-size: 11px; color: var(--text-3); }
+.velo .chart-wrap { position: relative; width: 100%; }
+.velo .chart-lg { height: 260px; } .velo .chart-md { height: 210px; }
+.velo .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+.velo .threshold-note { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--amber-2); background: #f1e9d8; border: 1px solid rgba(160,122,59,0.25); border-radius: 4px; padding: 3px 10px; }
+.velo .legend-row { display: flex; gap: 20px; margin-top: 14px; flex-wrap: wrap; }
+.velo .legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--text-2); }
+.velo .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.velo .apr9-note { background: #f2e2dc; border: 1px solid rgba(160,78,44,0.22); border-radius: 8px; padding: 12px 16px; font-size: 12px; color: var(--text-2); line-height: 1.6; margin-bottom: 18px; }
+.velo .apr9-note strong { color: var(--red-2); }
+.velo .v-footer { margin-top: 28px; font-size: 11px; color: var(--text-3); border-top: 1px solid var(--border); padding-top: 14px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+@media (max-width: 840px) {
+  .velo .kpi-row { grid-template-columns: 1fr 1fr; }
+  .velo .two-col { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
    PASSWORD GATE — shared across all pages
    ============================================================ */
 #pw-gate { position: fixed; inset: 0; background: var(--surface); display: flex; align-items: center; justify-content: center; z-index: 9999; }

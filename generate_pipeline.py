@@ -76,9 +76,10 @@ OWNERS = [
     {'name': 'Erik', 'id': '73613833', 'out': 'docs/erik.html',  'pw': 'banksy'},
 ]
 OVERVIEW_CFG  = {'name': 'Overview',     'out': 'docs/overview.html',                 'pw': 'banksy'}
+VELOCITY_CFG  = {'name': 'Velocity',     'out': 'docs/velocity.html',                 'pw': 'banksy'}
 SCORED_CFG    = {'name': 'Adv Assigned', 'out': 'docs/advisor_assigned_scored.html',  'pw': 'banksy'}
 MAGAZINE_CFG  = {'name': 'Magazine',     'out': 'docs/magazine.html'}
-ALL_PAGES = OWNERS + [OVERVIEW_CFG, SCORED_CFG, MAGAZINE_CFG]
+ALL_PAGES = OWNERS + [OVERVIEW_CFG, VELOCITY_CFG, SCORED_CFG, MAGAZINE_CFG]
 
 
 def render_nav(active_cfg):
@@ -97,7 +98,14 @@ MONTHLY_GOAL = 700_000
 CLOSED_WON_STAGE  = '1321369499'
 CLOSED_LOST_STAGE = '1321369501'
 DQ_STAGE          = '1341309466'
+ADVISOR_ASSIGNED_STAGE = '1339121714'
 TERMINAL_STAGES   = {CLOSED_WON_STAGE, CLOSED_LOST_STAGE, DQ_STAGE, '1363474966', '1363467915'}
+
+# ── Velocity dashboard constants ──
+AA_CAPACITY = 126                          # Erik + Ani combined Advisor-Assigned working capacity
+VELO_SERIES_START = date_type(2026, 3, 9)  # first Monday of the weekly trend window
+VELO_APR9 = date_type(2026, 4, 9)          # automation-batch inflection point
+VELOCITY_SNAPSHOT_FILE = Path(__file__).parent / 'velocity_snapshots.json'
 
 
 def fetch_all_contacts(owner_id):
@@ -189,6 +197,8 @@ def fetch_deals_live():
     url = 'https://api.hubapi.com/crm/v3/objects/deals/search'
     # Include per-stage entry-date properties so we can compute stage progression
     stage_entry_props = [f'hs_v2_date_entered_{sid}' for sid in DEAL_STAGES.keys()]
+    # AA exit-date drives the Velocity net-AA-flow reconstruction
+    stage_exit_props = [f'hs_v2_date_exited_{ADVISOR_ASSIGNED_STAGE}']
     base_props = ['dealname', 'dealstage', 'amount', 'num_contacted_notes',
                   'hubspot_owner_id', 'closedate', 'createdate', 'notes_last_updated']
     deals = []
@@ -198,7 +208,7 @@ def fetch_deals_live():
             'filterGroups': [{'filters': [
                 {'propertyName': 'pipeline', 'operator': 'EQ', 'value': GALLERY_LEADS_PIPELINE}
             ]}],
-            'properties': base_props + stage_entry_props,
+            'properties': base_props + stage_entry_props + stage_exit_props,
             'limit': 200,
         }
         if after:
@@ -1514,6 +1524,276 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 
 
 
+def _velo_load_snapshots():
+    try:
+        return json.loads(VELOCITY_SNAPSHOT_FILE.read_text(encoding='utf-8'))
+    except Exception:
+        return {}
+
+
+def build_velocity_data(deals):
+    """Compute Velocity KPIs + weekly trend series.
+
+    Deal COUNTS (net total, net AA) are reconstructed from each deal's
+    hs_v2_date_entered_* / _exited_* timestamps every run — accurate and
+    self-healing. Pipeline VALUE history can't be reconstructed (HubSpot
+    stores only the current amount), so it's seeded from velocity_snapshots.json
+    and a live point is written for the current week on every run.
+    """
+    today = datetime.now(timezone.utc).date()
+
+    def amt(d):
+        try: return float(d['properties'].get('amount') or 0)
+        except: return 0.0
+
+    def pdt(s):
+        if not s: return None
+        try: return datetime.fromisoformat(s[:10]).date()
+        except: return None
+
+    def monday(d):
+        return d - timedelta(days=d.weekday())
+
+    all_active = [d for d in deals if d['properties'].get('dealstage', '') not in TERMINAL_STAGES]
+    total_active = len(all_active)
+    pipeline_value = sum(amt(d) for d in all_active if amt(d) > 0)
+
+    # ── AA backlog: scoped to the advisors who carry the 126 capacity (Erik + Ani) ──
+    aa_team = [d for d in all_active
+               if d['properties'].get('dealstage') == ADVISOR_ASSIGNED_STAGE
+               and d['properties'].get('hubspot_owner_id') in OVERVIEW_OWNER_IDS]
+    aa_count = len(aa_team)
+    backlog_pct = aa_count / AA_CAPACITY * 100 if AA_CAPACITY else 0
+
+    # Avg days a deal sits in AA before exiting (team, exits in last 30d) + weekly exit rate (last 4wk)
+    days30_ago = today - timedelta(days=30)
+    wk4_ago = today - timedelta(days=28)
+    exit_durations, exits_last4wk = [], 0
+    for d in deals:
+        p = d['properties']
+        if p.get('hubspot_owner_id') not in OVERVIEW_OWNER_IDS:
+            continue
+        ent = pdt(p.get(f'hs_v2_date_entered_{ADVISOR_ASSIGNED_STAGE}'))
+        ex = pdt(p.get(f'hs_v2_date_exited_{ADVISOR_ASSIGNED_STAGE}'))
+        if ent and ex and ex > ent and ex >= days30_ago:
+            exit_durations.append((ex - ent).days)
+        if ex and ex >= wk4_ago:
+            exits_last4wk += 1
+    avg_days_exit_aa = round(sum(exit_durations) / len(exit_durations)) if exit_durations else 0
+    weekly_exit_rate = exits_last4wk / 4 if exits_last4wk else 0
+    weeks_to_clear = (aa_count / weekly_exit_rate) if weekly_exit_rate else None
+    resume_date = (today + timedelta(days=round(weeks_to_clear * 7))) if weeks_to_clear else None
+
+    # ── Weekly buckets (whole pipeline) for the net-flow charts ──
+    weeks, m, cur_monday = [], VELO_SERIES_START, monday(today)
+    while m <= cur_monday:
+        weeks.append(m); m += timedelta(days=7)
+
+    def wk_index(d):
+        if not d or d < VELO_SERIES_START:
+            return None
+        idx = (monday(d) - VELO_SERIES_START).days // 7
+        return idx if 0 <= idx < len(weeks) else None
+
+    net_total = [0] * len(weeks)
+    net_aa = [0] * len(weeks)
+    for d in deals:
+        p = d['properties']
+        i = wk_index(pdt(p.get('createdate')))
+        if i is not None:
+            net_total[i] += 1
+        term_dates = [pdt(p.get(f'hs_v2_date_entered_{sid}')) for sid in TERMINAL_STAGES]
+        term_dates = [x for x in term_dates if x]
+        if term_dates:
+            j = wk_index(min(term_dates))
+            if j is not None:
+                net_total[j] -= 1
+        ka = wk_index(pdt(p.get(f'hs_v2_date_entered_{ADVISOR_ASSIGNED_STAGE}')))
+        if ka is not None:
+            net_aa[ka] += 1
+        kx = wk_index(pdt(p.get(f'hs_v2_date_exited_{ADVISOR_ASSIGNED_STAGE}')))
+        if kx is not None:
+            net_aa[kx] -= 1
+
+    # ── Cumulative pipeline value: seed + live current-week snapshot (persisted) ──
+    snaps = _velo_load_snapshots()
+    vw = snaps.get('value_weekly', {})
+    vw[cur_monday.isoformat()] = round(pipeline_value)
+    snaps['value_weekly'] = vw
+    snaps['updated'] = today.isoformat()
+    try:
+        VELOCITY_SNAPSHOT_FILE.write_text(json.dumps(snaps, indent=2), encoding='utf-8')
+    except Exception as e:
+        print(f'  WARN: could not write velocity snapshots: {e}', flush=True)
+    cumulative, last = [], None
+    for w in weeks:
+        v = vw.get(w.isoformat())
+        if v is not None:
+            last = v
+        cumulative.append(last)
+
+    _fmt = '%b %#d' if sys.platform == 'win32' else '%b %-d'
+    return {
+        'labels': [w.strftime(_fmt) for w in weeks],
+        'net_total': net_total,
+        'net_aa': net_aa,
+        'cumulative_k': [round(v / 1000) if v is not None else None for v in cumulative],
+        'apr9_idx': wk_index(VELO_APR9),
+        'total_active': total_active,
+        'pipeline_value': pipeline_value,
+        'aa_count': aa_count,
+        'backlog_pct': backlog_pct,
+        'avg_days_exit_aa': avg_days_exit_aa,
+        'weekly_exit_rate': weekly_exit_rate,
+        'weeks_to_clear': weeks_to_clear,
+        'resume_date': resume_date,
+    }
+
+
+def build_velocity_html(vd, now_str, nav_html, password='banksy'):
+    """Render the light-themed Velocity dashboard (KPIs + 3 Chart.js trend charts)."""
+    _fmt = '%b %#d' if sys.platform == 'win32' else '%b %-d'
+
+    def fmtk(n):
+        if n >= 1_000_000: return f'${n/1_000_000:.2f}M'
+        if n >= 1_000:     return f'${n/1_000:.0f}K'
+        return f'${int(n):,}'
+
+    bp = vd['backlog_pct']
+    if bp > 100:
+        sig_cls, sig_txt = 'danger', f'Pause Events — AA Backlog {bp:.0f}% of Capacity'
+    elif bp >= 80:
+        sig_cls, sig_txt = 'warn', f'Monitor — AA Backlog {bp:.0f}% of Capacity'
+    else:
+        sig_cls, sig_txt = 'ok', f'Healthy — AA Backlog {bp:.0f}% of Capacity'
+
+    wtc = vd['weeks_to_clear']
+    if wtc is not None:
+        wtc_val = f'{wtc:.1f}'
+        resume = vd['resume_date'].strftime(_fmt) if vd['resume_date'] else '—'
+        wtc_sub = f"At {vd['weekly_exit_rate']:.0f} exits/week · resume ~{resume}"
+        wtc_cls = 'danger' if wtc > 2 else 'warn'
+    else:
+        wtc_val, wtc_sub, wtc_cls = '—', 'No AA exits logged in last 4 weeks', 'warn'
+
+    aa_cls = 'danger' if bp > 100 else ('warn' if bp >= 80 else 'green')
+    chart_data = {
+        'labels': vd['labels'],
+        'netTotal': vd['net_total'],
+        'netAA': vd['net_aa'],
+        'cumulative': vd['cumulative_k'],
+        'apr9': vd['apr9_idx'] if vd['apr9_idx'] is not None else -1,
+    }
+
+    parts = [
+        '<!DOCTYPE html><html lang="en"><head>',
+        '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">',
+        '<title>Pipeline Velocity</title>',
+        '<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>',
+        '<link rel="stylesheet" href="pipeline.css"></head><body>',
+        # password gate (matches the other tabs)
+        '<div id="pw-gate"><div id="pw-box"><h2>PIPELINE VELOCITY</h2>',
+        '<input id="pw-input" type="password" placeholder="Password" autofocus/>',
+        '<div id="pw-err"></div><button id="pw-btn" onclick="checkPw()">Enter</button></div></div>',
+        f'<script>(function(){{var PW={repr(password)};var SK="pw_ok";',
+        'if(sessionStorage.getItem(SK)==="1")document.getElementById("pw-gate").classList.add("hidden");',
+        'window.checkPw=function(){if(document.getElementById("pw-input").value===PW){',
+        'sessionStorage.setItem(SK,"1");document.getElementById("pw-gate").classList.add("hidden");',
+        '}else{document.getElementById("pw-err").textContent="Incorrect password";',
+        'document.getElementById("pw-input").value="";}};',
+        'document.getElementById("pw-input").addEventListener("keydown",function(e){if(e.key==="Enter")checkPw();});',
+        '}})();</script>',
+        nav_html,
+        '<div class="velo">',
+        '<div class="v-hdr"><div><h1>Gallery Events Pipeline — Velocity</h1>',
+        f'<p>OUTBOUND · GALLERY LEADS · BRINGSJORD &amp; MITTAL · {now_str}</p></div>',
+        f'<div class="signal-pill {sig_cls}"><div class="signal-dot"></div>{escape(sig_txt)}</div></div>',
+        # KPI row
+        '<div class="kpi-row">',
+        f'<div class="kpi blue"><div class="kpi-label">Total active deals</div>'
+        f'<div class="kpi-value">{vd["total_active"]}</div><div class="kpi-sub">Excl. closed / disqualified</div></div>',
+        f'<div class="kpi {aa_cls}"><div class="kpi-label">Advisor Assigned</div>'
+        f'<div class="kpi-value">{vd["aa_count"]}</div><div class="kpi-sub">Bringsjord + Mittal · capacity {AA_CAPACITY}</div></div>',
+        f'<div class="kpi green"><div class="kpi-label">Avg days to exit AA</div>'
+        f'<div class="kpi-value">{vd["avg_days_exit_aa"]}</div><div class="kpi-sub">Time in stage · last 30 days</div></div>',
+        f'<div class="kpi {wtc_cls}"><div class="kpi-label">Weeks to clear backlog</div>'
+        f'<div class="kpi-value">{wtc_val}</div><div class="kpi-sub">{escape(wtc_sub)}</div></div>',
+        '</div>',
+        # Cumulative value chart
+        '<div class="v-section"><div class="v-section-header">'
+        '<div class="v-section-title">Cumulative Pipeline Value — Active Stages</div>'
+        '<div class="v-section-meta">Excl. Closed Won · Closed Lost · Self Serve · Financial Advisor · Collector</div></div>'
+        '<div class="chart-wrap chart-lg"><canvas id="cumChart"></canvas></div>'
+        '<div class="legend-row">'
+        '<div class="legend-item"><div class="legend-dot" style="background:#1e2a40"></div>Cumulative pipeline value ($K)</div>'
+        '<div class="legend-item"><div class="legend-dot" style="background:#a04e2c"></div>Apr 9 automation batch</div></div></div>',
+        # Two net-flow charts
+        '<div class="two-col">'
+        '<div class="v-section"><div class="v-section-header">'
+        '<div class="v-section-title">Net Deal Count — Full Pipeline</div>'
+        '<span class="threshold-note">added − exited per week</span></div>'
+        '<div class="chart-wrap chart-md"><canvas id="netTotalChart"></canvas></div></div>'
+        '<div class="v-section"><div class="v-section-header">'
+        '<div class="v-section-title">Net Deal Count — Advisor Assigned</div>'
+        f'<span class="threshold-note">Chokepoint · capacity {AA_CAPACITY}</span></div>'
+        '<div class="chart-wrap chart-md"><canvas id="netAAChart"></canvas></div></div></div>',
+        '<div class="apr9-note"><strong>Apr 9 automation inflection:</strong> before Apr 9, advisors '
+        'manually created deals for chosen contacts. From Apr 9, every event attendee automatically received '
+        'a deal — a one-day batch that inflated both deal count and pipeline value. Advisors are clearing it '
+        'by moving unworkable deals to Self Serve.</div>',
+        f'<div class="v-footer"><span>Data source: HubSpot · Outbound | Gallery Leads (880355706)</span>'
+        f'<span>Counts reconstructed live · value seeded + daily snapshot · {now_str}</span></div>',
+        '</div>',  # .velo
+        f'<script>const VD={json.dumps(chart_data)};',
+        _VELOCITY_CHART_JS,
+        '</script></body></html>',
+    ]
+    return ''.join(parts)
+
+
+_VELOCITY_CHART_JS = r'''
+Chart.defaults.color='#8a8d96';
+Chart.defaults.borderColor='#e3e6ec';
+Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+const NAVY='#1e2a40', GREEN='#5f7a52', AMBER='#a07a3b', RED='#a04e2c';
+const A=VD.apr9;
+new Chart(document.getElementById('cumChart'),{
+  type:'line',
+  data:{labels:VD.labels,datasets:[{
+    data:VD.cumulative,borderColor:NAVY,spanGaps:true,
+    backgroundColor:(ctx)=>{const {ctx:c,chartArea}=ctx.chart;if(!chartArea)return'transparent';
+      const g=c.createLinearGradient(0,chartArea.top,0,chartArea.bottom);
+      g.addColorStop(0,'rgba(30,42,64,0.18)');g.addColorStop(1,'rgba(30,42,64,0)');return g;},
+    fill:true,tension:0.35,borderWidth:2.5,
+    pointRadius:(ctx)=>ctx.dataIndex===A?7:3,
+    pointBackgroundColor:(ctx)=>ctx.dataIndex===A?RED:NAVY,
+    pointBorderColor:(ctx)=>ctx.dataIndex===A?RED:NAVY}]},
+  options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',titleColor:'#0e1422',bodyColor:'#0e1422',borderColor:'#d4d8de',borderWidth:1,
+      callbacks:{label:ctx=>ctx.parsed.y==null?' n/a':` $${ctx.parsed.y.toLocaleString()}K`,
+        afterLabel:ctx=>ctx.dataIndex===A?' ← Apr 9 automation batch':''}}},
+    scales:{x:{grid:{color:'#eef0f3'},ticks:{font:{size:11}}},
+      y:{grid:{color:'#eef0f3'},ticks:{font:{size:11},callback:v=>`$${v}K`},min:0}}}
+});
+function netChart(id,data,posColor){
+  new Chart(document.getElementById(id),{type:'bar',
+    data:{labels:VD.labels,datasets:[{data:data,
+      backgroundColor:data.map((v,i)=>i===A?'rgba(160,78,44,0.75)':v>=0?posColor.bg:'rgba(95,122,82,0.7)'),
+      borderColor:data.map((v,i)=>i===A?RED:v>=0?posColor.bd:GREEN),
+      borderWidth:1,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',titleColor:'#0e1422',bodyColor:'#0e1422',borderColor:'#d4d8de',borderWidth:1,
+        callbacks:{label:ctx=>` Net: ${ctx.parsed.y>0?'+':''}${ctx.parsed.y} deals`,
+          afterLabel:ctx=>ctx.dataIndex===A?' ← Apr 9 batch':''}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:10}}},
+        y:{grid:{color:'#eef0f3'},ticks:{font:{size:11},callback:v=>(v>0?'+':'')+v}}}}
+  });
+}
+netChart('netTotalChart',VD.netTotal,{bg:'rgba(30,42,64,0.7)',bd:NAVY});
+netChart('netAAChart',VD.netAA,{bg:'rgba(160,122,59,0.7)',bd:AMBER});
+'''
+
+
 def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password='banksy', email_cache_ts=None):
     today = datetime.now(timezone.utc)
     today_d = today.date()
@@ -1893,6 +2173,132 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
 </div>
 '''
 
+    # ── Section 9: Advisor Breakdown ──
+    STAGE_DIST_ROWS = [
+        ('1321369495', 'Event Attended', 'var(--green)'),
+        ('1339121714', 'Advisor Assigned', 'var(--red)'),
+        ('1321369496', 'Active Relationship', 'var(--amber)'),
+    ]
+    GROUPED_STAGES = ('1321369497', '1321369500', '1321369502', '1363474599')  # Mtg, Nurture, Rec, LTR
+    adv_full_names = {'73613833': 'Erik Bringsjord', '77771452': 'Anisha Mittal'}
+    adv_cards = ''
+    for oid in ['73613833', '77771452']:
+        act_o  = [d for d in active if d['properties'].get('hubspot_owner_id') == oid]
+        won_o  = [d for d in won    if d['properties'].get('hubspot_owner_id') == oid]
+        lost_o = [d for d in lost   if d['properties'].get('hubspot_owner_id') == oid]
+        val_o  = sum(amt(d) for d in act_o if amt(d) > 0)
+        decided_o = len(won_o) + len(lost_o)
+        cr_o   = len(won_o) / decided_o * 100 if decided_o else 0
+        ytd_o  = ytd_by_owner.get(oid, 0)
+        sc_o   = {sid: sum(1 for d in act_o if d['properties'].get('dealstage') == sid) for sid in DEAL_STAGES}
+        grouped_ct = sum(sc_o.get(s, 0) for s in GROUPED_STAGES)
+        maxbar = max([sc_o.get('1321369495', 0), sc_o.get('1339121714', 0),
+                      sc_o.get('1321369496', 0), grouped_ct]) or 1
+        cr_color = 'var(--green)' if cr_o >= 30 else 'var(--amber)'
+        bars = ''
+        for sid, label, color in STAGE_DIST_ROWS:
+            c = sc_o.get(sid, 0)
+            bars += (f'<div class="sr"><div style="flex:1"><span>{label}</span>'
+                     f'<div class="sbar" style="width:{int(c/maxbar*100)}%;background:{color}"></div></div>'
+                     f'<span style="font-weight:500;white-space:nowrap;color:var(--text-2)">{c}</span></div>')
+        bars += (f'<div class="sr"><div style="flex:1"><span>Mtg + Nurture + Rec + LTR</span>'
+                 f'<div class="sbar" style="width:{int(grouped_ct/maxbar*100)}%;background:var(--purple)"></div></div>'
+                 f'<span style="font-weight:500;white-space:nowrap;color:var(--text-2)">{grouped_ct}</span></div>')
+        adv_cards += (
+            f'<div class="card"><div class="ctitle" style="margin-bottom:11px">{adv_full_names[oid]}</div>'
+            f'<div class="g4s">'
+            f'<div class="stat"><div class="sv" style="color:var(--purple)">{fmtamt(val_o)}</div><div class="sl">active pipeline value</div></div>'
+            f'<div class="stat"><div class="sv" style="color:var(--purple)">{len(act_o)}</div><div class="sl">active deals</div></div>'
+            f'<div class="stat"><div class="sv" style="color:{cr_color}">{cr_o:.1f}%</div><div class="sl">close rate · won ÷ decided</div></div>'
+            f'<div class="stat"><div class="sv" style="color:var(--green)">{fmtamt(ytd_o)}</div><div class="sl">YTD closed</div></div>'
+            f'</div><div style="margin-top:9px">'
+            f'<div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Stage distribution</div>'
+            f'{bars}</div></div>'
+        )
+    advisor_breakdown_html = f'<div class="g2" style="margin-bottom:16px">{adv_cards}</div>'
+
+    # ── Section 10: Weekly Executive Summary (auto-computed from the data) ──
+    def _delta_pct(cur_pd, base_pd):
+        return (cur_pd - base_pd) / base_pd * 100 if base_pd > 0 else 0.0
+
+    activity_deltas = [
+        ('Bringsjord calls',  erik_c5 / n_5wd_days, erik_c30 / 30),
+        ('Bringsjord emails', erik_e5 / n_5wd_days, erik_e30 / 30),
+        ('Mittal calls',      ani_c5  / n_5wd_days, ani_c30  / 30),
+        ('Mittal emails',     ani_e5  / n_5wd_days, ani_e30  / 30),
+    ]
+    delta_cards = ''
+    for label, cur_pd, base_pd in activity_deltas:
+        pct = _delta_pct(cur_pd, base_pd)
+        color = 'var(--green)' if pct >= 0 else 'var(--amber)'
+        sign = '+' if pct >= 0 else ''
+        delta_cards += (
+            f'<div style="background:var(--surface-2);border-radius:8px;padding:11px 12px">'
+            f'<div style="font-size:10px;color:var(--text-2);margin-bottom:5px">{label}</div>'
+            f'<div style="font-size:22px;font-weight:500;color:{color}">{sign}{pct:.0f}%</div>'
+            f'<div style="font-size:10px;color:var(--text-3);margin-top:3px">{cur_pd:.1f}/day vs {base_pd:.1f} baseline</div></div>'
+        )
+    rm_ct   = stage_counts.get('1321369502', 0)
+    adv_pct = total_5wd / total_active * 100 if total_active else 0
+    quality_cards = (
+        f'<div style="background:var(--surface-2);border-radius:8px;padding:11px 12px">'
+        f'<div style="font-size:10px;color:var(--text-2);margin-bottom:5px">No-value deals</div>'
+        f'<div style="font-size:22px;font-weight:500;color:var(--green)">{pct_no_value:.0f}%</div>'
+        f'<div style="font-size:10px;color:var(--text-3);margin-top:3px">{no_value_count} of {total_active} active</div></div>'
+        f'<div style="background:var(--surface-2);border-radius:8px;padding:11px 12px">'
+        f'<div style="font-size:10px;color:var(--text-2);margin-bottom:5px">At Recommendation Made</div>'
+        f'<div style="font-size:22px;font-weight:500;color:var(--green)">{rm_ct}</div>'
+        f'<div style="font-size:10px;color:var(--text-3);margin-top:3px">closest to the finish line</div></div>'
+        f'<div style="background:var(--surface-2);border-radius:8px;padding:11px 12px">'
+        f'<div style="font-size:10px;color:var(--text-2);margin-bottom:5px">Advanced forward</div>'
+        f'<div style="font-size:22px;font-weight:500;color:var(--purple)">{adv_pct:.0f}%</div>'
+        f'<div style="font-size:10px;color:var(--text-3);margin-top:3px">{total_5wd} of {total_active} active · last {n_5wd_days}d</div></div>'
+    )
+
+    # EDIT WEEKLY: positive-narrative candidates. The 3 highest-impact ones that
+    # apply are rendered as the executive bullets. Tweak the phrasing here.
+    best_effort = max(activity_deltas, key=lambda x: _delta_pct(x[1], x[2]))
+    best_pct    = _delta_pct(best_effort[1], best_effort[2])
+    whale_val   = sum(amt(d) for d in whales)
+    summary_candidates = []
+    if best_pct > 0:
+        summary_candidates.append((best_pct, 'var(--purple)', 'Effort is climbing.',
+            f'{best_effort[0]} ran {best_pct:.0f}% above baseline this week — {best_effort[1]:.0f}/day vs '
+            f'{best_effort[2]:.1f}. Activity is the leading indicator and it is pointing up.'))
+    if pct_no_value < 25:
+        summary_candidates.append(((25 - pct_no_value) * 4, 'var(--green)', 'Pipeline quality is strong.',
+            f'Only {pct_no_value:.0f}% of {total_active} active deals lack a value. Nearly every open deal is a '
+            f'real, qualified opportunity.'))
+    if total_5wd > 0:
+        summary_candidates.append((float(total_5wd), 'var(--amber)', 'Deals are moving.',
+            f'{total_5wd} deals advanced through the funnel in the last {n_5wd_days} working days — healthy '
+            f'forward momentum across the team.'))
+    if rev_ytd > 0:
+        month_clause = f', {fmtamt(rev_month)} of it in {month_name}.' if rev_month > 0 else '.'
+        summary_candidates.append((60.0, 'var(--green)', 'Revenue is on the board.',
+            f'{fmtamt(rev_ytd)} closed year-to-date across {len(w_ytd)} deals{month_clause}'))
+    if whales:
+        summary_candidates.append((len(whales) * 8.0, 'var(--purple)', 'Whales in play.',
+            f'{len(whales)} deals at $100k+ — {fmtamt(whale_val)} of combined potential — are active right now.'))
+    if rm_ct > 0:
+        summary_candidates.append((rm_ct * 5.0, 'var(--green)', 'Closest to the finish.',
+            f'{rm_ct} deals sit at Recommendation Made, one step from close.'))
+    summary_candidates.sort(key=lambda x: -x[0])
+    bullets = ''
+    for i, (_score, color, title, text) in enumerate(summary_candidates[:3], 1):
+        bullets += (
+            f'<div style="background:var(--surface-2);border-left:3px solid {color};border-radius:0 8px 8px 0;'
+            f'padding:10px 12px;margin-bottom:6px">'
+            f'<div style="font-size:12px;font-weight:600;color:{color};margin-bottom:3px">{i} · {title}</div>'
+            f'<div style="font-size:11px;color:var(--text-2);line-height:1.6">{text}</div></div>'
+        )
+    exec_summary_html = (
+        '<div class="card" style="margin-bottom:16px">'
+        '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">' + delta_cards + '</div>'
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">' + quality_cards + '</div>'
+        '<div style="border-top:.5px solid var(--border);padding-top:11px">' + bullets + '</div></div>'
+    )
+
     html_parts = [
         '<!DOCTYPE html><html lang="en"><head>',
         '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">',
@@ -2041,6 +2447,14 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
         '</div>',
         '</div>',
 
+        # 9. Advisor Breakdown
+        '<p class="slabel">9 · advisor breakdown — pipeline value &amp; close rate</p>',
+        advisor_breakdown_html,
+
+        # 10. Weekly Executive Summary (auto-computed deltas + top-3 positive bullets)
+        f'<p class="slabel">10 · weekly executive summary — last {n_5wd_days} working days vs 30-day baseline</p>',
+        exec_summary_html,
+
         f'<div class="footer"><span>Masterworks · Outbound · Gallery Leads · Confidential</span><span>{now_str}</span></div>',
         '</div></body></html>',
     ]
@@ -2108,6 +2522,17 @@ def main():
     ov_out.parent.mkdir(parents=True, exist_ok=True)
     ov_out.write_text(ov_html, encoding='utf-8')
     print(f'Written: {ov_out}', flush=True)
+
+    # Velocity page
+    print('\n=== Velocity ===', flush=True)
+    velo_nav = render_nav(VELOCITY_CFG)
+    print('Computing velocity data...', flush=True)
+    vd = build_velocity_data(deals)
+    velo_html = build_velocity_html(vd, now_str, velo_nav, password=VELOCITY_CFG['pw'])
+    velo_out = Path(__file__).parent / VELOCITY_CFG['out']
+    velo_out.parent.mkdir(parents=True, exist_ok=True)
+    velo_out.write_text(velo_html, encoding='utf-8')
+    print(f'Written: {velo_out}', flush=True)
 
     # Magazine — inject nav into static source file
     print('\n=== Magazine ===', flush=True)
