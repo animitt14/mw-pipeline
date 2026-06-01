@@ -566,8 +566,8 @@ tr.contacted-today td { opacity: 0.4; }
 
 .dash { max-width: 1100px; margin: 0 auto; font-size: 13px; }
 .dash .hdr { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; }
-.dash .hdr h1 { font-size: 20px; font-weight: 600; color: var(--text); }
-.dash .slabel { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-2); border-bottom: 1px solid var(--border); padding-bottom: 4px; margin: 0 0 10px; }
+.dash .hdr h1 { font-size: 20px; font-weight: 600; color: var(--accent-2); letter-spacing: -0.01em; }
+.dash .slabel { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-2); border-bottom: 1px solid var(--border); padding-bottom: 5px; margin: 0 0 12px; }
 .dash .g6 { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-bottom: 18px; }
 .dash .kc { background: var(--surface); border-radius: 10px; padding: 12px; border: 1px solid var(--border); border-top: 2px solid var(--accent); box-shadow: 0 1px 3px rgba(14,20,34,0.07), 0 4px 12px rgba(14,20,34,0.06); }
 .dash .kv { font-size: 22px; font-weight: 500; line-height: 1.1; color: var(--text); }
@@ -631,7 +631,7 @@ tr.contacted-today td { opacity: 0.4; }
    VELOCITY PAGE — KPI cards + Chart.js trend charts
    Scoped to .velo wrapper. Light theme via shared vars.
    ============================================================ */
-.velo { max-width: 1100px; margin: 0 auto; }
+.velo { max-width: 1100px; margin: 0 auto; font-size: 13px; }
 .velo .v-hdr { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; gap: 16px; flex-wrap: wrap; }
 .velo .v-hdr h1 { font-size: 20px; font-weight: 600; color: var(--accent-2); letter-spacing: -0.01em; }
 .velo .v-hdr p { font-size: 11px; color: var(--text-3); margin-top: 5px; letter-spacing: 0.03em; }
@@ -644,7 +644,7 @@ tr.contacted-today td { opacity: 0.4; }
 .velo .signal-pill.warn   .signal-dot { background: var(--amber); }
 .velo .signal-pill.ok     .signal-dot { background: var(--green); }
 .velo .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
-.velo .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; position: relative; overflow: hidden; }
+.velo .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; position: relative; overflow: hidden; box-shadow: 0 1px 3px rgba(14,20,34,0.07), 0 4px 12px rgba(14,20,34,0.06); }
 .velo .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
 .velo .kpi.blue::before   { background: var(--accent); }
 .velo .kpi.green::before  { background: var(--green); }
@@ -657,7 +657,7 @@ tr.contacted-today td { opacity: 0.4; }
 .velo .kpi.warn   .kpi-value { color: var(--amber-2); }
 .velo .kpi.danger .kpi-value { color: var(--red-2); }
 .velo .kpi-sub { font-size: 11px; color: var(--text-3); line-height: 1.5; }
-.velo .v-section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 18px; }
+.velo .v-section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(14,20,34,0.07), 0 4px 12px rgba(14,20,34,0.06); }
 .velo .v-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
 .velo .v-section-title { font-size: 15px; font-weight: 600; color: var(--accent-2); }
 .velo .v-section-meta { font-size: 11px; color: var(--text-3); }
