@@ -22,6 +22,10 @@ PORTAL_ID = '5454671'
 HEADERS = {'Authorization': f'Bearer {HUBSPOT_TOKEN}', 'Content-Type': 'application/json'}
 SEARCH_URL = 'https://api.hubapi.com/crm/v3/objects/contacts/search'
 
+# All dashboard timestamps display in EST (fixed UTC-5, no DST shift) per team convention.
+# Internal math still uses UTC; only the displayed strings are converted.
+EST = timezone(timedelta(hours=-5))
+
 DEAL_STAGES = {
     '1321369495': 'Event Attended',
     '1339121714': 'Advisor Assigned',
@@ -769,8 +773,9 @@ def shorten_title(title):
 def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetings=None, notes=None,
                daily_tasks=None, daily_meetings=None, owner_name='Ani', nav_html='', password='anisha'):
     now_dt = datetime.now(timezone.utc)
-    now = now_dt.strftime('%B %-d, %Y %H:%M UTC') if sys.platform != 'win32' \
-        else now_dt.strftime('%B %#d, %Y %H:%M UTC')
+    now_est = now_dt.astimezone(EST)
+    now = now_est.strftime('%B %-d, %Y %H:%M EST') if sys.platform != 'win32' \
+        else now_est.strftime('%B %#d, %Y %H:%M EST')
     now_ms_ts = int(now_dt.timestamp() * 1000)
     today_date = now_dt.date()
     ms_30d = 30 * 24 * 3600 * 1000
@@ -2514,7 +2519,7 @@ def main():
     print('Fetching advisor activity...', flush=True)
     activity, n_5wd_days, email_cache_ts = fetch_advisor_activity()
 
-    now_str = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
+    now_str = datetime.now(EST).strftime('%Y-%m-%d %H:%M') + ' EST'
     print('Building Overview HTML...', flush=True)
     ov_html = build_overview_html(deals, activity, n_5wd_days, now_str, ov_nav, password=OVERVIEW_CFG['pw'], email_cache_ts=email_cache_ts)
 

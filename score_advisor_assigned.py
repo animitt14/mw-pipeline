@@ -4,11 +4,14 @@ Score all contacts in GL Advisor Assigned and render an HTML table.
 import json, os, re, requests, time
 from pathlib import Path
 from html import escape
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+
+# Dashboard timestamps display in EST (fixed UTC-5, no DST shift) per team convention.
+EST = timezone(timedelta(hours=-5))
 
 TOKEN = os.environ.get('HUBSPOT_API_KEY', '').strip().replace('﻿', '')
 if TOKEN:
-    _OUT = Path(__file__).parent / 'docs' / 'advisor_assigned_scored.html'
+    _OUT = Path(__file__).parent / 'docs' / 'advisor_assigned_scored.html'  # deployed copy (CI)
 else:
     _env_file = Path(r'C:\Users\Anisha Mittal\masterworks-events\.env').read_text()
     TOKEN = next(l.split('=',1)[1].strip() for l in _env_file.splitlines() if 'HUBSPOT_API_KEY' in l)
@@ -268,7 +271,7 @@ for r in rows:
   <td>{hs_btn}</td>
 </tr>'''
 
-now = datetime.now(timezone.utc).strftime('%B %d, %Y %H:%M UTC')
+now = datetime.now(EST).strftime('%B %d, %Y %H:%M') + ' EST'
 owners_sorted = sorted(owner_counts.keys())
 
 html = f'''<!DOCTYPE html>
@@ -279,7 +282,6 @@ html = f'''<!DOCTYPE html>
 <link rel="stylesheet" href="pipeline.css">
 <style>
 *{{box-sizing:border-box;margin:0;padding:0}}
-body{{background:#f3f4f6;color:#111827;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:20px}}
 h1{{font-size:18px;margin-bottom:4px;color:#111827;font-weight:700}}
 .meta{{color:#6b7280;font-size:12px;margin-bottom:16px}}
 .filters{{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}}
@@ -313,8 +315,7 @@ tr:hover td{{background:#f9fafb}}
   document.getElementById('pw-input').addEventListener('keydown',function(e){{if(e.key==='Enter')checkPw();}});
 }})();
 </script>
-<div class="nav"><a href="index.html">Ani</a><a href="erik.html">Erik</a><a href="overview.html">Overview</a><a href="advisor_assigned_scored.html" class="active">Adv Assigned</a></div>
-<div style="padding:20px">
+<div class="nav"><a href="index.html">Ani</a><a href="erik.html">Erik</a><a href="overview.html">Overview</a><a href="advisor_assigned_scored.html" class="active">Adv Assigned</a><a href="magazine.html">Magazine</a></div>
 <h1>GL Advisor Assigned — All Contacts Scored</h1>
 <div class="meta">Generated {now} &nbsp;·&nbsp; {len(rows)} contacts</div>
 
@@ -403,7 +404,6 @@ function sortBy(col) {{
   applyVisibility();
 }}
 </script>
-</div>
 </body>
 </html>'''
 
