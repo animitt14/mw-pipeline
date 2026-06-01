@@ -9,8 +9,8 @@
 
 :root {
   /* Masterworks — cool stone neutrals + navy accent */
-  --bg:        #ebedf0;   /* cool gray stone */
-  --surface:   #ffffff;
+  --bg:        #e4e7ed;   /* cool stone — slightly richer than before */
+  --surface:   #f6f8fb;   /* subtle off-white tint; removes stark white from cards */
   --surface-2: #dfe2e7;
   --border:    #d4d8de;
   --border-2:  #b6bcc6;

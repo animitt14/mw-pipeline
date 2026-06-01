@@ -9,35 +9,56 @@
    To add / rename / reorder a tab: edit ALL_PAGES in
    generate_pipeline.py — the nav is emitted from there by render_nav().
    ============================================================ */
+
+/* Nav band — negative margins pull it edge-to-edge above the body padding */
 .nav {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
-  margin: 0 0 18px;
+  margin: -24px -28px 22px;
+  padding: 11px 28px;
+  background: #17213a;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 .nav a {
   font-size: 0.76rem;
   padding: 5px 14px;
   border-radius: 5px;
-  background: #dfe2e7;
-  color: #4a5363;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.58);
   text-decoration: none;
 }
 .nav a.active,
 .nav a:hover {
-  background: rgba(30, 42, 64, 0.10);
-  color: #11203a;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
 }
 
 /* Chrome strip — for pages whose body isn't the dashboard gray
    (the magazine's body is cream). Keeps the nav on a consistent
-   band so the chrome matches the other tabs. */
+   dark band so the chrome matches the other tabs. */
 .nav-shell {
-  background: #ebedf0;
-  padding: 24px 28px;
+  background: #17213a;
+  padding: 11px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
-.nav-shell .nav { margin-bottom: 0; }
+.nav-shell .nav {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border-bottom: none;
+}
+
+@media (max-width: 720px) {
+  .nav {
+    margin: -14px -12px 16px;
+    padding: 10px 12px;
+  }
+  .nav-shell {
+    padding: 10px 12px;
+  }
+}
 
 @media print {
   .nav, .nav-shell { display: none !important; }
