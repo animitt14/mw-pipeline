@@ -293,24 +293,23 @@ html = f'''<!DOCTYPE html>
 <title>GL Advisor Assigned — Scored</title>
 <link rel="stylesheet" href="pipeline.css">
 <style>
-*{{box-sizing:border-box;margin:0;padding:0}}
-h1{{font-size:18px;margin-bottom:4px;color:#111827;font-weight:700}}
-.meta{{color:#6b7280;font-size:12px;margin-bottom:16px}}
+*{{box-sizing:border-box}}
+.meta{{color:var(--text-3);font-size:12px;margin-bottom:16px}}
 .filters{{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}}
-.filter-btn{{background:#fff;border:1px solid #d1d5db;color:#374151;padding:5px 14px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:500}}
-.filter-btn:hover{{border-color:#9ca3af}}
-.filter-btn.active{{background:#1d4ed8;border-color:#1d4ed8;color:#fff}}
-.sep{{color:#9ca3af;font-size:12px;font-weight:500}}
+.filter-btn{{background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);padding:5px 14px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit}}
+.filter-btn:hover{{border-color:var(--border-2)}}
+.filter-btn.active{{background:var(--accent);border-color:var(--accent);color:#fff}}
+.sep{{color:var(--text-3);font-size:12px;font-weight:500}}
 .summary{{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}}
-.sum-card{{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:8px 16px;font-size:12px;color:#6b7280;font-weight:500}}
-.sum-card b{{font-size:18px;display:block;color:#111827;font-weight:700}}
-table{{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}}
-th{{background:#f9fafb;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e5e7eb;white-space:nowrap;cursor:pointer;font-size:12px;text-transform:uppercase;letter-spacing:.04em;user-select:none}}
-th:hover{{color:#111827;background:#f1f3f5}}
-th.sort-asc::after{{content:' ▲';font-size:10px}}
-th.sort-desc::after{{content:' ▼';font-size:10px}}
-td{{padding:8px 12px;border-bottom:1px solid #f3f4f6;vertical-align:middle}}
-tr:hover td{{background:#f9fafb}}
+.sum-card{{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:12px;color:var(--text-2);font-weight:500}}
+.sum-card b{{font-size:18px;display:block;color:var(--text);font-weight:700}}
+.scored-table{{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(14,20,34,.08)}}
+.scored-table th{{background:var(--surface-2);color:var(--accent-2);font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid var(--accent);white-space:nowrap;cursor:pointer;font-size:12px;text-transform:uppercase;letter-spacing:.04em;user-select:none}}
+.scored-table th:hover{{color:var(--accent)}}
+.scored-table th.sort-asc::after{{content:' ▲';font-size:10px}}
+.scored-table th.sort-desc::after{{content:' ▼';font-size:10px}}
+.scored-table td{{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}}
+.scored-table tr:hover td{{background:var(--surface-2)}}
 .hidden{{display:none}}
 </style>
 </head>
@@ -355,7 +354,7 @@ tr:hover td{{background:#f9fafb}}
   <button class="filter-btn" onclick="setFilter('old','1')" style="border-color:#c2410c;color:#c2410c">Pre-Apr 10 ({old_count})</button>
 </div>
 
-<table id="tbl">
+<table id="tbl" class="scored-table">
 <thead><tr>
   <th onclick="sortBy('name')">Name</th>
   <th onclick="sortBy('score')">Score</th>
