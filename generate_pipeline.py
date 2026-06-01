@@ -1724,7 +1724,7 @@ def build_velocity_html(vd, now_str, nav_html, password='banksy'):
     parts = [
         '<!DOCTYPE html><html lang="en"><head>',
         '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">',
-        '<title>Pipeline Velocity</title>',
+        '<title>Gallery Events — Pipeline Velocity</title>',
         '<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>',
         '<link rel="stylesheet" href="pipeline.css"></head><body>',
         # password gate (matches the other tabs)
@@ -1741,7 +1741,7 @@ def build_velocity_html(vd, now_str, nav_html, password='banksy'):
         '})();</script>',
         nav_html,
         '<div class="velo">',
-        '<div class="v-hdr"><div><h1>Gallery Events Pipeline — Velocity</h1>',
+        '<div class="v-hdr"><div><h1>Gallery Events — Pipeline Velocity</h1>',
         f'<p>OUTBOUND · GALLERY LEADS · BRINGSJORD &amp; MITTAL · {now_str}</p></div>',
         f'<div class="signal-pill {sig_cls}"><div class="signal-dot"></div>{escape(sig_txt)}</div></div>',
         # KPI row
