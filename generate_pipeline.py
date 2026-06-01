@@ -1702,7 +1702,7 @@ def build_velocity_html(vd, now_str, nav_html, password='banksy'):
         '}else{document.getElementById("pw-err").textContent="Incorrect password";',
         'document.getElementById("pw-input").value="";}};',
         'document.getElementById("pw-input").addEventListener("keydown",function(e){if(e.key==="Enter")checkPw();});',
-        '}})();</script>',
+        '})();</script>',
         nav_html,
         '<div class="velo">',
         '<div class="v-hdr"><div><h1>Gallery Events Pipeline — Velocity</h1>',
