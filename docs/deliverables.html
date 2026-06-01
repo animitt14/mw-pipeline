@@ -52,10 +52,13 @@
   .corner-b{position:absolute;bottom:0;height:7px;width:1.15in;background:var(--indigo);}
   .corner-b.l{left:0;} .corner-b.r{right:0;}
 
-  .title{position:absolute;left:.55in;top:.34in;font-family:Georgia,'Times New Roman',serif;
-    font-weight:700;font-size:30px;color:var(--ink);letter-spacing:.2px;}
-  .subtitle{position:absolute;left:.56in;top:.86in;font-size:13.5px;color:var(--sub);
+  .title{position:absolute;left:.55in;top:.32in;font-family:Georgia,'Times New Roman',serif;
+    font-weight:700;font-size:32px;color:var(--ink);letter-spacing:.2px;}
+  .p14 .title{font-size:29px;}
+  .p15 .title{font-size:43px;top:.30in;}
+  .subtitle{position:absolute;left:.56in;top:.88in;font-size:14.5px;color:var(--sub);
     max-width:8.9in;line-height:1.4;font-weight:400;}
+  .p15 .subtitle{top:1.02in;font-size:16.5px;}
   .subtitle b{color:var(--ink);font-weight:700;}
 
   /* ===== FOOTER ===== */
@@ -67,10 +70,10 @@
 
   /* ============ PAGE 14 — CLIENT EXPERIENCE ============ */
   .p14{background:#edecf2;}
-  .cols{position:absolute;left:.55in;right:.55in;top:1.45in;display:flex;gap:.34in;}
+  .cols{position:absolute;left:.55in;right:.55in;top:1.32in;display:flex;gap:.34in;}
   .col{flex:1;display:flex;flex-direction:column;}
-  .col-head{border-radius:7px;color:#fff;text-align:center;font-weight:700;font-size:14px;
-    padding:9px 6px;box-shadow:0 3px 7px rgba(0,0,0,.18);}
+  .col-head{border-radius:6px;color:#fff;text-align:center;font-weight:700;font-size:14px;
+    padding:8px 6px;box-shadow:0 3px 7px rgba(0,0,0,.18);}
   .col-head.gray{background:var(--gray-bar);}
   .col-head.indigo{background:var(--indigo);}
   .band{text-align:center;font-size:11.5px;font-weight:700;color:#5c5c5c;letter-spacing:.02em;
@@ -78,26 +81,26 @@
   .rec{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:13px 14px;
     display:flex;gap:13px;align-items:flex-start;min-height:1.18in;box-shadow:0 2px 5px rgba(0,0,0,.05);}
   .rec .art{width:1.0in;border-radius:3px;box-shadow:0 2px 5px rgba(0,0,0,.18);flex:none;}
-  .rec-txt{font-size:12px;line-height:1.5;}
-  .rec-txt .artist{font-weight:700;color:var(--ink);font-size:13px;}
+  .rec-txt{font-size:12.5px;line-height:1.5;}
+  .rec-txt .artist{font-weight:700;color:var(--ink);font-size:13.5px;}
   .rec-txt .work{font-style:italic;color:#777;margin-bottom:5px;}
-  .rec-txt .stat{color:var(--indigo);font-weight:700;font-size:11.5px;line-height:1.4;margin-top:4px;}
-  .rlabel{text-align:center;font-style:italic;font-weight:700;font-size:11.5px;color:var(--rust);
-    margin:12px 0 7px;}
-  .rat{list-style:none;font-size:11.5px;line-height:1.5;color:#5a5a5a;}
+  .rec-txt .stat{color:var(--indigo);font-weight:700;font-size:12px;line-height:1.4;margin-top:4px;}
+  .rlabel{text-align:center;font-style:italic;font-weight:700;font-size:12px;color:var(--rust);
+    margin:14px 0 8px;}
+  .rat{list-style:none;font-size:12px;line-height:1.55;color:#5a5a5a;}
   .rat li{position:relative;padding-left:14px;margin-bottom:8px;}
   .rat li::before{content:"–";position:absolute;left:0;color:#9a9a9a;}
 
   /* ============ PAGE 15 — OUR PROCESS ============ */
-  .phases{position:absolute;left:.55in;right:.55in;top:1.95in;display:flex;gap:.26in;}
+  .phases{position:absolute;left:.55in;right:.55in;top:1.85in;bottom:.95in;display:flex;gap:.26in;}
   .phase{flex:1;display:flex;flex-direction:column;align-items:center;}
-  .pnum{width:.62in;height:.62in;background:var(--indigo);border-radius:9px;color:#fff;
-    font-weight:700;font-size:26px;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 5px 10px rgba(92,96,214,.35);}
-  .phead{font-weight:700;font-size:14px;color:#4a4a4a;text-align:center;line-height:1.25;
-    margin:14px 0 12px;min-height:.62in;}
-  .pcard{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:14px 13px;
-    font-size:11.5px;line-height:1.55;color:#555;width:100%;flex:1;
+  .pnum{width:.66in;height:.66in;background:var(--indigo);border-radius:10px;color:#fff;
+    font-weight:700;font-size:28px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 11px rgba(92,96,214,.35);flex:none;}
+  .phead{font-weight:700;font-size:16.5px;color:#4a4a4a;text-align:center;line-height:1.22;
+    margin:16px 0 14px;min-height:.6in;}
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:18px 16px;
+    font-size:13.5px;line-height:1.62;color:#555;width:100%;flex:1;
     box-shadow:0 3px 8px rgba(0,0,0,.07);}
 
   /* ============ PAGE 16 / 17 — IMAGE COMPOSITES ============ */
