@@ -5,24 +5,23 @@
 <title>GL Advisor Assigned — Scored</title>
 <link rel="stylesheet" href="pipeline.css">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-h1{font-size:18px;margin-bottom:4px;color:#111827;font-weight:700}
-.meta{color:#6b7280;font-size:12px;margin-bottom:16px}
+*{box-sizing:border-box}
+.meta{color:var(--text-3);font-size:12px;margin-bottom:16px}
 .filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
-.filter-btn{background:#fff;border:1px solid #d1d5db;color:#374151;padding:5px 14px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:500}
-.filter-btn:hover{border-color:#9ca3af}
-.filter-btn.active{background:#1d4ed8;border-color:#1d4ed8;color:#fff}
-.sep{color:#9ca3af;font-size:12px;font-weight:500}
+.filter-btn{background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);padding:5px 14px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit}
+.filter-btn:hover{border-color:var(--border-2)}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.sep{color:var(--text-3);font-size:12px;font-weight:500}
 .summary{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-.sum-card{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:8px 16px;font-size:12px;color:#6b7280;font-weight:500}
-.sum-card b{font-size:18px;display:block;color:#111827;font-weight:700}
-table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-th{background:#f9fafb;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e5e7eb;white-space:nowrap;cursor:pointer;font-size:12px;text-transform:uppercase;letter-spacing:.04em;user-select:none}
-th:hover{color:#111827;background:#f1f3f5}
-th.sort-asc::after{content:' ▲';font-size:10px}
-th.sort-desc::after{content:' ▼';font-size:10px}
-td{padding:8px 12px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
-tr:hover td{background:#f9fafb}
+.sum-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:12px;color:var(--text-2);font-weight:500}
+.sum-card b{font-size:18px;display:block;color:var(--text);font-weight:700}
+.scored-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(14,20,34,.08)}
+.scored-table th{background:var(--surface-2);color:var(--accent-2);font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid var(--accent);white-space:nowrap;cursor:pointer;font-size:12px;text-transform:uppercase;letter-spacing:.04em;user-select:none}
+.scored-table th:hover{color:var(--accent)}
+.scored-table th.sort-asc::after{content:' ▲';font-size:10px}
+.scored-table th.sort-desc::after{content:' ▼';font-size:10px}
+.scored-table td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.scored-table tr:hover td{background:var(--surface-2)}
 .hidden{display:none}
 </style>
 </head>
@@ -39,14 +38,14 @@ tr:hover td{background:#f9fafb}
   document.getElementById('pw-input').addEventListener('keydown',function(e){if(e.key==='Enter')checkPw();});
 })();
 </script>
-<div class="nav"><a href="index.html">Ani</a><a href="erik.html">Erik</a><a href="overview.html">Overview</a><a href="advisor_assigned_scored.html" class="active">Adv Assigned</a><a href="magazine.html">Magazine</a></div>
+<div class="nav"><a href="index.html">Ani</a><a href="erik.html">Erik</a><a href="overview.html">Overview</a><a href="velocity.html">Velocity</a><a href="advisor_assigned_scored.html" class="active">Adv Assigned</a><a href="magazine.html">Magazine</a></div>
 <h1>GL Advisor Assigned — All Contacts Scored</h1>
-<div class="meta">Generated June 01, 2026 13:03 EDT &nbsp;·&nbsp; 186 contacts</div>
+<div class="meta">Generated June 01, 2026 14:39 EDT &nbsp;·&nbsp; 188 contacts</div>
 
 <div class="summary">
-  <div class="sum-card"><b>186</b>Total</div>
-  <div class="sum-card"><b>12</b>Score 5</div><div class="sum-card"><b>129</b>Score 4</div><div class="sum-card"><b>27</b>Score 3</div><div class="sum-card"><b>18</b>Score 2</div><div class="sum-card"><b>0</b>Score 1</div>
-  <div class="sum-card"><b>2</b></div><div class="sum-card"><b>98</b>Ani</div><div class="sum-card"><b>1</b>Blake</div><div class="sum-card"><b>83</b>Erik</div><div class="sum-card"><b>2</b>Linna</div>
+  <div class="sum-card"><b>188</b>Total</div>
+  <div class="sum-card"><b>12</b>Score 5</div><div class="sum-card"><b>131</b>Score 4</div><div class="sum-card"><b>27</b>Score 3</div><div class="sum-card"><b>18</b>Score 2</div><div class="sum-card"><b>0</b>Score 1</div>
+  <div class="sum-card"><b>100</b>Ani</div><div class="sum-card"><b>1</b>Blake</div><div class="sum-card"><b>85</b>Erik</div><div class="sum-card"><b>2</b>Linna</div>
   <div class="sum-card"><b>14</b>Needs Review</div>
   <div class="sum-card" style="border-color:#c2410c"><b style="color:#c2410c">100</b>Pre-Apr 10</div>
 </div>
@@ -61,13 +60,13 @@ tr:hover td{background:#f9fafb}
   <button class="filter-btn" onclick="setFilter('score','1')">1</button>
   <span class="sep" style="margin-left:8px">Owner:</span>
   <button class="filter-btn active" onclick="setFilter('owner','all')">All</button>
-  <button class="filter-btn" onclick="setFilter('owner','')"></button><button class="filter-btn" onclick="setFilter('owner','Ani')">Ani</button><button class="filter-btn" onclick="setFilter('owner','Blake')">Blake</button><button class="filter-btn" onclick="setFilter('owner','Erik')">Erik</button><button class="filter-btn" onclick="setFilter('owner','Linna')">Linna</button>
+  <button class="filter-btn" onclick="setFilter('owner','Ani')">Ani</button><button class="filter-btn" onclick="setFilter('owner','Blake')">Blake</button><button class="filter-btn" onclick="setFilter('owner','Erik')">Erik</button><button class="filter-btn" onclick="setFilter('owner','Linna')">Linna</button>
   <span class="sep" style="margin-left:8px">Flag:</span>
   <button class="filter-btn" onclick="setFilter('review','1')">Review (14)</button>
   <button class="filter-btn" onclick="setFilter('old','1')" style="border-color:#c2410c;color:#c2410c">Pre-Apr 10 (100)</button>
 </div>
 
-<table id="tbl">
+<table id="tbl" class="scored-table">
 <thead><tr>
   <th onclick="sortBy('name')">Name</th>
   <th onclick="sortBy('score')">Score</th>
@@ -933,6 +932,15 @@ tr:hover td{background:#f9fafb}
   <td><span style="color:#374151;font-size:12px">2026-04-15</span></td>
   <td style="text-align:center"><span style="font-weight:600;color:#111827">5</span></td>
   <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/215342812594" target="_blank" style="background:#ff7a59;color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap">HS</a></td>
+</tr><tr data-score="4" data-owner="Erik" data-review="0" data-old="0" data-name="manny small" data-title="national sales manager &amp; executive vice president" data-company="blaylock van" data-created="2026-05-20" data-called="3">
+  <td style="font-weight:500;color:#111827">Manny Small</td>
+  <td><span style="background:#1d4ed8;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600">4 Med-High</span></td>
+  <td style="color:#374151;font-size:12px">National Sales Manager &amp; Executive Vice President</td>
+  <td style="color:#374151;font-size:12px">Blaylock Van</td>
+  <td style="color:#6b7280;font-size:12px">Erik</td>
+  <td><span style="color:#374151;font-size:12px">2026-05-20</span></td>
+  <td style="text-align:center"><span style="font-weight:600;color:#111827">3</span></td>
+  <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/156716888646" target="_blank" style="background:#ff7a59;color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap">HS</a></td>
 </tr><tr data-score="4" data-owner="Ani" data-review="0" data-old="0" data-name="mark boyle" data-title="director, human resources" data-company="teksystems" data-created="2026-04-10" data-called="7">
   <td style="font-weight:500;color:#111827">Mark Boyle</td>
   <td><span style="background:#1d4ed8;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600">4 Med-High</span></td>
@@ -1293,6 +1301,15 @@ tr:hover td{background:#f9fafb}
   <td><span style="color:#c2410c;font-size:12px;font-weight:700">2026-03-31</span></td>
   <td style="text-align:center"><span style="font-weight:600;color:#111827">12</span></td>
   <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/98918350425" target="_blank" style="background:#ff7a59;color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap">HS</a></td>
+</tr><tr data-score="4" data-owner="Erik" data-review="0" data-old="0" data-name="warren tong" data-title="director, publications &amp; specialist" data-company="pfizer" data-created="2026-05-11" data-called="1">
+  <td style="font-weight:500;color:#111827">Warren Tong</td>
+  <td><span style="background:#1d4ed8;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600">4 Med-High</span></td>
+  <td style="color:#374151;font-size:12px">Director, Publications &amp; Specialist</td>
+  <td style="color:#374151;font-size:12px">Pfizer</td>
+  <td style="color:#6b7280;font-size:12px">Erik</td>
+  <td><span style="color:#374151;font-size:12px">2026-05-11</span></td>
+  <td style="text-align:center"><span style="font-weight:600;color:#111827">1</span></td>
+  <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/116221814073" target="_blank" style="background:#ff7a59;color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap">HS</a></td>
 </tr><tr data-score="4" data-owner="Ani" data-review="0" data-old="1" data-name="william chin" data-title="associate director" data-company="ubs" data-created="2026-04-09" data-called="8">
   <td style="font-weight:500;color:#111827">William Chin</td>
   <td><span style="background:#1d4ed8;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600">4 Med-High</span></td>
@@ -1473,14 +1490,14 @@ tr:hover td{background:#f9fafb}
   <td><span style="color:#374151;font-size:12px">2026-04-20</span></td>
   <td style="text-align:center"><span style="font-weight:600;color:#111827">3</span></td>
   <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/113977175198" target="_blank" style="background:#ff7a59;color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap">HS</a></td>
-</tr><tr data-score="3" data-owner="Linna" data-review="0" data-old="0" data-name="kenneth sullivan" data-title="owner" data-company="kenco designs" data-created="2026-05-27" data-called="1">
+</tr><tr data-score="3" data-owner="Linna" data-review="0" data-old="0" data-name="kenneth sullivan" data-title="owner" data-company="kenco designs" data-created="2026-05-27" data-called="2">
   <td style="font-weight:500;color:#111827">Kenneth Sullivan</td>
   <td><span style="background:#bfdbfe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600">3 Medium</span></td>
   <td style="color:#374151;font-size:12px">Owner</td>
   <td style="color:#374151;font-size:12px">Kenco Designs</td>
   <td style="color:#6b7280;font-size:12px">Linna</td>
   <td><span style="color:#374151;font-size:12px">2026-05-27</span></td>
-  <td style="text-align:center"><span style="font-weight:600;color:#111827">1</span></td>
+  <td style="text-align:center"><span style="font-weight:600;color:#111827">2</span></td>
   <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/474557801" target="_blank" style="background:#ff7a59;color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap">HS</a></td>
 </tr><tr data-score="3" data-owner="Ani" data-review="0" data-old="1" data-name="mathieu shrontz" data-title="group executive producer" data-company="vector ml analytics" data-created="2026-04-09" data-called="8">
   <td style="font-weight:500;color:#111827">Mathieu Shrontz</td>
@@ -1635,12 +1652,12 @@ tr:hover td{background:#f9fafb}
   <td><span style="color:#374151;font-size:12px">2026-04-17</span></td>
   <td style="text-align:center"><span style="font-weight:600;color:#111827">2</span></td>
   <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/113999621270" target="_blank" style="background:#ff7a59;color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap">HS</a></td>
-</tr><tr data-score="2" data-owner="" data-review="0" data-old="0" data-name="elisa de stanchina" data-title="" data-company="" data-created="2026-05-26" data-called="1">
+</tr><tr data-score="2" data-owner="Ani" data-review="0" data-old="0" data-name="elisa de stanchina" data-title="" data-company="" data-created="2026-05-26" data-called="1">
   <td style="font-weight:500;color:#111827">Elisa De Stanchina</td>
   <td><span style="background:#e5e7eb;color:#374151;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600">2 Low-Med</span></td>
   <td style="color:#374151;font-size:12px"></td>
   <td style="color:#374151;font-size:12px"></td>
-  <td style="color:#6b7280;font-size:12px"></td>
+  <td style="color:#6b7280;font-size:12px">Ani</td>
   <td><span style="color:#374151;font-size:12px">2026-05-26</span></td>
   <td style="text-align:center"><span style="font-weight:600;color:#111827">1</span></td>
   <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/224000160147" target="_blank" style="background:#ff7a59;color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap">HS</a></td>
@@ -1662,12 +1679,12 @@ tr:hover td{background:#f9fafb}
   <td><span style="color:#374151;font-size:12px">2026-05-07</span></td>
   <td style="text-align:center"><span style="font-weight:600;color:#111827">5</span></td>
   <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/220024028338" target="_blank" style="background:#ff7a59;color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap">HS</a></td>
-</tr><tr data-score="2" data-owner="" data-review="0" data-old="0" data-name="kevin foulds" data-title="" data-company="" data-created="2026-05-27" data-called="1">
+</tr><tr data-score="2" data-owner="Ani" data-review="0" data-old="0" data-name="kevin foulds" data-title="" data-company="" data-created="2026-05-27" data-called="1">
   <td style="font-weight:500;color:#111827">Kevin Foulds</td>
   <td><span style="background:#e5e7eb;color:#374151;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600">2 Low-Med</span></td>
   <td style="color:#374151;font-size:12px"></td>
   <td style="color:#374151;font-size:12px"></td>
-  <td style="color:#6b7280;font-size:12px"></td>
+  <td style="color:#6b7280;font-size:12px">Ani</td>
   <td><span style="color:#374151;font-size:12px">2026-05-27</span></td>
   <td style="text-align:center"><span style="font-weight:600;color:#111827">1</span></td>
   <td><a href="https://app.hubspot.com/contacts/5454671/record/0-1/224334286966" target="_blank" style="background:#ff7a59;color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap">HS</a></td>
