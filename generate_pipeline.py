@@ -22,9 +22,18 @@ PORTAL_ID = '5454671'
 HEADERS = {'Authorization': f'Bearer {HUBSPOT_TOKEN}', 'Content-Type': 'application/json'}
 SEARCH_URL = 'https://api.hubapi.com/crm/v3/objects/contacts/search'
 
-# All dashboard timestamps display in EST (fixed UTC-5, no DST shift) per team convention.
-# Internal math still uses UTC; only the displayed strings are converted.
-EST = timezone(timedelta(hours=-5))
+# Dashboard timestamps display in New York wall-clock time (DST-aware: EST in winter,
+# EDT in summer) so they always match a clock on the wall in NYC. Internal math stays UTC.
+def eastern_now():
+    """Return (now_in_ny_walltime, tzname) — DST per US rules, dependency-free."""
+    u = datetime.now(timezone.utc)
+    mar8 = datetime(u.year, 3, 8, tzinfo=timezone.utc)
+    dst_start = (mar8 + timedelta(days=(6 - mar8.weekday()) % 7)).replace(hour=7)  # 2nd Sun Mar, 02:00 EST
+    nov1 = datetime(u.year, 11, 1, tzinfo=timezone.utc)
+    dst_end = (nov1 + timedelta(days=(6 - nov1.weekday()) % 7)).replace(hour=6)    # 1st Sun Nov, 02:00 EDT
+    is_dst = dst_start <= u < dst_end
+    off, name = (-4, 'EDT') if is_dst else (-5, 'EST')
+    return u.astimezone(timezone(timedelta(hours=off))), name
 
 DEAL_STAGES = {
     '1321369495': 'Event Attended',
@@ -109,7 +118,31 @@ TERMINAL_STAGES   = {CLOSED_WON_STAGE, CLOSED_LOST_STAGE, DQ_STAGE, '1363474966'
 AA_CAPACITY = 126                          # Erik + Ani combined Advisor-Assigned working capacity
 VELO_SERIES_START = date_type(2026, 3, 9)  # first Monday of the weekly trend window
 VELO_APR9 = date_type(2026, 4, 9)          # automation-batch inflection point
-VELOCITY_SNAPSHOT_FILE = Path(__file__).parent / 'velocity_snapshots.json'
+
+# Overview weekly-summary narrative is frozen per ISO week (see _weekly_summary_bullets)
+WEEKLY_SUMMARY_FILE = Path(__file__).parent / 'weekly_summary.json'
+
+
+def _weekly_summary_bullets(candidates, today_d):
+    """Freeze the top-3 positive bullets per ISO week so the narrative reads as a weekly
+    note rather than churning on every 3x/day rebuild. Regenerates only on the first run
+    of a new ISO week; the stored JSON is human-editable in between."""
+    iso = list(today_d.isocalendar()[:2])  # [year, week]
+    try:
+        store = json.loads(WEEKLY_SUMMARY_FILE.read_text(encoding='utf-8'))
+    except Exception:
+        store = {}
+    if store.get('iso') == iso and store.get('bullets'):
+        return store['bullets']
+    ranked = sorted(candidates, key=lambda x: -x[0])[:3]
+    bullets = [{'color': c, 'title': t, 'text': x} for (_s, c, t, x) in ranked]
+    try:
+        WEEKLY_SUMMARY_FILE.write_text(
+            json.dumps({'iso': iso, 'updated': today_d.isoformat(), 'bullets': bullets}, indent=2),
+            encoding='utf-8')
+    except Exception as e:
+        print(f'  WARN: could not write weekly summary: {e}', flush=True)
+    return bullets
 
 
 def fetch_all_contacts(owner_id):
@@ -773,9 +806,9 @@ def shorten_title(title):
 def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetings=None, notes=None,
                daily_tasks=None, daily_meetings=None, owner_name='Ani', nav_html='', password='anisha'):
     now_dt = datetime.now(timezone.utc)
-    now_est = now_dt.astimezone(EST)
-    now = now_est.strftime('%B %-d, %Y %H:%M EST') if sys.platform != 'win32' \
-        else now_est.strftime('%B %#d, %Y %H:%M EST')
+    _now_e, _tz = eastern_now()
+    now = _now_e.strftime('%B %-d, %Y %H:%M ' + _tz) if sys.platform != 'win32' \
+        else _now_e.strftime('%B %#d, %Y %H:%M ' + _tz)
     now_ms_ts = int(now_dt.timestamp() * 1000)
     today_date = now_dt.date()
     ms_30d = 30 * 24 * 3600 * 1000
@@ -1529,13 +1562,6 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
 
 
 
-def _velo_load_snapshots():
-    try:
-        return json.loads(VELOCITY_SNAPSHOT_FILE.read_text(encoding='utf-8'))
-    except Exception:
-        return {}
-
-
 def build_velocity_data(deals):
     """Compute Velocity KPIs + weekly trend series.
 
@@ -1620,29 +1646,33 @@ def build_velocity_data(deals):
         if kx is not None:
             net_aa[kx] -= 1
 
-    # ── Cumulative pipeline value: seed + live current-week snapshot (persisted) ──
-    snaps = _velo_load_snapshots()
-    vw = snaps.get('value_weekly', {})
-    vw[cur_monday.isoformat()] = round(pipeline_value)
-    snaps['value_weekly'] = vw
-    snaps['updated'] = today.isoformat()
-    try:
-        VELOCITY_SNAPSHOT_FILE.write_text(json.dumps(snaps, indent=2), encoding='utf-8')
-    except Exception as e:
-        print(f'  WARN: could not write velocity snapshots: {e}', flush=True)
-    cumulative, last = [], None
+    # ── Cumulative pipeline value: reconstructed point-in-time from deal membership ──
+    # For each week, sum the CURRENT amount of every deal created by the end of that week
+    # that had not yet entered a terminal stage. Uses current amount as a proxy for
+    # amount-at-time (HubSpot keeps no amount history) and can't see hard-deleted deals,
+    # but it's fully reproducible and replaces the old hand-estimated screenshot seed.
+    deal_life = []
+    for d in deals:
+        p = d['properties']
+        cr = pdt(p.get('createdate'))
+        a = amt(d)
+        if not cr or a <= 0:
+            continue
+        terms = [pdt(p.get(f'hs_v2_date_entered_{sid}')) for sid in TERMINAL_STAGES]
+        terms = [t for t in terms if t]
+        deal_life.append((cr, min(terms) if terms else None, a))
+    cumulative = []
     for w in weeks:
-        v = vw.get(w.isoformat())
-        if v is not None:
-            last = v
-        cumulative.append(last)
+        asof = min(w + timedelta(days=6), today)   # end of that week (Sun), capped at today
+        val = sum(a for (cr, et, a) in deal_life if cr <= asof and (et is None or et > asof))
+        cumulative.append(round(val))
 
     _fmt = '%b %#d' if sys.platform == 'win32' else '%b %-d'
     return {
         'labels': [w.strftime(_fmt) for w in weeks],
         'net_total': net_total,
         'net_aa': net_aa,
-        'cumulative_k': [round(v / 1000) if v is not None else None for v in cumulative],
+        'cumulative_k': [round(v / 1000) for v in cumulative],
         'apr9_idx': wk_index(VELO_APR9),
         'total_active': total_active,
         'pipeline_value': pipeline_value,
@@ -1716,7 +1746,7 @@ def build_velocity_html(vd, now_str, nav_html, password='banksy'):
         # KPI row
         '<div class="kpi-row">',
         f'<div class="kpi blue"><div class="kpi-label">Total active deals</div>'
-        f'<div class="kpi-value">{vd["total_active"]}</div><div class="kpi-sub">Excl. closed / disqualified</div></div>',
+        f'<div class="kpi-value">{vd["total_active"]}</div><div class="kpi-sub">Whole GL pipeline · excl. closed/DQ</div></div>',
         f'<div class="kpi {aa_cls}"><div class="kpi-label">Advisor Assigned</div>'
         f'<div class="kpi-value">{vd["aa_count"]}</div><div class="kpi-sub">Bringsjord + Mittal · capacity {AA_CAPACITY}</div></div>',
         f'<div class="kpi green"><div class="kpi-label">Avg days to exit AA</div>'
@@ -1843,12 +1873,16 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
     decided         = len(won) + len(lost)
     close_rate      = len(won) / decided * 100 if decided else 0
     funnel_rate     = len(won) / len(team) * 100 if team else 0
+    # Sales cycle measured from event attended → close. The deal's entry into the
+    # "Event Attended" stage is the deal-level proxy for the attend date; fall back to
+    # createdate for deals that never passed through that stage.
     close_times = []
     for d in won:
         p = d['properties']
-        cd, cr = pd(p.get('closedate')), pd(p.get('createdate'))
-        if cd and cr and cd > cr:
-            close_times.append((cd - cr).days)
+        cd = pd(p.get('closedate'))
+        start = pd(p.get('hs_v2_date_entered_1321369495')) or pd(p.get('createdate'))
+        if cd and start and cd > start:
+            close_times.append((cd - start).days)
     avg_close = sum(close_times) / len(close_times) if close_times else 0
 
     # ── Section 2: Funnel ──
@@ -2288,21 +2322,25 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
     if rm_ct > 0:
         summary_candidates.append((rm_ct * 5.0, 'var(--green)', 'Closest to the finish.',
             f'{rm_ct} deals sit at Recommendation Made, one step from close.'))
-    summary_candidates.sort(key=lambda x: -x[0])
-    bullets = ''
-    for i, (_score, color, title, text) in enumerate(summary_candidates[:3], 1):
-        bullets += (
-            f'<div style="background:var(--surface-2);border-left:3px solid {color};border-radius:0 8px 8px 0;'
-            f'padding:10px 12px;margin-bottom:6px">'
-            f'<div style="font-size:12px;font-weight:600;color:{color};margin-bottom:3px">{i} · {title}</div>'
-            f'<div style="font-size:11px;color:var(--text-2);line-height:1.6">{text}</div></div>'
-        )
-    exec_summary_html = (
+    # Daily activity tracker — the numeric cards, recomputed every run.
+    daily_activity_html = (
         '<div class="card" style="margin-bottom:16px">'
         '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">' + delta_cards + '</div>'
-        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">' + quality_cards + '</div>'
-        '<div style="border-top:.5px solid var(--border);padding-top:11px">' + bullets + '</div></div>'
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">' + quality_cards + '</div></div>'
     )
+
+    # Weekly summary — top-3 positive bullets FROZEN per ISO week (refresh on the first
+    # run of each new week so it reads as a weekly note, not a 3x/day churn).
+    week_bullets = _weekly_summary_bullets(summary_candidates, today_d)
+    bullets = ''
+    for i, b in enumerate(week_bullets, 1):
+        bullets += (
+            f'<div style="background:var(--surface-2);border-left:3px solid {b["color"]};border-radius:0 8px 8px 0;'
+            f'padding:10px 12px;margin-bottom:6px">'
+            f'<div style="font-size:12px;font-weight:600;color:{b["color"]};margin-bottom:3px">{i} · {b["title"]}</div>'
+            f'<div style="font-size:11px;color:var(--text-2);line-height:1.6">{b["text"]}</div></div>'
+        )
+    weekly_summary_html = f'<div class="card" style="margin-bottom:16px">{bullets}</div>'
 
     html_parts = [
         '<!DOCTYPE html><html lang="en"><head>',
@@ -2336,12 +2374,12 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
         # 1. Pipeline Health
         '<p class="slabel">1 · pipeline health</p>',
         '<div class="g6">',
-        f'<div class="kc"><div class="kv" style="color:var(--purple)">{total_active}</div><div class="kl">Total active deals</div><div class="ks">excl. closed/DQ</div></div>',
+        f'<div class="kc"><div class="kv" style="color:var(--purple)">{total_active}</div><div class="kl">Total active deals</div><div class="ks">Ani + Erik · excl. closed/DQ</div></div>',
         f'<div class="kc"><div class="kv" style="color:var(--green)">{fmtamt(pipeline_value)}</div><div class="kl">Pipeline value</div><div class="ks">open w/ amounts</div></div>',
         f'<div class="kc"><div class="kv" style="color:var(--red)">{pct_no_value:.0f}%</div><div class="kl">No value</div><div class="ks">{no_value_count} of {total_active} active</div></div>',
         f'<div class="kc"><div class="kv" style="color:var(--purple)">{close_rate:.1f}%</div><div class="kl">Close rate</div><div class="ks">won ÷ decided</div></div>',
         f'<div class="kc"><div class="kv" style="color:var(--amber)">{funnel_rate:.1f}%</div><div class="kl">Funnel close rate</div><div class="ks">won ÷ all assigned</div></div>',
-        f'<div class="kc"><div class="kv" style="color:var(--purple)">{avg_close:.1f}d</div><div class="kl">Avg time to close</div><div class="ks">create → close · {len(close_times)} deals</div></div>',
+        f'<div class="kc"><div class="kv" style="color:var(--purple)">{avg_close:.1f}d</div><div class="kl">Avg time to close</div><div class="ks">event → close · {len(close_times)} deals</div></div>',
         '</div>',
 
         # 2. Active Deal Funnel
@@ -2456,9 +2494,13 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
         '<p class="slabel">9 · advisor breakdown — pipeline value &amp; close rate</p>',
         advisor_breakdown_html,
 
-        # 10. Weekly Executive Summary (auto-computed deltas + top-3 positive bullets)
-        f'<p class="slabel">10 · weekly executive summary — last {n_5wd_days} working days vs 30-day baseline</p>',
-        exec_summary_html,
+        # 10. Daily activity tracker — numeric cards, recomputed every run
+        f'<p class="slabel">10 · daily activity tracker — last {n_5wd_days} working days vs 30-day baseline</p>',
+        daily_activity_html,
+
+        # 11. Weekly summary — narrative text, refreshes once per ISO week
+        '<p class="slabel">11 · weekly summary</p>',
+        weekly_summary_html,
 
         f'<div class="footer"><span>Masterworks · Outbound · Gallery Leads · Confidential</span><span>{now_str}</span></div>',
         '</div></body></html>',
@@ -2519,7 +2561,8 @@ def main():
     print('Fetching advisor activity...', flush=True)
     activity, n_5wd_days, email_cache_ts = fetch_advisor_activity()
 
-    now_str = datetime.now(EST).strftime('%Y-%m-%d %H:%M') + ' EST'
+    _ne, _ntz = eastern_now()
+    now_str = _ne.strftime('%Y-%m-%d %H:%M') + ' ' + _ntz
     print('Building Overview HTML...', flush=True)
     ov_html = build_overview_html(deals, activity, n_5wd_days, now_str, ov_nav, password=OVERVIEW_CFG['pw'], email_cache_ts=email_cache_ts)
 

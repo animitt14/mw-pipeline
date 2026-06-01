@@ -1,0 +1,24 @@
+{
+  "iso": [
+    2026,
+    23
+  ],
+  "updated": "2026-06-01",
+  "bullets": [
+    {
+      "color": "var(--green)",
+      "title": "Closest to the finish.",
+      "text": "13 deals sit at Recommendation Made, one step from close."
+    },
+    {
+      "color": "var(--green)",
+      "title": "Pipeline quality is strong.",
+      "text": "Only 9% of 361 active deals lack a value. Nearly every open deal is a real, qualified opportunity."
+    },
+    {
+      "color": "var(--green)",
+      "title": "Revenue is on the board.",
+      "text": "$1.5M closed year-to-date across 19 deals."
+    }
+  ]
+}

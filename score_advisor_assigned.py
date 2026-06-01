@@ -6,17 +6,24 @@ from pathlib import Path
 from html import escape
 from datetime import datetime, timezone, timedelta
 
-# Dashboard timestamps display in EST (fixed UTC-5, no DST shift) per team convention.
-EST = timezone(timedelta(hours=-5))
+# Dashboard timestamps display in New York wall-clock time (DST-aware: EST winter, EDT summer).
+def eastern_now():
+    u = datetime.now(timezone.utc)
+    mar8 = datetime(u.year, 3, 8, tzinfo=timezone.utc)
+    dst_start = (mar8 + timedelta(days=(6 - mar8.weekday()) % 7)).replace(hour=7)
+    nov1 = datetime(u.year, 11, 1, tzinfo=timezone.utc)
+    dst_end = (nov1 + timedelta(days=(6 - nov1.weekday()) % 7)).replace(hour=6)
+    off, name = (-4, 'EDT') if dst_start <= u < dst_end else (-5, 'EST')
+    return u.astimezone(timezone(timedelta(hours=off))), name
 
+# Single source of truth for the scored page (CI runs THIS file from the repo root).
+# Always writes the deployed copy under docs/. Token comes from env (CI) or .env (local).
+_OUT = Path(__file__).parent / 'docs' / 'advisor_assigned_scored.html'
 TOKEN = os.environ.get('HUBSPOT_API_KEY', '').strip().replace('﻿', '')
-if TOKEN:
-    _OUT = Path(__file__).parent / 'docs' / 'advisor_assigned_scored.html'  # deployed copy (CI)
-else:
+if not TOKEN:
     _env_file = Path(r'C:\Users\Anisha Mittal\masterworks-events\.env').read_text()
-    TOKEN = next(l.split('=',1)[1].strip() for l in _env_file.splitlines() if 'HUBSPOT_API_KEY' in l)
-    TOKEN = TOKEN.replace('﻿','').strip('"').strip("'")
-    _OUT = Path(r'C:\Users\Anisha Mittal\Documents\advisory\pipeline_management\advisor_assigned_scored.html')
+    TOKEN = next(l.split('=', 1)[1].strip() for l in _env_file.splitlines() if 'HUBSPOT_API_KEY' in l)
+    TOKEN = TOKEN.replace('﻿', '').strip('"').strip("'")
 HEADERS = {'Authorization': f'Bearer {TOKEN}', 'Content-Type': 'application/json'}
 PORTAL = '5454671'
 
@@ -271,7 +278,8 @@ for r in rows:
   <td>{hs_btn}</td>
 </tr>'''
 
-now = datetime.now(EST).strftime('%B %d, %Y %H:%M') + ' EST'
+_now_e, _now_tz = eastern_now()
+now = _now_e.strftime('%B %d, %Y %H:%M') + ' ' + _now_tz
 owners_sorted = sorted(owner_counts.keys())
 
 html = f'''<!DOCTYPE html>

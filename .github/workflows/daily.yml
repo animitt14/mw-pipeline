@@ -1,12 +1,17 @@
 name: Rebuild Pipeline
 
 on:
-  # Times are fixed EST (UTC-5) year-round — GitHub cron is UTC and does NOT
-  # observe daylight saving, so 13/17/21 UTC = 8 AM / 12 PM / 4 PM EST always.
+  # We want 8 AM / 12 PM / 4 PM *New York wall-clock* year-round. GitHub cron is
+  # UTC-only and ignores DST, so we fire at BOTH seasons' UTC times (EST=UTC-5,
+  # EDT=UTC-4) and the "Gate" step below skips any run whose NY hour isn't 8/12/16.
+  # Net effect: exactly three real runs per weekday at 8/12/4 ET in every season.
   schedule:
-    - cron: '0 13 * * 1-5'   # 8 AM EST Mon–Fri
-    - cron: '0 17 * * 1-5'   # 12 PM EST Mon–Fri
-    - cron: '0 21 * * 1-5'   # 4 PM EST Mon–Fri
+    - cron: '0 12 * * 1-5'   # 8 AM EDT  (summer)
+    - cron: '0 13 * * 1-5'   # 8 AM EST  (winter)
+    - cron: '0 16 * * 1-5'   # 12 PM EDT (summer)
+    - cron: '0 17 * * 1-5'   # 12 PM EST (winter)
+    - cron: '0 20 * * 1-5'   # 4 PM EDT  (summer)
+    - cron: '0 21 * * 1-5'   # 4 PM EST  (winter)
   workflow_dispatch:
 
 jobs:
@@ -15,29 +20,48 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Gate to 8/12/4 ET
+        id: gate
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"; echo "Manual run — proceeding."; exit 0
+          fi
+          H=$(TZ=America/New_York date +%H)
+          if [ "$H" = "08" ] || [ "$H" = "12" ] || [ "$H" = "16" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"; echo "ET hour $H — proceeding."
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"; echo "ET hour $H not 08/12/16 — skipping."
+          fi
+
       - uses: actions/checkout@v4
+        if: steps.gate.outputs.run == 'true'
 
       - uses: actions/setup-python@v5
+        if: steps.gate.outputs.run == 'true'
         with:
           python-version: '3.12'
 
       - name: Install dependencies
+        if: steps.gate.outputs.run == 'true'
         run: pip install requests
 
       - name: Generate pipeline HTML
+        if: steps.gate.outputs.run == 'true'
         env:
           HUBSPOT_API_KEY: ${{ secrets.HUBSPOT_API_KEY }}
         run: python generate_pipeline.py
 
       - name: Generate scored HTML
+        if: steps.gate.outputs.run == 'true'
         env:
           HUBSPOT_API_KEY: ${{ secrets.HUBSPOT_API_KEY }}
         run: python score_advisor_assigned.py
 
       - name: Commit and push
+        if: steps.gate.outputs.run == 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/ velocity_snapshots.json
-          git diff --cached --quiet || git commit -m "rebuild $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git add docs/ weekly_summary.json
+          git diff --cached --quiet || git commit -m "rebuild $(TZ=America/New_York date +'%Y-%m-%d %H:%M %Z')"
           git push
