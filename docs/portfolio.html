@@ -77,7 +77,7 @@ table.port thead th.ctr{text-align:center;}
 <div class="port-wrap">
   <div class="hdr" style="margin-bottom:14px">
     <div><h1>Masterworks Collection &mdash; All Offerings</h1>
-    <p style="font-size:8px;color:var(--text3);margin-top:2px;letter-spacing:.03em">534 offerings &middot; sourced from Redshift &middot; Jun 2026 &middot; Appraisals as of 3/31/26</p></div>
+    <p style="font-size:10px;color:var(--text3);margin-top:2px;letter-spacing:.03em">534 offerings &middot; sourced from Redshift &middot; Jun 2026 &middot; Appraisals as of 3/31/26</p></div>
   </div>
   <div class="port-tabs" id="portTabs">
     <button class="port-tab active" onclick="switchPortTab('paintings')">Paintings</button>
@@ -112,18 +112,16 @@ table.port thead th.ctr{text-align:center;}
   <div class="port-tbl-wrap">
     <table class="port" id="tbl">
       <thead><tr>
-        <th onclick="sort(0)">Artist</th>
-        <th onclick="sort(1)">Title</th>
-        <th onclick="sort(2)" class="ctr">Gender</th>
-        <th onclick="sort(3)" class="ctr">Risk Category</th>
-        <th onclick="sort(4)" class="ctr">Offering Date</th>
-        <th onclick="sort(5)" class="ctr">IPO Value</th>
-        <th onclick="sort(6)" class="ctr">Status</th>
-        <th onclick="sort(7)" class="ctr">Days Held</th>
-        <th onclick="sort(8)">Appraised Value</th>
-        <th onclick="sort(9)" class="ctr">Sale Price</th>
-        <th onclick="sort(10)" class="ctr">Net Return</th>
-        <th onclick="sort(11)" class="ctr">IRR</th>
+        <th data-c="0" onclick="sort(0)">Artist</th>
+        <th data-c="1" onclick="sort(1)">Title</th>
+        <th data-c="4" onclick="sort(4)" class="ctr">Offering Date</th>
+        <th data-c="5" onclick="sort(5)" class="ctr">IPO Value</th>
+        <th data-c="6" onclick="sort(6)" class="ctr">Status</th>
+        <th data-c="7" onclick="sort(7)" class="ctr">Days Held</th>
+        <th data-c="8" onclick="sort(8)">Appraised Value</th>
+        <th data-c="9" onclick="sort(9)" class="ctr">Sale Price</th>
+        <th data-c="10" onclick="sort(10)" class="ctr">Net Return</th>
+        <th data-c="11" onclick="sort(11)" class="ctr">IRR</th>
       </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -158,9 +156,8 @@ table.port thead th.ctr{text-align:center;}
         <th onclick="asort(7)" class="ctr">Closed</th>
         <th onclick="asort(8)" class="ctr">Exited</th>
         <th onclick="asort(9)" class="ctr">Total IPO Value</th>
-        <th onclick="asort(10)" class="ctr">Total Appraised</th>
-        <th onclick="asort(11)" class="ctr">Avg Net Return</th>
-        <th onclick="asort(12)" class="ctr">Avg IRR</th>
+        <th onclick="asort(10)" class="ctr">Avg Net Return</th>
+        <th onclick="asort(11)" class="ctr">Avg IRR</th>
       </tr></thead>
       <tbody id="atbody"></tbody>
     </table>
@@ -755,8 +752,6 @@ function render(){
     return `<tr>
       <td class="artist">${r[0]||''}</td>
       <td class="title" title="${r[1]||''}">${r[1]||''}</td>
-      <td class="ctr">${r[2]==='Male'?'M':r[2]==='Female'?'F':r[2]||''}</td>
-      <td class="ctr">${r[3]?`<span class="risk-badge ${rc}">${r[3]}</span>`:''}</td>
       <td class="ctr">${r[4]||''}</td>
       <td class="ctr">${fmt$(r[5])}</td>
       <td class="ctr">${r[6]?`<span class="badge-status ${sc}">${r[6]}</span>`:''}</td>
@@ -817,11 +812,11 @@ function renderArtists(){
   if(q) rows=rows.filter(r=>r.artist.toLowerCase().includes(q));
   if(fr) rows=rows.filter(r=>r.risk===fr);
   if(aSortCol>=0){
-    const keys=['artist','gender','risk','repAppre','sharpe','works','active','closed','exited','totalIpo','totalAppr','avgRet','avgIrr'];
+    const keys=['artist','gender','risk','repAppre','sharpe','works','active','closed','exited','totalIpo','avgRet','avgIrr'];
     rows.sort((a,b)=>{
       let av,bv;
-      if(aSortCol===11){av=a.retCount?a.retSum/a.retCount:null;bv=b.retCount?b.retSum/b.retCount:null;}
-      else if(aSortCol===12){av=a.irrCount?a.irrSum/a.irrCount:null;bv=b.irrCount?b.irrSum/b.irrCount:null;}
+      if(aSortCol===10){av=a.retCount?a.retSum/a.retCount:null;bv=b.retCount?b.retSum/b.retCount:null;}
+      else if(aSortCol===11){av=a.irrCount?a.irrSum/a.irrCount:null;bv=b.irrCount?b.irrSum/b.irrCount:null;}
       else{const k=keys[aSortCol];av=a[k];bv=b[k];}
       if(av==null&&bv==null)return 0; if(av==null)return 1; if(bv==null)return -1;
       if(typeof av==='number'&&typeof bv==='number')return aSortDir*(av-bv);
@@ -840,11 +835,10 @@ function renderArtists(){
       <td class="ctr">${r.repAppre!=null?Math.round(parseFloat(r.repAppre)*100)+'%':''}</td>
       <td class="ctr">${r.sharpe!=null?fmtN(r.sharpe):''}</td>
       <td class="ctr">${r.works}</td>
-      <td class="ctr" style="color:${r.active?'#34d399':'var(--text3)'}">${r.active||''}</td>
-      <td class="ctr" style="color:${r.closed?'#6366f1':'var(--text3)'}">${r.closed||''}</td>
-      <td class="ctr" style="color:${r.exited?'#d97706':'var(--text3)'}">${r.exited||''}</td>
+      <td class="ctr" style="color:${r.active?'#15803d':'var(--text3)'};font-weight:500">${r.active||''}</td>
+      <td class="ctr" style="color:${r.closed?'#4338ca':'var(--text3)'};font-weight:500">${r.closed||''}</td>
+      <td class="ctr" style="color:${r.exited?'#b45309':'var(--text3)'};font-weight:500">${r.exited||''}</td>
       <td class="ctr">${fmt$(r.totalIpo)}</td>
-      <td class="ctr">${r.apprCount?fmt$(r.totalAppr):''}</td>
       <td class="ctr" style="color:${avgRet!=null?(avgRet>0?'#16a34a':'#dc2626'):''}">${avgRet!=null?fmtPct(avgRet):''}</td>
       <td class="ctr">${avgIrr!=null?avgIrr.toFixed(1)+'%':''}</td>
     </tr>`;
@@ -861,10 +855,10 @@ function asort(col){
 }
 
 function sort(col){
-  if(sortCol===col)sortDir*=-1; else{sortCol=col;sortDir=col>=6?-1:1;}
-  document.querySelectorAll('table.port thead th').forEach((th,i)=>{
+  if(sortCol===col)sortDir*=-1; else{sortCol=col;sortDir=col>=4?-1:1;}
+  document.querySelectorAll('#tbl thead th').forEach(th=>{
     th.classList.remove('asc','desc');
-    if(i===col)th.classList.add(sortDir===1?'asc':'desc');
+    if(+th.dataset.c===col)th.classList.add(sortDir===1?'asc':'desc');
   });
   render();
 }
