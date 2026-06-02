@@ -717,7 +717,7 @@ function render(){
       <td class="ctr">${fmt$(r[5])}</td>
       <td class="ctr">${r[6]?`<span class="badge-status ${sc}">${r[6]}</span>`:''}</td>
       <td class="ctr">${r[7]!=null?r[7]:''}</td>
-      <td class="ctr">${r[8]!=null?fmt$(r[8])+(r[5]!=null&&r[5]>0?(()=>{const pct=((r[8]-r[5])/r[5]*100);const up=pct>=0;return' <span style="color:'+(up?'#34d399':'#f87171')+';font-size:11px">'+(up?'&#9650;':'&#9660;')+' '+(up?'+':'')+pct.toFixed(0)+'%</span>';})():''):''}</td>
+      <td class="ctr">${r[8]!=null?fmt$(r[8])+(r[5]!=null&&r[5]>0?(()=>{const pct=((r[8]-r[5])/r[5]*100);if(Math.round(pct)===0)return'';const up=pct>0;return' <span style="color:'+(up?'#34d399':'#f87171')+';font-size:11px">'+(up?'&#9650;':'&#9660;')+' '+(up?'+':'')+pct.toFixed(0)+'%</span>';})():''):''}</td>
       <td class="ctr">${r[9]||''}</td>
       <td class="ctr">${r[10]!=null?Math.round(parseFloat(r[10])*100)+'%':''}</td>
       <td class="ctr">${r[11]!=null?fmtN(r[11]):''}</td>
