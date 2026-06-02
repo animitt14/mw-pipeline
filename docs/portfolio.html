@@ -90,10 +90,8 @@ table.port tbody td.num{text-align:right;font-variant-numeric:tabular-nums;}
       <option value="Aggressive">Aggressive</option>
       <option value="Speculative">Speculative</option>
     </select>
-    <select class="port-filter" id="fDesig" onchange="render()">
-      <option value="">All designations</option>
-      <option value="CORE">Core</option>
-      <option value="NON_CORE">Non-Core</option>
+    <select class="port-filter" id="fArtist" onchange="render()">
+      <option value="">All artists</option>
     </select>
     <span class="port-count" id="cnt"></span>
   </div>
@@ -630,6 +628,13 @@ const DATA = [
 
 let sortCol=-1, sortDir=1;
 
+// Populate artist dropdown
+(function(){
+  const artists=[...new Set(DATA.map(r=>r[0]).filter(Boolean))].sort();
+  const sel=document.getElementById('fArtist');
+  artists.forEach(a=>{const o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o);});
+})();
+
 const RISK_CLASS={'Conservative':'rc-cons','Mod. Conservative':'rc-mcons','Moderate':'rc-mod',
   'Mod. Aggressive':'rc-magg','Aggressive':'rc-agg','Speculative':'rc-spec'};
 const STATUS_CLASS={'Active':'st-active','Exited':'st-exited','Closed':'st-closed'};
@@ -643,13 +648,13 @@ function render(){
   const q=(document.getElementById('srch').value||'').toLowerCase();
   const fs=document.getElementById('fStatus').value;
   const fr=document.getElementById('fRisk').value;
-  const fd=document.getElementById('fDesig').value;
+  const fa=document.getElementById('fArtist').value;
 
   let rows=[...DATA];
   if(q) rows=rows.filter(r=>(r[0]||'').toLowerCase().includes(q)||(r[1]||'').toLowerCase().includes(q));
   if(fs) rows=rows.filter(r=>r[7]===fs);
   if(fr) rows=rows.filter(r=>r[3]===fr);
-  if(fd) rows=rows.filter(r=>r[4]===fd);
+  if(fa) rows=rows.filter(r=>r[0]===fa);
 
   if(sortCol>=0){
     rows.sort((a,b)=>{
