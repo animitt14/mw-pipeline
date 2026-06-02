@@ -27,17 +27,17 @@ table.port tbody td{padding:9px 12px;color:var(--text2,#94a3b8);vertical-align:m
 table.port tbody td.artist{color:var(--text,#f1f5f9);font-weight:500;}
 table.port tbody td.title{color:var(--text,#f1f5f9);max-width:220px;overflow:hidden;text-overflow:ellipsis;}
 table.port tbody td.num{text-align:right;font-variant-numeric:tabular-nums;}
-.badge-status{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.03em;}
-.st-active{background:rgba(22,163,74,.18);color:#bbf7d0;}
-.st-exited{background:rgba(217,119,6,.18);color:#fde68a;}
-.st-closed{background:rgba(99,102,241,.18);color:#c7d2fe;}
-.risk-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;}
-.rc-cons{background:rgba(59,130,246,.15);color:#bfdbfe;}
-.rc-mcons{background:rgba(56,189,248,.15);color:#bae6fd;}
-.rc-mod{background:rgba(52,211,153,.15);color:#a7f3d0;}
-.rc-magg{background:rgba(251,191,36,.15);color:#fde68a;}
-.rc-agg{background:rgba(251,146,60,.15);color:#fed7aa;}
-.rc-spec{background:rgba(239,68,68,.15);color:#fecaca;}
+.badge-status{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.03em;color:#000;}
+.st-active{background:rgba(22,163,74,.35);}
+.st-exited{background:rgba(217,119,6,.35);}
+.st-closed{background:rgba(99,102,241,.35);}
+.risk-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;color:#000;}
+.rc-cons{background:rgba(59,130,246,.35);}
+.rc-mcons{background:rgba(56,189,248,.35);}
+.rc-mod{background:rgba(52,211,153,.35);}
+.rc-magg{background:rgba(251,191,36,.35);}
+.rc-agg{background:rgba(251,146,60,.35);}
+.rc-spec{background:rgba(239,68,68,.35);}
 .desig-core{color:#c4b5fd;font-size:11px;font-weight:500;}
 .desig-noncore{color:#64748b;font-size:11px;}
 </style>
@@ -685,9 +685,9 @@ function render(){
       <td class="num">${fmt$(r[9])}</td>
       <td>${r[10]||''}</td>
       <td class="num">${fmtPct(r[11])}</td>
-      <td class="num">${r[12]!=null?`<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:${r[12]>1?'rgba(22,163,74,.18)':r[12]>0?'rgba(217,119,6,.18)':'rgba(239,68,68,.18)'};color:${r[12]>1?'#bbf7d0':r[12]>0?'#fde68a':'#fecaca'}">${fmtN(r[12])}</span>`:''}</td>
+      <td class="num">${r[12]!=null?`<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;color:#000;background:${r[12]>1?'rgba(22,163,74,.35)':r[12]>0?'rgba(251,191,36,.35)':'rgba(239,68,68,.35)'}">${fmtN(r[12])}</span>`:''}</td>
       <td class="num">${fmt$(r[13])}</td>
-      <td class="num" style="color:${r[14]!=null?(r[14]>0?'#86efac':'#fca5a5'):''}">${fmtPct(r[14])}</td>
+      <td class="num" style="color:${r[14]!=null?(r[14]>0?'#4ade80':'#f87171'):''}">${fmtPct(r[14])}</td>
       <td class="num">${fmtN(r[15],1)}</td>
     </tr>`;
   }).join('');
