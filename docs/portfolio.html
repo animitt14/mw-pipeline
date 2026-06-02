@@ -96,6 +96,7 @@ table.port thead th.ctr{text-align:center;}
     <select class="port-filter" id="fArtist" onchange="render()">
       <option value="">All artists</option>
     </select>
+    <button class="port-filter" onclick="resetFilters()" style="margin-left:4px;cursor:pointer;">Reset</button>
     <span class="port-count" id="cnt"></span>
   </div>
 
@@ -112,7 +113,7 @@ table.port thead th.ctr{text-align:center;}
         <th onclick="sort(7)" class="ctr">Days Held</th>
         <th onclick="sort(8)" class="ctr">Appraised Value</th>
         <th onclick="sort(9)" class="ctr">Appraisal Date</th>
-        <th onclick="sort(10)" class="ctr">Repeat Sales Appre.</th>
+        <th onclick="sort(10)" class="ctr">Repeat Sales %</th>
         <th onclick="sort(11)" class="ctr">Sharpe Ratio</th>
         <th onclick="sort(12)" class="ctr">Sale Price</th>
         <th onclick="sort(13)" class="ctr">Net Return</th>
@@ -716,7 +717,7 @@ function render(){
       <td class="ctr">${fmt$(r[5])}</td>
       <td class="ctr">${r[6]?`<span class="badge-status ${sc}">${r[6]}</span>`:''}</td>
       <td class="ctr">${r[7]!=null?r[7]:''}</td>
-      <td class="ctr">${r[8]!=null?fmt$(r[8])+(r[5]!=null?(r[8]>r[5]?' <span style="color:#4ade80;font-size:11px">&#9650;</span>':r[8]<r[5]?' <span style="color:#f87171;font-size:11px">&#9660;</span>':''):''):''}</td>
+      <td class="ctr">${r[8]!=null?fmt$(r[8])+(r[5]!=null&&r[5]>0?(()=>{const pct=((r[8]-r[5])/r[5]*100);const up=pct>=0;return' <span style="color:'+(up?'#86efac':'#f87171')+';font-size:11px">'+(up?'&#9650;':'&#9660;')+' '+(up?'+':'')+pct.toFixed(0)+'%</span>';})():''):''}</td>
       <td class="ctr">${r[9]||''}</td>
       <td class="ctr">${r[10]!=null?Math.round(parseFloat(r[10])*100)+'%':''}</td>
       <td class="ctr">${r[11]!=null?fmtN(r[11]):''}</td>
@@ -725,6 +726,16 @@ function render(){
       <td class="ctr">${r[14]!=null?parseFloat(r[14]).toFixed(1)+'%':''}</td>
     </tr>`;
   }).join('');
+}
+
+function resetFilters(){
+  document.getElementById('srch').value='';
+  document.getElementById('fStatus').value='';
+  document.getElementById('fRisk').value='';
+  document.getElementById('fArtist').value='';
+  sortCol=-1; sortDir=1;
+  document.querySelectorAll('table.port thead th').forEach(th=>th.classList.remove('asc','desc'));
+  render();
 }
 
 function sort(col){
