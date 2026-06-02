@@ -685,7 +685,7 @@ function render(){
       <td class="num">${fmt$(r[9])}</td>
       <td>${r[10]||''}</td>
       <td class="num">${fmtPct(r[11])}</td>
-      <td class="num">${r[12]!=null?`<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;color:#000;background:${r[12]>1?'rgba(22,163,74,.35)':r[12]>0?'rgba(251,191,36,.35)':'rgba(239,68,68,.35)'}">${fmtN(r[12])}</span>`:''}</td>
+      <td class="num">${r[12]!=null?fmtN(r[12]):''}</td>
       <td class="num">${fmt$(r[13])}</td>
       <td class="num" style="color:${r[14]!=null?(r[14]>0?'#4ade80':'#f87171'):''}">${fmtPct(r[14])}</td>
       <td class="num">${fmtN(r[15],1)}</td>
