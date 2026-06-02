@@ -710,7 +710,7 @@ function render(){
     return `<tr>
       <td class="artist">${r[0]||''}</td>
       <td class="title" title="${r[1]||''}">${r[1]||''}</td>
-      <td class="ctr">${r[2]||''}</td>
+      <td class="ctr">${r[2]==='Male'?'M':r[2]==='Female'?'F':r[2]||''}</td>
       <td class="ctr">${r[3]?`<span class="risk-badge ${rc}">${r[3]}</span>`:''}</td>
       <td class="ctr">${r[4]||''}</td>
       <td class="ctr">${fmt$(r[5])}</td>
