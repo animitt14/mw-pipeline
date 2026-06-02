@@ -22,7 +22,8 @@ table.port thead th:hover{color:var(--text,#f1f5f9);}
 table.port thead th.asc::after{content:" ↑";color:#7c3aed;}
 table.port thead th.desc::after{content:" ↓";color:#7c3aed;}
 table.port tbody tr{border-bottom:1px solid var(--border,#2e3650);transition:background .1s;}
-table.port tbody tr:hover{background:rgba(124,58,237,.06);}
+table.port tbody tr:nth-child(even){background:rgba(255,255,255,.03);}
+table.port tbody tr:hover{background:rgba(124,58,237,.08);}
 table.port tbody td{padding:9px 12px;color:var(--text2,#94a3b8);vertical-align:middle;}
 table.port tbody td.artist{color:var(--text,#f1f5f9);font-weight:500;}
 table.port tbody td.title{color:var(--text,#f1f5f9);max-width:220px;overflow:hidden;text-overflow:ellipsis;}
