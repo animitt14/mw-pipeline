@@ -27,6 +27,8 @@ table.port tbody td{padding:9px 12px;color:var(--text2,#94a3b8);vertical-align:m
 table.port tbody td.artist{color:var(--text,#f1f5f9);font-weight:500;}
 table.port tbody td.title{color:var(--text,#f1f5f9);max-width:220px;overflow:hidden;text-overflow:ellipsis;}
 table.port tbody td.num{text-align:right;font-variant-numeric:tabular-nums;}
+table.port tbody td.ctr{text-align:center;}
+table.port thead th.ctr{text-align:center;}
 .badge-status{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.03em;color:#2d3748;}
 .st-active{background:rgba(22,163,74,.35);}
 .st-exited{background:rgba(217,119,6,.35);}
@@ -101,20 +103,20 @@ table.port tbody td.num{text-align:right;font-variant-numeric:tabular-nums;}
       <thead><tr>
         <th onclick="sort(0)">Artist</th>
         <th onclick="sort(1)">Title</th>
-        <th onclick="sort(2)">Gender</th>
-        <th onclick="sort(3)">Risk Category</th>
-        <th onclick="sort(4)">Desig.</th>
-        <th onclick="sort(5)">Offering Date</th>
-        <th onclick="sort(6)" style="text-align:right">IPO Value</th>
-        <th onclick="sort(7)">Status</th>
-        <th onclick="sort(8)" style="text-align:right">Days Held</th>
-        <th onclick="sort(9)" style="text-align:right">Appraised Value</th>
-        <th onclick="sort(10)">Appraisal Date</th>
-        <th onclick="sort(11)" style="text-align:right">Repeat Sales Appre.</th>
-        <th onclick="sort(12)" style="text-align:right">Sharpe Ratio</th>
-        <th onclick="sort(13)" style="text-align:right">Sale Price</th>
-        <th onclick="sort(14)" style="text-align:right">Net Return</th>
-        <th onclick="sort(15)" style="text-align:right">IRR</th>
+        <th onclick="sort(2)" class="ctr">Gender</th>
+        <th onclick="sort(3)" class="ctr">Risk Category</th>
+        <th onclick="sort(4)" class="ctr">Desig.</th>
+        <th onclick="sort(5)" class="ctr">Offering Date</th>
+        <th onclick="sort(6)" class="ctr">IPO Value</th>
+        <th onclick="sort(7)" class="ctr">Status</th>
+        <th onclick="sort(8)" class="ctr">Days Held</th>
+        <th onclick="sort(9)" class="ctr">Appraised Value</th>
+        <th onclick="sort(10)" class="ctr">Appraisal Date</th>
+        <th onclick="sort(11)" class="ctr">Repeat Sales Appre.</th>
+        <th onclick="sort(12)" class="ctr">Sharpe Ratio</th>
+        <th onclick="sort(13)" class="ctr">Sale Price</th>
+        <th onclick="sort(14)" class="ctr">Net Return</th>
+        <th onclick="sort(15)" class="ctr">IRR</th>
       </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -675,20 +677,20 @@ function render(){
     return `<tr>
       <td class="artist">${r[0]||''}</td>
       <td class="title" title="${r[1]||''}">${r[1]||''}</td>
-      <td>${r[2]||''}</td>
-      <td>${r[3]?`<span class="risk-badge ${rc}">${r[3]}</span>`:''}</td>
-      <td class="${dc}">${r[4]||''}</td>
-      <td>${r[5]||''}</td>
-      <td class="num">${fmt$(r[6])}</td>
-      <td>${r[7]?`<span class="badge-status ${sc}">${r[7]}</span>`:''}</td>
-      <td class="num">${r[8]!=null?r[8]:''}</td>
-      <td class="num">${fmt$(r[9])}</td>
-      <td>${r[10]||''}</td>
-      <td class="num">${fmtPct(r[11])}</td>
-      <td class="num">${r[12]!=null?fmtN(r[12]):''}</td>
-      <td class="num">${fmt$(r[13])}</td>
-      <td class="num" style="color:${r[14]!=null?(r[14]>0?'#4ade80':'#f87171'):''}">${fmtPct(r[14])}</td>
-      <td class="num">${fmtN(r[15],1)}</td>
+      <td class="ctr">${r[2]||''}</td>
+      <td class="ctr">${r[3]?`<span class="risk-badge ${rc}">${r[3]}</span>`:''}</td>
+      <td class="ctr ${dc}">${r[4]||''}</td>
+      <td class="ctr">${r[5]||''}</td>
+      <td class="ctr">${fmt$(r[6])}</td>
+      <td class="ctr">${r[7]?`<span class="badge-status ${sc}">${r[7]}</span>`:''}</td>
+      <td class="ctr">${r[8]!=null?r[8]:''}</td>
+      <td class="ctr">${fmt$(r[9])}</td>
+      <td class="ctr">${r[10]||''}</td>
+      <td class="ctr">${fmtPct(r[11])}</td>
+      <td class="ctr">${r[12]!=null?fmtN(r[12]):''}</td>
+      <td class="ctr">${fmt$(r[13])}</td>
+      <td class="ctr" style="color:${r[14]!=null?(r[14]>0?'#4ade80':'#f87171'):''}">${fmtPct(r[14])}</td>
+      <td class="ctr">${fmtN(r[15],1)}</td>
     </tr>`;
   }).join('');
 }
