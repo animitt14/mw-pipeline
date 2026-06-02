@@ -19,8 +19,8 @@ table.port thead th{background:#1a2035;color:#cbd5e1;font-size:10px;font-weight:
   text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;text-align:left;
   cursor:pointer;user-select:none;position:sticky;top:0;z-index:2;}
 table.port thead th:hover{color:var(--text,#f1f5f9);}
-table.port thead th.asc::after{content:" 91";color:#7c3aed;}
-table.port thead th.desc::after{content:" 93";color:#7c3aed;}
+table.port thead th.asc::after{content:" \2191";color:#7c3aed;}
+table.port thead th.desc::after{content:" \2193";color:#7c3aed;}
 table.port tbody tr{border-bottom:1px solid var(--border,#2e3650);transition:background .1s;}
 table.port tbody tr:nth-child(even){background:rgba(255,255,255,.03);}
 table.port tbody tr:hover{background:rgba(124,58,237,.08);}
@@ -45,8 +45,8 @@ table.port thead th.ctr{text-align:center;}
 .desig-noncore{color:#64748b;font-size:11px;}
 .port-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--border,#2e3650);padding-bottom:0;}
 .port-tab{background:none;border:none;color:var(--text3,#64748b);font-family:inherit;font-size:13px;font-weight:500;padding:8px 18px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
-.port-tab:hover{color:var(--text,#f1f5f9);}
-.port-tab.active{color:#f1f5f9;border-bottom-color:#7c3aed;}
+.port-tab:hover{color:var(--text,#0e1422);}
+.port-tab.active{color:#7c3aed;border-bottom-color:#7c3aed;}
 </style>
 </head>
 <body>
@@ -151,16 +151,16 @@ table.port thead th.ctr{text-align:center;}
         <th onclick="asort(0)">Artist</th>
         <th onclick="asort(1)" class="ctr">Gender</th>
         <th onclick="asort(2)" class="ctr">Risk Category</th>
-        <th onclick="asort(3)" class="ctr">Works</th>
-        <th onclick="asort(4)" class="ctr">Active</th>
-        <th onclick="asort(5)" class="ctr">Closed</th>
-        <th onclick="asort(6)" class="ctr">Exited</th>
-        <th onclick="asort(7)" class="ctr">Total IPO Value</th>
-        <th onclick="asort(8)" class="ctr">Total Appraised</th>
-        <th onclick="asort(9)" class="ctr">Avg Net Return</th>
-        <th onclick="asort(10)" class="ctr">Avg IRR</th>
-        <th onclick="asort(11)" class="ctr">Repeat Sales %</th>
-        <th onclick="asort(12)" class="ctr">Sharpe Ratio</th>
+        <th onclick="asort(3)" class="ctr">Repeat Sales %</th>
+        <th onclick="asort(4)" class="ctr">Sharpe Ratio</th>
+        <th onclick="asort(5)" class="ctr">Works</th>
+        <th onclick="asort(6)" class="ctr">Active</th>
+        <th onclick="asort(7)" class="ctr">Closed</th>
+        <th onclick="asort(8)" class="ctr">Exited</th>
+        <th onclick="asort(9)" class="ctr">Total IPO Value</th>
+        <th onclick="asort(10)" class="ctr">Total Appraised</th>
+        <th onclick="asort(11)" class="ctr">Avg Net Return</th>
+        <th onclick="asort(12)" class="ctr">Avg IRR</th>
       </tr></thead>
       <tbody id="atbody"></tbody>
     </table>
@@ -817,11 +817,11 @@ function renderArtists(){
   if(q) rows=rows.filter(r=>r.artist.toLowerCase().includes(q));
   if(fr) rows=rows.filter(r=>r.risk===fr);
   if(aSortCol>=0){
-    const keys=['artist','gender','risk','works','active','closed','exited','totalIpo','totalAppr','avgRet','avgIrr','repAppre','sharpe'];
+    const keys=['artist','gender','risk','repAppre','sharpe','works','active','closed','exited','totalIpo','totalAppr','avgRet','avgIrr'];
     rows.sort((a,b)=>{
       let av,bv;
-      if(aSortCol===9){av=a.retCount?a.retSum/a.retCount:null;bv=b.retCount?b.retSum/b.retCount:null;}
-      else if(aSortCol===10){av=a.irrCount?a.irrSum/a.irrCount:null;bv=b.irrCount?b.irrSum/b.irrCount:null;}
+      if(aSortCol===11){av=a.retCount?a.retSum/a.retCount:null;bv=b.retCount?b.retSum/b.retCount:null;}
+      else if(aSortCol===12){av=a.irrCount?a.irrSum/a.irrCount:null;bv=b.irrCount?b.irrSum/b.irrCount:null;}
       else{const k=keys[aSortCol];av=a[k];bv=b[k];}
       if(av==null&&bv==null)return 0; if(av==null)return 1; if(bv==null)return -1;
       if(typeof av==='number'&&typeof bv==='number')return aSortDir*(av-bv);
@@ -834,19 +834,19 @@ function renderArtists(){
     const avgRet=r.retCount?r.retSum/r.retCount:null;
     const avgIrr=r.irrCount?r.irrSum/r.irrCount:null;
     return `<tr>
-      <td style="font-weight:500;color:var(--text,#f1f5f9)">${r.artist}</td>
+      <td style="font-weight:500;color:var(--text,#0e1422)">${r.artist}</td>
       <td class="ctr">${r.gender==='Male'?'M':r.gender==='Female'?'F':r.gender||''}</td>
       <td class="ctr">${r.risk?`<span class="risk-badge ${rc}">${r.risk}</span>`:''}</td>
-      <td class="ctr">${r.works}</td>
-      <td class="ctr" style="color:${r.active?'#34d399':'var(--text3)'}">${r.active||''}</td>
-      <td class="ctr" style="color:${r.closed?'#a5b4fc':'var(--text3)'}">${r.closed||''}</td>
-      <td class="ctr" style="color:${r.exited?'#fbbf24':'var(--text3)'}">${r.exited||''}</td>
-      <td class="ctr">${fmt$(r.totalIpo)}</td>
-      <td class="ctr">${r.apprCount?fmt$(r.totalAppr):''}</td>
-      <td class="ctr" style="color:${avgRet!=null?(avgRet>0?'#34d399':'#f87171'):''}">${avgRet!=null?fmtPct(avgRet):''}</td>
-      <td class="ctr">${avgIrr!=null?avgIrr.toFixed(1)+'%':''}</td>
       <td class="ctr">${r.repAppre!=null?Math.round(parseFloat(r.repAppre)*100)+'%':''}</td>
       <td class="ctr">${r.sharpe!=null?fmtN(r.sharpe):''}</td>
+      <td class="ctr">${r.works}</td>
+      <td class="ctr" style="color:${r.active?'#34d399':'var(--text3)'}">${r.active||''}</td>
+      <td class="ctr" style="color:${r.closed?'#6366f1':'var(--text3)'}">${r.closed||''}</td>
+      <td class="ctr" style="color:${r.exited?'#d97706':'var(--text3)'}">${r.exited||''}</td>
+      <td class="ctr">${fmt$(r.totalIpo)}</td>
+      <td class="ctr">${r.apprCount?fmt$(r.totalAppr):''}</td>
+      <td class="ctr" style="color:${avgRet!=null?(avgRet>0?'#16a34a':'#dc2626'):''}">${avgRet!=null?fmtPct(avgRet):''}</td>
+      <td class="ctr">${avgIrr!=null?avgIrr.toFixed(1)+'%':''}</td>
     </tr>`;
   }).join('');
 }
