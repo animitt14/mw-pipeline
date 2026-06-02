@@ -152,6 +152,7 @@
   .zt thead th.num{text-align:right;}
   .zt tbody td{padding:8px 13px;border-bottom:1px solid #ededed;color:#333;}
   .zt tbody td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  .zt th.ctr,.zt td.ctr{text-align:center;}
   .zt tbody tr:nth-child(even){background:#faf9f7;}
   .zt tr.total td{font-weight:700;color:var(--ink);background:#eceae6;border-top:2px solid #cfcdc8;}
   .tier-mature{color:#1e2a44;font-style:italic;font-weight:600;}
@@ -294,22 +295,22 @@
     <div class="ztable-wrap">
       <table class="zt">
         <thead><tr>
-          <th>Artist</th><th class="num">Allocation</th><th class="num">Weight</th>
-          <th>Tier</th><th>Gender</th><th>Region</th>
+          <th>Artist</th><th class="num">Allocation</th><th class="ctr">Weight</th>
+          <th class="ctr">Tier</th><th class="ctr">Gender</th><th class="ctr">Region</th>
         </tr></thead>
         <tbody>
-          <tr><td>Jean-Michel Basquiat</td><td class="num">$28,000</td><td class="num">28.0%</td><td class="tier-mature">Mature</td><td>Male</td><td>Americas</td></tr>
-          <tr><td>Kerry James Marshall</td><td class="num">$14,000</td><td class="num">14.0%</td><td class="tier-established">Established</td><td>Male</td><td>Americas</td></tr>
-          <tr><td>Julie Mehretu</td><td class="num">$14,000</td><td class="num">14.0%</td><td class="tier-established">Established</td><td>Female</td><td>Africa</td></tr>
-          <tr><td>Alice Neel</td><td class="num">$14,000</td><td class="num">14.0%</td><td class="tier-established">Established</td><td>Female</td><td>Americas</td></tr>
-          <tr><td>Yayoi Kusama</td><td class="num">$6,000</td><td class="num">6.0%</td><td class="tier-mature">Mature</td><td>Female</td><td>Asia</td></tr>
-          <tr><td>Martin Wong</td><td class="num">$4,000</td><td class="num">4.0%</td><td class="tier-emerging">Emerging</td><td>Male</td><td>Americas</td></tr>
-          <tr><td>Matthew Wong</td><td class="num">$4,000</td><td class="num">4.0%</td><td class="tier-emerging">Emerging</td><td>Male</td><td>Asia</td></tr>
-          <tr><td>Sam Gilliam</td><td class="num">$4,000</td><td class="num">4.0%</td><td class="tier-emerging">Emerging</td><td>Male</td><td>Americas</td></tr>
-          <tr><td>Pat Steir</td><td class="num">$4,000</td><td class="num">4.0%</td><td class="tier-speculative">Speculative</td><td>Female</td><td>Americas</td></tr>
-          <tr><td>Simone Leigh</td><td class="num">$4,000</td><td class="num">4.0%</td><td class="tier-emerging">Emerging</td><td>Female</td><td>Americas</td></tr>
-          <tr><td>Cecily Brown</td><td class="num">$4,000</td><td class="num">4.0%</td><td class="tier-established">Established</td><td>Female</td><td>Europe</td></tr>
-          <tr class="total"><td>Total</td><td class="num">$100,000</td><td class="num">100.0%</td><td></td><td></td><td></td></tr>
+          <tr><td>Jean-Michel Basquiat</td><td class="num">$28,000</td><td class="ctr">28.0%</td><td class="ctr tier-mature">Mature</td><td class="ctr">Male</td><td class="ctr">Americas</td></tr>
+          <tr><td>Kerry James Marshall</td><td class="num">$14,000</td><td class="ctr">14.0%</td><td class="ctr tier-established">Established</td><td class="ctr">Male</td><td class="ctr">Americas</td></tr>
+          <tr><td>Julie Mehretu</td><td class="num">$14,000</td><td class="ctr">14.0%</td><td class="ctr tier-established">Established</td><td class="ctr">Female</td><td class="ctr">Africa</td></tr>
+          <tr><td>Alice Neel</td><td class="num">$14,000</td><td class="ctr">14.0%</td><td class="ctr tier-established">Established</td><td class="ctr">Female</td><td class="ctr">Americas</td></tr>
+          <tr><td>Yayoi Kusama</td><td class="num">$6,000</td><td class="ctr">6.0%</td><td class="ctr tier-mature">Mature</td><td class="ctr">Female</td><td class="ctr">Asia</td></tr>
+          <tr><td>Martin Wong</td><td class="num">$4,000</td><td class="ctr">4.0%</td><td class="ctr tier-emerging">Emerging</td><td class="ctr">Male</td><td class="ctr">Americas</td></tr>
+          <tr><td>Matthew Wong</td><td class="num">$4,000</td><td class="ctr">4.0%</td><td class="ctr tier-emerging">Emerging</td><td class="ctr">Male</td><td class="ctr">Asia</td></tr>
+          <tr><td>Sam Gilliam</td><td class="num">$4,000</td><td class="ctr">4.0%</td><td class="ctr tier-emerging">Emerging</td><td class="ctr">Male</td><td class="ctr">Americas</td></tr>
+          <tr><td>Pat Steir</td><td class="num">$4,000</td><td class="ctr">4.0%</td><td class="ctr tier-speculative">Speculative</td><td class="ctr">Female</td><td class="ctr">Americas</td></tr>
+          <tr><td>Simone Leigh</td><td class="num">$4,000</td><td class="ctr">4.0%</td><td class="ctr tier-emerging">Emerging</td><td class="ctr">Female</td><td class="ctr">Americas</td></tr>
+          <tr><td>Cecily Brown</td><td class="num">$4,000</td><td class="ctr">4.0%</td><td class="ctr tier-established">Established</td><td class="ctr">Female</td><td class="ctr">Europe</td></tr>
+          <tr class="total"><td>Total</td><td class="num">$100,000</td><td class="ctr">100.0%</td><td></td><td></td><td></td></tr>
         </tbody>
       </table>
     </div>
