@@ -718,7 +718,7 @@ function render(){
       <td class="ctr">${r[7]!=null?r[7]:''}</td>
       <td class="ctr">${r[8]!=null?fmt$(r[8])+(r[5]!=null?(r[8]>r[5]?' <span style="color:#4ade80;font-size:11px">&#9650;</span>':r[8]<r[5]?' <span style="color:#f87171;font-size:11px">&#9660;</span>':''):''):''}</td>
       <td class="ctr">${r[9]||''}</td>
-      <td class="ctr">${fmtPct(r[10])}</td>
+      <td class="ctr">${r[10]!=null?Math.round(parseFloat(r[10])*100)+'%':''}</td>
       <td class="ctr">${r[11]!=null?fmtN(r[11]):''}</td>
       <td class="ctr">${fmt$(r[12])}</td>
       <td class="ctr" style="color:${r[13]!=null?(r[13]>0?'#4ade80':'#f87171'):''}">${fmtPct(r[13])}</td>
