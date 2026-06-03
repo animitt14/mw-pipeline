@@ -1025,7 +1025,8 @@ function renderBundleCharts(mode, alloc){
         tooltip:{callbacks:{label:c=>c.label+': '+(useAlloc?c.parsed.toFixed(1)+'%':c.parsed)}}}}
     });
   };
-  donut('bcRisk',tally(5),{'Conservative':'#2e5cb8','Mod. Conservative':'#4a90d9','Moderate':'#37a26b','Mod. Aggressive':'#e3b341','Aggressive':'#e07b39','Speculative':'#d1495b'});
+  // Risk colors match the table badges exactly (badges are the same hues at 35% opacity)
+  donut('bcRisk',tally(5),{'Conservative':'#3b82f6','Mod. Conservative':'#38bdf8','Moderate':'#34d399','Mod. Aggressive':'#fbbf24','Aggressive':'#fb923c','Speculative':'#ef4444'});
   donut('bcGender',tally(6),{'Male':'#4a6fa5','Female':'#d98ab0'});
   donut('bcLiving',tally(7),{'Living':'#37a26b','Deceased':'#8a8f9c'});
   donut('bcRegion',tally(8),{'Americas':'#2e5cb8','Europe':'#37a26b','Asia':'#e07b39','Africa':'#d1495b'});
