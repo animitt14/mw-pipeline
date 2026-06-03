@@ -63,7 +63,6 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
 .csv-btn{background:var(--surface-2,#1e2535);border:1px solid var(--border,#2e3650);border-radius:7px;color:var(--text2,#4a5363);font-size:12px;padding:7px 12px;cursor:pointer;}
 .csv-btn:hover{border-color:#7c3aed;color:#7c3aed;}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 </head>
 <body>
 <div id="pw-gate"><div id="pw-box"><h2>MW PORTFOLIO CATALOG</h2>
@@ -95,10 +94,6 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
     <p style="font-size:10px;color:var(--text3);margin-top:2px;letter-spacing:.03em">534 offerings &middot; sourced from Redshift &middot; Jun 2026 &middot; Appraisals as of 3/31/26</p></div>
   </div>
   <div class="ov-kpis" id="ovKpis"></div>
-  <div class="ov-charts">
-    <div class="ov-chart-box"><div class="ov-chart-title">Portfolio Value by Risk Category</div><div class="ov-chart-wrap"><canvas id="riskChart"></canvas></div></div>
-    <div class="ov-chart-box"><div class="ov-chart-title">Top Artists by Portfolio Value</div><div class="ov-chart-wrap"><canvas id="artistChart"></canvas></div></div>
-  </div>
 
   <div class="port-tabs" id="portTabs">
     <button class="port-tab active" onclick="switchPortTab('artists')">Artists</button>
@@ -750,6 +745,7 @@ function fmt$(v){if(v==null)return'';const n=parseFloat(v);if(isNaN(n))return'';
 function fmtPct(v){if(v==null)return'';return(parseFloat(v)*100).toFixed(1)+'%';}
 function fmtN(v,d=2){if(v==null)return'';return parseFloat(v).toFixed(d);}
 function fmtM(v){const m=v/1e6;return '$'+(m>=10?Math.round(m):m.toFixed(1))+'M';}
+function fmtB(v){return '$'+(v/1e9).toFixed(2)+'B';}
 
 // ── OVERVIEW (KPIs + charts), computed once over the full collection ──
 // DATA cols: 0 artist 1 title 2 gender 3 risk 4 date 5 ipo 6 status 7 days 8 appr 9 sale 10 ret 11 irr 12 rep_appre 13 sharpe
@@ -781,38 +777,17 @@ function buildOverview(){
   const conc=totalIpo?(top5/totalIpo*100):0;
 
   const cards=[
-    ['Portfolio Value',fmtM(totalIpo),DATA.length+' pieces',''],
+    ['Portfolio Value',fmtB(totalIpo),DATA.length+' pieces',''],
     ['Artists',artists.size,'Top 5 = '+conc.toFixed(0)+'% of value',''],
     ['Active / Closed / Exited',cnt.Active+' / '+cnt.Closed+' / '+cnt.Exited,'by offering status',''],
-    ['Appraised (held)',fmtM(apprSum),'vs '+fmtM(apprIpo)+' raised',''],
-    ['Unrealized Gain',unreal!=null?(unreal>=0?'+':'')+(unreal*100).toFixed(1)+'%':'—','appraised vs IPO',unreal!=null?(unreal>=0?'pos':'neg'):''],
+    ['Appraised (held)',fmtB(apprSum),'vs '+fmtB(apprIpo)+' raised',''],
+    ['Unrealized Gain',unreal!=null?(unreal>=0?'+':'')+(unreal*100).toFixed(1)+'%':'-','appraised vs IPO',unreal!=null?(unreal>=0?'pos':'neg'):''],
     ['Realized Exits',exits.length,avgIrr!=null?'avg IRR '+avgIrr.toFixed(1)+'%':'',''],
-    ['Blended Appreciation',blended!=null?(blended*100).toFixed(1)+'%':'—','IPO-weighted',''],
+    ['Blended Appreciation',blended!=null?(blended*100).toFixed(1)+'%':'-','IPO-weighted',''],
   ];
   document.getElementById('ovKpis').innerHTML=cards.map(c=>
     `<div class="ov-card"><div class="ov-val ${c[3]}">${c[1]}</div><div class="ov-lbl">${c[0]}</div><div class="ov-sub">${c[2]}</div></div>`
   ).join('');
-
-  // Risk donut
-  const RISK_ORDER=['Conservative','Mod. Conservative','Moderate','Mod. Aggressive','Aggressive','Speculative'];
-  const RISK_HEX=['#2e5cb8','#4a90d9','#37a26b','#e3b341','#e07b39','#d1495b'];
-  const riskVal=RISK_ORDER.map(k=>DATA.filter(r=>r[3]===k).reduce((s,r)=>s+(r[5]||0),0));
-  new Chart(document.getElementById('riskChart'),{
-    type:'doughnut',
-    data:{labels:RISK_ORDER,datasets:[{data:riskVal.map(v=>+(v/1e6).toFixed(1)),backgroundColor:RISK_HEX,borderWidth:0}]},
-    options:{plugins:{legend:{position:'right',labels:{boxWidth:10,font:{size:10},color:'#4a5363'}},
-      tooltip:{callbacks:{label:c=>c.label+': $'+c.parsed+'M'}}},maintainAspectRatio:false,cutout:'58%'}
-  });
-
-  // Top artists bar
-  const top=sorted.slice(0,10);
-  new Chart(document.getElementById('artistChart'),{
-    type:'bar',
-    data:{labels:top.map(x=>x[0]),datasets:[{data:top.map(x=>+(x[1]/1e6).toFixed(1)),backgroundColor:'#7c3aed',borderRadius:3}]},
-    options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.parsed.x+'M'}}},
-      maintainAspectRatio:false,scales:{x:{ticks:{color:'#64748b',font:{size:9},callback:v=>'$'+v+'M'},grid:{color:'rgba(0,0,0,.05)'}},
-      y:{ticks:{color:'#4a5363',font:{size:10}},grid:{display:false}}}}
-  });
 }
 
 // ── CSV export ──
