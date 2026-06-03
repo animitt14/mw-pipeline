@@ -1027,9 +1027,11 @@ function renderBundleCharts(mode, alloc){
   };
   // Risk colors match the table badges exactly (badges are the same hues at 35% opacity)
   donut('bcRisk',tally(5),{'Conservative':'#3b82f6','Mod. Conservative':'#38bdf8','Moderate':'#34d399','Mod. Aggressive':'#fbbf24','Aggressive':'#fb923c','Speculative':'#ef4444'});
-  donut('bcGender',tally(6),{'Male':'#4a6fa5','Female':'#d98ab0'});
-  donut('bcLiving',tally(7),{'Living':'#37a26b','Deceased':'#8a8f9c'});
-  donut('bcRegion',tally(8),{'Americas':'#2e5cb8','Europe':'#37a26b','Asia':'#e07b39','Africa':'#d1495b'});
+  // Demographics use a calm, muted categorical palette deliberately kept OFF the blue->red
+  // risk ramp (and off the purple allocation accent), so no color carries two meanings.
+  donut('bcGender',tally(6),{'Male':'#5b7392','Female':'#bd8aa8'});
+  donut('bcLiving',tally(7),{'Living':'#5fa085','Deceased':'#9aa3b2'});
+  donut('bcRegion',tally(8),{'Americas':'#3f5a78','Europe':'#6e93b0','Asia':'#c2a878','Africa':'#b27a63'});
   // Artist Scorecard radar — allocation-weighted, normalized 0-100 to the bundle max per axis
   const agg=[0,0,0,0]; let rw=0;
   // sqrt smoothing: lifts modest counts so a single outlier (Warhol) doesn't squash the axis
