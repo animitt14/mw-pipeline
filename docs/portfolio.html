@@ -1075,7 +1075,7 @@ function renderBundle(){
       const p=alloc.get(r);
       if(amt!=null){
         const dollars=Math.round(p/100*amt/20)*20;   // whole $20 shares — no fractional ownership
-        allocCell=`<div style="display:flex;align-items:baseline;justify-content:center;gap:7px"><span style="font-size:15px;font-weight:700;color:#7c3aed">$${dollars.toLocaleString()}</span><span style="font-size:11px;font-weight:500;color:var(--text2,#4a5363)">${fmtAlloc(p)}</span></div>`;
+        allocCell=`<div style="display:flex;align-items:baseline;justify-content:center;gap:6px"><span style="font-size:12px;font-weight:600;color:var(--text,#0e1422)">$${dollars.toLocaleString()}</span><span style="font-size:10px;font-weight:500;color:var(--text3,#94a3b8)">${fmtAlloc(p)}</span></div>`;
       } else { allocCell=fmtAlloc(p); }
     }
     return `<tr>
