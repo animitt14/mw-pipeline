@@ -74,7 +74,7 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
 .bc-wrap{position:relative;height:170px;}
 @media(max-width:1100px){.bundle-charts{grid-template-columns:repeat(2,1fr);}}
 .risk-slider{display:flex;align-items:center;gap:7px;margin-left:8px;}
-.risk-slider .rs-lbl{font-size:11px;font-weight:600;color:var(--text2,#4a5363);}
+.rs-lbl{font-size:11px;font-weight:600;color:var(--text2,#4a5363);}
 .risk-slider .rs-end{font-size:10px;color:var(--text3,#64748b);}
 .risk-slider input[type=range]{width:120px;accent-color:#7c3aed;cursor:pointer;}
 .risk-slider .rs-mode{font-size:11px;font-weight:700;color:#7c3aed;min-width:78px;}
@@ -85,7 +85,7 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
 .rs-blended{font-size:11px;font-weight:700;color:#37a26b;margin-left:6px;white-space:nowrap;}
 td.alloc-on{font-weight:700;color:#7c3aed;}
 .bar-wrap{width:64px;margin:4px auto 0;height:5px;background:var(--surface-2,#e2e5ea);border-radius:3px;overflow:hidden;}
-#btbl th:first-child,#btbl td:first-child{width:230px;max-width:230px;}
+#btbl th:first-child,#btbl td:first-child{width:270px;max-width:270px;}
 #btbl td:first-child .bw-title{white-space:normal;line-height:1.2;font-weight:600;color:var(--text,#0e1422);}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
@@ -1071,7 +1071,13 @@ function renderBundle(){
     const bar=pct==null?'':`<div class="bar-wrap"><div style="height:100%;width:${pct}%;background:#8b91b8"></div></div><div style="font-size:9px;color:var(--text3);margin-top:1px">${pct}% sold</div>`;
     const rep=(r[9]===''||r[9]==null)?'':(()=>{const p=Math.round(parseFloat(r[9])*100);return p<0?`<span style="color:#c0392b;font-style:italic">${p}%</span>`:p+'%';})();
     let allocCell='<span style="color:var(--text3,#94a3b8)">&mdash;</span>';
-    if(alloc.has(r)){ const p=alloc.get(r); allocCell=fmtAlloc(p)+(amt!=null?`<div style="font-weight:400;color:var(--text2,#4a5363);font-size:10px">$${Math.round(p/100*amt).toLocaleString()}</div>`:''); }
+    if(alloc.has(r)){
+      const p=alloc.get(r);
+      if(amt!=null){
+        const dollars=Math.round(p/100*amt/20)*20;   // whole $20 shares — no fractional ownership
+        allocCell=`<div style="display:flex;align-items:baseline;justify-content:center;gap:7px"><span style="font-size:15px;font-weight:700;color:#7c3aed">$${dollars.toLocaleString()}</span><span style="font-size:11px;font-weight:500;color:var(--text2,#4a5363)">${fmtAlloc(p)}</span></div>`;
+      } else { allocCell=fmtAlloc(p); }
+    }
     return `<tr>
       <td><div style="display:flex;align-items:center;gap:9px">${img}<div style="min-width:0"><div class="bw-title">${r[2]||''}</div><div style="font-size:10px;color:var(--text3,#64748b)">${r[3]||''}</div></div></div></td>
       <td class="ctr"><div style="font-weight:600">${r[0]!==''&&r[0]!=null?fmt$(r[0]):'&mdash;'}</div>${bar}</td>
