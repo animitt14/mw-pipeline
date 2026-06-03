@@ -817,10 +817,8 @@ function buildOverview(){
 
 // ── CSV export ──
 function csvDownload(name,header,rows){
-  const esc=v=>{v=(v==null?'':String(v));return /[",
-]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-  const csv=[header.join(',')].concat(rows.map(r=>r.map(esc).join(','))).join('
-');
+  const esc=v=>{v=(v==null?'':String(v));return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
+  const csv=[header.join(',')].concat(rows.map(r=>r.map(esc).join(','))).join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
   a.download=name;a.click();
@@ -898,7 +896,7 @@ function resetFilters(){
 function switchPortTab(tab){
   document.getElementById('tab-paintings').style.display=tab==='paintings'?'':'none';
   document.getElementById('tab-artists').style.display=tab==='artists'?'':'none';
-  document.querySelectorAll('.port-tab').forEach((b,i)=>b.classList.toggle('active',(tab==='paintings'&&i===0)||(tab==='artists'&&i===1)));
+  document.querySelectorAll('.port-tab').forEach((b,i)=>b.classList.toggle('active',(tab==='artists'&&i===0)||(tab==='paintings'&&i===1)));
   if(tab==='artists') renderArtists();
 }
 
