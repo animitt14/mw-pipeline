@@ -265,7 +265,7 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
     <b>How many works.</b> The book is broadest in the middle of the scale (~15 works) and more concentrated at the extremes (~9 works), so a higher risk tolerance means fewer, larger positions.<br>
     <b>Balance.</b> Among works that fit the target risk, selection favors variety across gender, living vs. deceased, and region &mdash; so the mix stays diversified rather than clustering. This is a visual tilt, not a hard rule.<br>
     <b>Weighting.</b> &ldquo;Made in Japan II&rdquo; (Basquiat) is held in every portfolio and overweighted to roughly twice a normal position (capped at 25%). All remaining works split the rest evenly, so weights total 100%.<br>
-    <b>Dollars.</b> When an Amount is entered, each weight is converted to dollars and rounded to whole $20 shares (no fractional ownership). Blended appreciation = the allocation-weighted average of each work&rsquo;s repeat-sales appreciation.
+    <b>Dollars.</b> When an Amount is entered, each weight is converted to dollars and rounded to whole $20 shares (no fractional ownership). Blended appreciation = the average of each work&rsquo;s repeat-sales appreciation, weighted by the dollars actually deployed after $20-share rounding (or by target % when no Amount is entered).
   </div>
   </div>
 </div>
@@ -1071,9 +1071,10 @@ function renderBundle(){
   // Amount entered → split allocation % into dollars
   const amtRaw=(document.getElementById('allocAmt').value||'').replace(/[^0-9.]/g,'');
   const amt=amtRaw?parseFloat(amtRaw):null;
-  // Blended appreciation = allocation-weighted avg of repeat-sales % over picked works
+  // Blended appreciation = avg repeat-sales % over the picked works, weighted by dollars
+  // actually deployed (after $20/share rounding) when an Amount is set, else by target %.
   let blended=null;
-  { let s=0,w=0; alloc.forEach((p,r)=>{ if(r[9]!==''&&r[9]!=null){ s+=p*parseFloat(r[9]); w+=p; } }); blended=w?s/w:null; }
+  { let s=0,w=0; alloc.forEach((p,r)=>{ if(r[9]!==''&&r[9]!=null){ const wt=amt!=null?Math.round(p/100*amt/20)*20:p; s+=wt*parseFloat(r[9]); w+=wt; } }); blended=w?s/w:null; }
   const br=document.getElementById('blendedReadout');
   br.textContent = blended!=null ? 'Blended appreciation '+(blended*100).toFixed(1)+'%' : '';
   let rows=[...BUNDLE];
