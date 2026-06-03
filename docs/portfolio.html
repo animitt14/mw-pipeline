@@ -230,10 +230,10 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
     <button class="csv-btn" onclick="exportBundle()">&#8595; CSV</button>
     <div class="risk-slider">
       <span class="rs-lbl">Risk Tolerance</span>
-      <span class="rs-end">All</span>
-      <input type="range" min="0" max="3" step="1" value="0" id="riskSlider" oninput="renderBundle()">
-      <span class="rs-end">Aggr.</span>
-      <span class="rs-mode" id="riskMode">All</span>
+      <span class="rs-end">1&nbsp;Cons.</span>
+      <input type="range" min="1" max="10" step="1" value="5" id="riskSlider" oninput="renderBundle()">
+      <span class="rs-end">10&nbsp;Aggr.</span>
+      <span class="rs-mode" id="riskMode">5 / 10</span>
     </div>
     <div class="amt-box">
       <span class="rs-lbl">Amount</span>
@@ -1007,28 +1007,33 @@ function renderBundleCharts(mode, alloc){
 let bSortCol=0, bSortDir=-1;   // default: Available ($), high to low
 
 function fmtAlloc(p){return (Number.isInteger(p)?p:p.toFixed(1))+'%';}
-// mode: 0 All (no allocation), 1 Conservative, 2 Moderate, 3 Aggressive
-// Uses the granular MW risk categories via a 1-6 rank. BUNDLE is sorted by Available desc.
+// Risk tolerance v (1=conservative .. 10=aggressive). Granular MW risk via a 1-6 rank.
+// Risk center slides with v; book is broadest in the middle, more concentrated at the ends
+// (higher v => fewer, bigger positions). Within risk-fit, greedily balance gender/living/region.
 const RANK={'Conservative':1,'Mod. Conservative':2,'Moderate':3,'Mod. Aggressive':4,'Aggressive':5,'Speculative':6};
-function computeAlloc(mode){
+function computeAlloc(v){
   const m=new Map();
-  if(mode===0) return m;
+  if(!v) return m;
   const rank=r=>RANK[r[5]]||3;
-  const byAvail=[...BUNDLE].sort((a,b)=>(b[0]||0)-(a[0]||0));   // most liquid first
-  const pick=(pred,n)=>byAvail.filter(pred).slice(0,n);
-  const give=(arr,total)=>{const e=arr.length?total/arr.length:0;arr.forEach(r=>m.set(r,(m.get(r)||0)+e));};
-  if(mode===1){
-    // Conservative: a focused set of the lowest-risk, most-liquid blue chips
-    give(pick(r=>rank(r)<=2, 8), 100);
-  } else if(mode===2){
-    // Moderate: the broadest, most-diversified book across low-to-mid risk
-    give(pick(r=>rank(r)<=4, 15), 100);
-  } else {
-    // Aggressive: concentrated, bigger positions tilted to higher-risk works
-    // (comfortable with lower liquidity), plus a small stable anchor
-    give(pick(r=>rank(r)>=4, 6), 70);   // 6 higher-risk works ~11.7% each
-    give(pick(r=>rank(r)<=2, 3), 30);   // 3 anchor blue chips, 10% each
+  const center=1.5+(v-1)/9*4.0;                                  // 1.5 .. 5.5
+  const N=Math.max(5,Math.round(9+6*(1-Math.abs(v-5.5)/4.5)));   // ~9 at ends, ~15 mid
+  const remaining=new Set(BUNDLE);
+  const cG={},cR={},cL={};  // running counts of gender / region / living among picks
+  const picked=[];
+  while(picked.length<N && remaining.size){
+    let best=null,bs=-Infinity;
+    remaining.forEach(r=>{
+      const riskFit=-Math.abs(rank(r)-center);                   // 0 best
+      const bal=1/(1+(cG[r[6]]||0))+1/(1+(cR[r[8]]||0))+1/(1+(cL[r[7]]||0)); // favors under-represented
+      const s=riskFit + 1.1*bal;                                 // balance tilts ties, risk leads
+      if(s>bs){bs=s;best=r;}
+    });
+    if(!best)break;
+    picked.push(best); remaining.delete(best);
+    cG[best[6]]=(cG[best[6]]||0)+1; cR[best[8]]=(cR[best[8]]||0)+1; cL[best[7]]=(cL[best[7]]||0)+1;
   }
+  const e=picked.length?100/picked.length:0;
+  picked.forEach(r=>m.set(r,e));
   return m;
 }
 
@@ -1037,14 +1042,14 @@ function renderBundle(){
   const fr=document.getElementById('bfRegion').value;
   const fl=document.getElementById('bfLiving').value;
   const mode=+document.getElementById('riskSlider').value;
-  document.getElementById('riskMode').textContent=['All','Conservative','Moderate','Aggressive'][mode];
+  document.getElementById('riskMode').textContent=mode+' / 10';
   const alloc=computeAlloc(mode);
   // Amount entered → split allocation % into dollars
   const amtRaw=(document.getElementById('allocAmt').value||'').replace(/[^0-9.]/g,'');
   const amt=amtRaw?parseFloat(amtRaw):null;
   // Blended appreciation = allocation-weighted avg of repeat-sales % over picked works
   let blended=null;
-  if(mode!==0){ let s=0,w=0; alloc.forEach((p,r)=>{ if(r[9]!==''&&r[9]!=null){ s+=p*parseFloat(r[9]); w+=p; } }); blended=w?s/w:null; }
+  { let s=0,w=0; alloc.forEach((p,r)=>{ if(r[9]!==''&&r[9]!=null){ s+=p*parseFloat(r[9]); w+=p; } }); blended=w?s/w:null; }
   const br=document.getElementById('blendedReadout');
   br.textContent = blended!=null ? 'Blended appreciation '+(blended*100).toFixed(1)+'%' : '';
   let rows=[...BUNDLE];
@@ -1088,7 +1093,7 @@ function bsort(col){
 }
 function resetBundleFilters(){
   document.getElementById('bsrch').value='';document.getElementById('bfRegion').value='';document.getElementById('bfLiving').value='';
-  document.getElementById('riskSlider').value=0;document.getElementById('allocAmt').value='';
+  document.getElementById('riskSlider').value=5;document.getElementById('allocAmt').value='';
   bSortCol=0;bSortDir=-1;
   document.querySelectorAll('#btbl thead th').forEach(th=>th.classList.remove('asc','desc'));
   renderBundle();
