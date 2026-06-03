@@ -152,12 +152,12 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
         <th onclick="asort(1)" class="ctr">Gender</th>
         <th onclick="asort(2)" class="ctr">Risk Category</th>
         <th onclick="asort(3)" class="ctr">MW Pieces</th>
-        <th onclick="asort(4)" class="ctr">Portfolio Value (M)</th>
+        <th onclick="asort(4)" class="ctr">Portfolio Value</th>
         <th onclick="asort(5)" class="ctr">Sharpe Ratio</th>
         <th onclick="asort(6)" class="ctr">Repeat Sales %</th>
         <th onclick="asort(7)" class="ctr">Auction Sales</th>
         <th onclick="asort(8)" class="ctr">Auction Maturity</th>
-        <th onclick="asort(9)" class="ctr">Auction Record (M)</th>
+        <th onclick="asort(9)" class="ctr">Auction Record</th>
         <th onclick="asort(10)" class="ctr">Museum Shows (5y)</th>
         <th onclick="asort(11)">Source Notes</th>
       </tr></thead>
@@ -837,12 +837,12 @@ function renderArtists(){
       <td class="ctr">${r.gender==='Male'?'M':r.gender==='Female'?'F':r.gender||''}</td>
       <td class="ctr">${r.risk?`<span class="risk-badge ${rc}">${r.risk}</span>`:''}</td>
       <td class="ctr">${r.works||''}</td>
-      <td class="ctr">${r.totalIpo?(()=>{const m=r.totalIpo/1e6;return '$'+(m>=10?Math.round(m):m.toFixed(1));})():''}</td>
+      <td class="ctr">${r.totalIpo?(()=>{const m=r.totalIpo/1e6;return '$'+(m>=10?Math.round(m):m.toFixed(1))+'M';})():''}</td>
       <td class="ctr">${r.sharpe!=null?fmtN(r.sharpe):''}</td>
       <td class="ctr">${r.repAppre!=null?(()=>{const p=Math.round(parseFloat(r.repAppre)*100);return p<0?`<span style="color:#c0392b;font-style:italic">${p}%</span>`:p+'%';})():''}</td>
       <td class="ctr">${r.liq!=null?r.liq:''}</td>
       <td class="ctr">${r.mat==null?'':(typeof r.mat==='number'?r.mat+'yrs':'>30yrs')}</td>
-      <td class="ctr">${r.rec!=null?'$'+(r.rec>=10?Math.round(r.rec):r.rec.toFixed(1)):''}</td>
+      <td class="ctr">${r.rec!=null?'$'+(r.rec>=10?Math.round(r.rec):r.rec.toFixed(1))+'M':''}</td>
       <td class="ctr">${r.shows!=null?r.shows:''}</td>
       <td class="note-cell">${r.notes||''}</td>
     </tr>`;
