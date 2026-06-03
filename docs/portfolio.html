@@ -265,7 +265,7 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
     <b>Risk Tolerance (1&ndash;10).</b> The slider sets a target risk level. Each work is scored on a 1&ndash;6 risk scale (Conservative&rarr;Speculative); a tolerance of 1 centers picks on the lowest-risk works and 10 on the highest, sliding smoothly in between.<br>
     <b>How many works.</b> The book is broadest in the middle of the scale (~15 works) and more concentrated at the extremes (~9 works), so a higher risk tolerance means fewer, larger positions.<br>
     <b>Balance.</b> Among works that fit the target risk, selection favors variety across gender, living vs. deceased, and region &mdash; so the mix stays diversified rather than clustering. This is a visual tilt, not a hard rule.<br>
-    <b>Weighting.</b> Positions are sized by risk (inverse-volatility / risk-parity): lower-risk works get larger slices so each contributes similar risk to the book. Risk = the artist&rsquo;s price volatility where there are enough repeat sales (&ge;15 pairs), otherwise a proxy from the Conservative&rarr;Speculative rating. &ldquo;Made in Japan II&rdquo; (Basquiat) is held in every portfolio and overweighted to roughly twice its risk-weighted slice (capped at 25%). Weights total 100%.<br>
+    <b>Weighting.</b> Positions are sized by risk (inverse-volatility / risk-parity): lower-risk works get larger slices so each contributes similar risk to the book. Risk = the artist&rsquo;s price volatility where there are enough repeat sales (&ge;15 pairs), otherwise a proxy from the Conservative&rarr;Speculative rating. &ldquo;Made in Japan II&rdquo; (Basquiat) is held in every portfolio and is always the single largest position &mdash; boosted to at least twice its own risk slice and at least 25% above the next-largest work, capped at 25%. Weights total 100%.<br>
     <b>Dollars.</b> When an Amount is entered, each weight is converted to dollars and rounded to whole $20 shares (no fractional ownership). Blended appreciation = the average of each work&rsquo;s repeat-sales appreciation, weighted by the dollars actually deployed after $20-share rounding (or by target % when no Amount is entered).<br>
     <b>Artist Scorecard.</b> The radar is the allocation-weighted average of the picked works across four artist measures &mdash; commercial maturity (years since first auction sale), market liquidity (auction volume), commercial success (record auction price), and cultural significance (museum shows over the last ~5 years). Each axis is scaled 0&ndash;100 against the strongest artist in Masterworks&rsquo; full roster (an absolute read against the blue-chip ceiling), using square-root smoothing so modest counts aren&rsquo;t flattened by a single outlier. It re-draws as the risk slider or dropdowns change the picks.
   </div>
@@ -1047,7 +1047,7 @@ function renderBundleCharts(mode, alloc){
 // ── BUNDLE tab (active offerings) ── cols: 0 artist 1 title 2 risk 3 gender 4 living 5 region 6 shares
 let bSortCol=0, bSortDir=-1;   // default: Available ($), high to low
 
-function fmtAlloc(p){return (Number.isInteger(p)?p:p.toFixed(1))+'%';}
+function fmtAlloc(p){return Math.round(p)+'%';}
 // Risk tolerance v (1=conservative .. 10=aggressive). Granular MW risk via a 1-6 rank.
 // Risk center slides with v; book is broadest in the middle, more concentrated at the ends
 // (higher v => fewer, bigger positions). Within risk-fit, greedily balance gender/living/region.
@@ -1087,7 +1087,13 @@ function computeAlloc(v, universe){
   const riskOf=r=>{ const v=r[10]; return (typeof v==='number'&&v>0)?v:(RANK_VOL[rank(r)]||0.15); };
   const raw=new Map();
   picked.forEach(r=>raw.set(r, 1/riskOf(r)));
-  if(basq) raw.set(basq, raw.get(basq)*2);   // overweight the anchor ~2x its risk-weighted slice
+  // Anchor is always the single heaviest position: at least 2x its own risk slice AND
+  // at least 25% above the next-largest work (Made in Japan II carries a higher volatility
+  // than some peers, so a plain 2x boost wouldn't always top them).
+  if(basq){
+    let maxOther=0; picked.forEach(r=>{ if(r!==basq){ const x=raw.get(r); if(x>maxOther)maxOther=x; } });
+    raw.set(basq, Math.max(raw.get(basq)*2, maxOther*1.25));
+  }
   let tot=0; raw.forEach(x=>tot+=x);
   if(!tot){ return m; }
   picked.forEach(r=>m.set(r, raw.get(r)/tot*100));
