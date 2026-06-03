@@ -146,11 +146,15 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
 #pv .tier-established{color:#3a4f8a;font-style:italic;}
 #pv .tier-emerging{color:#5b87c0;font-style:italic;}
 @media print{
+  html,body{margin:0;padding:0;}
   body>*:not(#pv){display:none!important;}
   #pv{position:static;display:block;background:#fff;overflow:visible;}
+  /* force background colors/fills to actually print (default browser behavior strips them) */
+  #pv,#pv *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   #pv .pv-toolbar{display:none!important;}
-  #pv .pv-pages{padding:0;}
-  #pv .page{box-shadow:none;margin:0;}
+  #pv .pv-pages{padding:0;margin:0;}
+  #pv .page{box-shadow:none;margin:0;break-inside:avoid;page-break-after:always;}
+  #pv .pv-pages .page:last-child{page-break-after:auto;}
   @page{size:10in 7.5in;margin:0;}
 }
 </style>
