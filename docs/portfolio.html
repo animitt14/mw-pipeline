@@ -224,10 +224,10 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
     <button class="csv-btn" onclick="exportBundle()">&#8595; CSV</button>
     <div class="risk-slider">
       <span class="rs-lbl">Allocation</span>
-      <span class="rs-end">Cons.</span>
-      <input type="range" min="0" max="2" step="1" value="0" id="riskSlider" oninput="renderBundle()">
+      <span class="rs-end">All</span>
+      <input type="range" min="0" max="3" step="1" value="0" id="riskSlider" oninput="renderBundle()">
       <span class="rs-end">Aggr.</span>
-      <span class="rs-mode" id="riskMode">Conservative</span>
+      <span class="rs-mode" id="riskMode">All</span>
     </div>
     <span class="port-count" id="bcnt"></span>
   </div>
@@ -962,24 +962,29 @@ function switchPortTab(tab){
   document.getElementById('tab-bundle').style.display=tab==='bundle'?'':'none';
   document.querySelectorAll('.port-tab').forEach((b,i)=>b.classList.toggle('active',order[i]===tab));
   if(tab==='artists') renderArtists();
-  if(tab==='bundle'){ renderBundle(); renderBundleCharts(); }
+  if(tab==='bundle'){ _lastChartMode=null; renderBundle(); }
 }
 
-let _bundleCharted=false;
-function renderBundleCharts(){
-  if(_bundleCharted) return;            // static summary of the bundle, draw once
-  _bundleCharted=true;
+// Charts reflect the current allocation: at "All" they count every active work;
+// once a profile is chosen they show the PICKED book, weighted by allocation %.
+let bundleCharts={}, _lastChartMode=null;
+function renderBundleCharts(mode, alloc){
+  Object.values(bundleCharts).forEach(c=>{ try{c.destroy();}catch(e){} });
+  bundleCharts={};
+  const useAlloc = mode!==0;
+  const rows = useAlloc ? BUNDLE.filter(r=>alloc.has(r)) : BUNDLE;
+  const wt = r => useAlloc ? alloc.get(r) : 1;
+  const tally=(idx)=>rows.reduce((m,r)=>{const k=r[idx]||'Unknown';m[k]=(m[k]||0)+wt(r);return m;},{});
   const donut=(id,counts,colors)=>{
     const labels=Object.keys(counts).filter(k=>counts[k]>0);
-    new Chart(document.getElementById(id),{
+    bundleCharts[id]=new Chart(document.getElementById(id),{
       type:'doughnut',
-      data:{labels:labels,datasets:[{data:labels.map(k=>counts[k]),backgroundColor:labels.map(k=>colors[k]||'#94a3b8'),borderWidth:0}]},
+      data:{labels:labels,datasets:[{data:labels.map(k=>+counts[k].toFixed(2)),backgroundColor:labels.map(k=>colors[k]||'#94a3b8'),borderWidth:0}]},
       options:{maintainAspectRatio:false,cutout:'55%',plugins:{
         legend:{position:'bottom',labels:{boxWidth:9,font:{size:9},color:'#4a5363',padding:6}},
-        tooltip:{callbacks:{label:c=>c.label+': '+c.parsed}}}}
+        tooltip:{callbacks:{label:c=>c.label+': '+(useAlloc?c.parsed.toFixed(1)+'%':c.parsed)}}}}
     });
   };
-  const tally=(idx)=>BUNDLE.reduce((m,r)=>{const k=r[idx]||'Unknown';m[k]=(m[k]||0)+1;return m;},{});
   donut('bcRisk',tally(5),{'Conservative':'#2e5cb8','Mod. Conservative':'#4a90d9','Moderate':'#37a26b','Mod. Aggressive':'#e3b341','Aggressive':'#e07b39','Speculative':'#d1495b'});
   donut('bcGender',tally(6),{'Male':'#4a6fa5','Female':'#d98ab0'});
   donut('bcLiving',tally(7),{'Living':'#37a26b','Deceased':'#8a8f9c'});
@@ -990,18 +995,28 @@ function renderBundleCharts(){
 let bSortCol=0, bSortDir=-1;   // default: Available ($), high to low
 
 function fmtAlloc(p){return (Number.isInteger(p)?p:p.toFixed(1))+'%';}
-// Allocation by risk profile. BUNDLE is sorted by Available desc, so slice(0,n)=top-N by availability.
-// cols: 5 risk. Conservative core = Conservative + Mod. Conservative.
+// mode: 0 All (no allocation), 1 Conservative, 2 Moderate, 3 Aggressive
+// Uses the granular MW risk categories via a 1-6 rank. BUNDLE is sorted by Available desc.
+const RANK={'Conservative':1,'Mod. Conservative':2,'Moderate':3,'Mod. Aggressive':4,'Aggressive':5,'Speculative':6};
 function computeAlloc(mode){
-  const isCons=r=>r[5]==='Conservative'||r[5]==='Mod. Conservative';
-  const isMod=r=>r[5]==='Moderate';
-  const isAgg=r=>r[5]==='Mod. Aggressive'||r[5]==='Aggressive'||r[5]==='Speculative';
-  const cons=BUNDLE.filter(isCons), mod=BUNDLE.filter(isMod), agg=BUNDLE.filter(isAgg);
   const m=new Map();
-  const give=(arr,n,total)=>{const p=arr.slice(0,n);const e=p.length?total/p.length:0;p.forEach(r=>m.set(r,(m.get(r)||0)+e));};
-  if(mode===0) give(cons,5,100);                       // Conservative: top 5 conservative
-  else if(mode===1){ give(cons,5,85); give(mod,3,15); }  // Moderate: 85% cons + 15% moderate
-  else { give(cons,5,70); give(agg,4,30); }              // Aggressive: 70% cons + 30% aggressive
+  if(mode===0) return m;
+  const rank=r=>RANK[r[5]]||3;
+  const byAvail=[...BUNDLE].sort((a,b)=>(b[0]||0)-(a[0]||0));   // most liquid first
+  const pick=(pred,n)=>byAvail.filter(pred).slice(0,n);
+  const give=(arr,total)=>{const e=arr.length?total/arr.length:0;arr.forEach(r=>m.set(r,(m.get(r)||0)+e));};
+  if(mode===1){
+    // Conservative: a focused set of the lowest-risk, most-liquid blue chips
+    give(pick(r=>rank(r)<=2, 8), 100);
+  } else if(mode===2){
+    // Moderate: the broadest, most-diversified book across low-to-mid risk
+    give(pick(r=>rank(r)<=4, 15), 100);
+  } else {
+    // Aggressive: concentrated, bigger positions tilted to higher-risk works
+    // (comfortable with lower liquidity), plus a small stable anchor
+    give(pick(r=>rank(r)>=4, 6), 70);   // 6 higher-risk works ~11.7% each
+    give(pick(r=>rank(r)<=2, 3), 30);   // 3 anchor blue chips, 10% each
+  }
   return m;
 }
 
@@ -1039,6 +1054,8 @@ function renderBundle(){
       <td class="ctr ${alloc.has(r)?'alloc-on':''}">${alloc.has(r)?fmtAlloc(alloc.get(r)):'<span style="color:var(--text3,#94a3b8)">&mdash;</span>'}</td>
     </tr>`;
   }).join('');
+  // charts depend only on the allocation mode — redraw only when it changes
+  if(mode!==_lastChartMode){ renderBundleCharts(mode, alloc); _lastChartMode=mode; }
 }
 function bsort(col){
   if(bSortCol===col)bSortDir*=-1; else{bSortCol=col;bSortDir=(col===0||col>=5)?-1:1;}
