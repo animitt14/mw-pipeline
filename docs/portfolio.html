@@ -755,8 +755,8 @@ function buildOverview(){
   const cnt={Active:0,Closed:0,Exited:0};
   DATA.forEach(r=>{if(cnt[r[6]]!=null)cnt[r[6]]++;});
   // Unrealized: held works that have an appraisal
-  let apprSum=0,apprIpo=0;
-  DATA.forEach(r=>{if(r[6]!=='Exited'&&r[8]!=null){apprSum+=r[8];apprIpo+=r[5]||0;}});
+  let apprSum=0,apprIpo=0,apprCount=0,heldCount=0;
+  DATA.forEach(r=>{if(r[6]!=='Exited'){heldCount++;if(r[8]!=null){apprSum+=r[8];apprIpo+=r[5]||0;apprCount++;}}});
   const unreal=apprIpo?((apprSum-apprIpo)/apprIpo):null;
   // Realized exits
   const exits=DATA.filter(r=>r[6]==='Exited');
@@ -780,8 +780,8 @@ function buildOverview(){
     ['Portfolio Value',fmtB(totalIpo),DATA.length+' pieces',''],
     ['Artists',artists.size,'Top 5 = '+conc.toFixed(0)+'% of value',''],
     ['Active / Closed / Exited',cnt.Active+' / '+cnt.Closed+' / '+cnt.Exited,'by offering status',''],
-    ['Appraised (held)',fmtB(apprSum),'vs '+fmtB(apprIpo)+' raised',''],
-    ['Unrealized Gain',unreal!=null?(unreal>=0?'+':'')+(unreal*100).toFixed(1)+'%':'-','appraised vs IPO',unreal!=null?(unreal>=0?'pos':'neg'):''],
+    ['Appraised (held)',fmtB(apprSum),'vs '+fmtB(apprIpo)+' raised &middot; '+apprCount+'/'+heldCount+' held works',''],
+    ['Unrealized Gain',unreal!=null?(unreal>=0?'+':'')+(unreal*100).toFixed(1)+'%':'-','on '+apprCount+' appraised works',unreal!=null?(unreal>=0?'pos':'neg'):''],
     ['Realized Exits',exits.length,avgIrr!=null?'avg IRR '+avgIrr.toFixed(1)+'%':'',''],
     ['Blended Appreciation',blended!=null?(blended*100).toFixed(1)+'%':'-','IPO-weighted',''],
   ];
