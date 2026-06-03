@@ -18,8 +18,13 @@ table.port{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap
 table.port thead th{background:#1a2035;color:#cbd5e1;font-size:10px;font-weight:600;
   text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;text-align:left;
   cursor:pointer;user-select:none;position:sticky;top:0;z-index:2;}
-table.port thead th:hover{color:var(--text,#f1f5f9);}
-table.port thead th[title]{text-decoration:underline dotted rgba(124,116,183,.5);text-underline-offset:3px;}
+table.port thead th:hover{color:#ffffff;}
+table.port thead th[data-tip]{text-decoration:underline dotted rgba(203,213,225,.55);text-underline-offset:3px;}
+table.port thead th[data-tip]:hover::after{
+  content:attr(data-tip);position:absolute;left:8px;top:100%;z-index:30;margin-top:4px;
+  background:#1e2a40;color:#fff;font-weight:400;text-transform:none;letter-spacing:0;
+  font-size:11px;line-height:1.45;padding:8px 10px;border-radius:6px;width:240px;
+  white-space:normal;box-shadow:0 6px 18px rgba(0,0,0,.35);}
 table.port thead th.asc::after{content:" \2191";color:#7c3aed;}
 table.port thead th.desc::after{content:" \2193";color:#7c3aed;}
 table.port tbody tr{border-bottom:1px solid var(--border,#2e3650);transition:background .1s;}
@@ -74,6 +79,8 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
 .risk-slider input[type=range]{width:120px;accent-color:#7c3aed;cursor:pointer;}
 .risk-slider .rs-mode{font-size:11px;font-weight:700;color:#7c3aed;min-width:78px;}
 td.alloc-on{font-weight:700;color:#7c3aed;}
+#btbl th:first-child,#btbl td:first-child{width:230px;max-width:230px;}
+#btbl td:first-child .bw-title{white-space:normal;line-height:1.2;font-weight:600;color:var(--text,#0e1422);}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 </head>
@@ -1021,9 +1028,9 @@ function renderBundle(){
     const img=r[4]?`<img src="${r[4]}" style="width:42px;height:32px;object-fit:cover;border-radius:3px;flex:none" loading="lazy">`
                   :`<div style="width:42px;height:32px;background:var(--surface-2,#e2e5ea);border-radius:3px;flex:none"></div>`;
     const pct=(r[1]===''||r[1]==null)?null:r[1];
-    const bar=pct==null?'':`<div style="height:5px;background:var(--surface-2,#e2e5ea);border-radius:3px;margin-top:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:#7c3aed"></div></div><div style="font-size:9px;color:var(--text3);margin-top:1px">${pct}% sold</div>`;
+    const bar=pct==null?'':`<div style="height:5px;background:var(--surface-2,#e2e5ea);border-radius:3px;margin-top:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:#8b91b8"></div></div><div style="font-size:9px;color:var(--text3);margin-top:1px">${pct}% sold</div>`;
     return `<tr>
-      <td><div style="display:flex;align-items:center;gap:9px">${img}<div><div style="font-weight:600;color:var(--text,#0e1422)">${r[2]||''}</div><div style="font-size:10px;color:var(--text3,#64748b)">${r[3]||''}</div></div></div></td>
+      <td><div style="display:flex;align-items:center;gap:9px">${img}<div style="min-width:0"><div class="bw-title">${r[2]||''}</div><div style="font-size:10px;color:var(--text3,#64748b)">${r[3]||''}</div></div></div></td>
       <td class="ctr"><div style="font-weight:600">${r[0]!==''&&r[0]!=null?fmt$(r[0]):'&mdash;'}</div>${bar}</td>
       <td class="ctr">${r[5]?`<span class="risk-badge ${rc}">${r[5]}</span>`:''}</td>
       <td class="ctr">${r[6]==='Male'?'M':r[6]==='Female'?'F':r[6]||''}</td>
@@ -1139,6 +1146,11 @@ function sort(col){
   });
   render();
 }
+
+// Convert header title="" -> data-tip="" so we show a styled custom tooltip (no slow/native one)
+document.querySelectorAll('table.port thead th[title]').forEach(th=>{
+  th.setAttribute('data-tip', th.getAttribute('title')); th.removeAttribute('title');
+});
 
 buildOverview();
 render();
