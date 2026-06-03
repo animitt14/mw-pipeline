@@ -260,7 +260,7 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
   </div>
   <div style="font-size:10px;line-height:1.6;color:var(--text3,#64748b);margin-top:14px;max-width:920px;border-top:1px solid var(--border,#2e3650);padding-top:10px">
     <b style="color:var(--text2,#4a5363)">How these allocations are built</b><br>
-    <b>Universe.</b> Only active (open) offerings with at least $10k of shares still available; existing-user-only offerings are excluded. Availability = unsold shares &times; $20/share.<br>
+    <b>Universe.</b> Only active (open) offerings with at least $10k of shares still available; existing-user-only offerings are excluded. Availability = unsold shares &times; $20/share. The Region and Living/Deceased dropdowns constrain this universe &mdash; change one and the allocation rebuilds and re-normalizes to 100% over the remaining works.<br>
     <b>Risk Tolerance (1&ndash;10).</b> The slider sets a target risk level. Each work is scored on a 1&ndash;6 risk scale (Conservative&rarr;Speculative); a tolerance of 1 centers picks on the lowest-risk works and 10 on the highest, sliding smoothly in between.<br>
     <b>How many works.</b> The book is broadest in the middle of the scale (~15 works) and more concentrated at the extremes (~9 works), so a higher risk tolerance means fewer, larger positions.<br>
     <b>Balance.</b> Among works that fit the target risk, selection favors variety across gender, living vs. deceased, and region &mdash; so the mix stays diversified rather than clustering. This is a visual tilt, not a hard rule.<br>
@@ -1020,18 +1020,20 @@ function fmtAlloc(p){return (Number.isInteger(p)?p:p.toFixed(1))+'%';}
 // Risk center slides with v; book is broadest in the middle, more concentrated at the ends
 // (higher v => fewer, bigger positions). Within risk-fit, greedily balance gender/living/region.
 const RANK={'Conservative':1,'Mod. Conservative':2,'Moderate':3,'Mod. Aggressive':4,'Aggressive':5,'Speculative':6};
-function computeAlloc(v){
+function computeAlloc(v, universe){
+  universe = universe || BUNDLE;
   const m=new Map();
-  if(!v) return m;
+  if(!v || !universe.length) return m;
   const rank=r=>RANK[r[5]]||3;
   const center=1.5+(v-1)/9*4.0;                                  // 1.5 .. 5.5
-  const N=Math.max(5,Math.round(9+6*(1-Math.abs(v-5.5)/4.5)));   // ~9 at ends, ~15 mid
-  const remaining=new Set(BUNDLE);
+  let N=Math.max(5,Math.round(9+6*(1-Math.abs(v-5.5)/4.5)));     // ~9 at ends, ~15 mid
+  N=Math.min(N, universe.length);                                // never exceed available works
+  const remaining=new Set(universe);
   const cG={},cR={},cL={};  // running counts of gender / region / living among picks
   const picked=[];
-  // Always anchor the book with the Basquiat "Made in Japan II" (top performer)
-  const basq=BUNDLE.find(r=>String(r[2])==='Made in Japan II')
-            || BUNDLE.filter(r=>String(r[3]).indexOf('Basquiat')>=0)
+  // Anchor with the Basquiat "Made in Japan II" (top performer) when it's in the universe
+  const basq=universe.find(r=>String(r[2])==='Made in Japan II')
+            || universe.filter(r=>String(r[3]).indexOf('Basquiat')>=0)
                      .sort((a,b)=>(parseFloat(b[9])||0)-(parseFloat(a[9])||0)||(b[0]||0)-(a[0]||0))[0];
   if(basq){ picked.push(basq); remaining.delete(basq); cG[basq[6]]=1; cR[basq[8]]=1; cL[basq[7]]=1; }
   while(picked.length<N && remaining.size){
@@ -1067,7 +1069,12 @@ function renderBundle(){
   const fl=document.getElementById('bfLiving').value;
   const mode=+document.getElementById('riskSlider').value;
   document.getElementById('riskMode').textContent=mode+' / 10';
-  const alloc=computeAlloc(mode);
+  // Allocation is built only from works passing the Region / Living-Deceased dropdowns,
+  // then re-normalized to 100% — change a dropdown and the recommendation rebuilds.
+  let universe=[...BUNDLE];
+  if(fr) universe=universe.filter(r=>r[8]===fr);
+  if(fl) universe=universe.filter(r=>r[7]===fl);
+  const alloc=computeAlloc(mode, universe);
   // Amount entered → split allocation % into dollars
   const amtRaw=(document.getElementById('allocAmt').value||'').replace(/[^0-9.]/g,'');
   const amt=amtRaw?parseFloat(amtRaw):null;
@@ -1114,8 +1121,9 @@ function renderBundle(){
       <td class="ctr ${alloc.has(r)?'alloc-on':''}">${allocCell}</td>
     </tr>`;
   }).join('');
-  // charts depend only on the allocation mode — redraw only when it changes
-  if(mode!==_lastChartMode){ renderBundleCharts(mode, alloc); _lastChartMode=mode; }
+  // charts reflect the picked allocation — redraw when risk OR the dropdown universe changes
+  const chartKey=mode+'|'+fr+'|'+fl;
+  if(chartKey!==_lastChartMode){ renderBundleCharts(mode, alloc); _lastChartMode=chartKey; }
 }
 function bsort(col){
   if(bSortCol===col)bSortDir*=-1; else{bSortCol=col;bSortDir=(col===0||col>=5)?-1:1;}
