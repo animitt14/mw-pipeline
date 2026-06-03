@@ -142,6 +142,7 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
       <option value="Aggressive">Aggressive</option>
       <option value="Speculative">Speculative</option>
     </select>
+    <button class="port-filter" onclick="resetArtistFilters()" style="margin-left:4px;cursor:pointer;">Reset</button>
     <span class="port-count" id="acnt"></span>
   </div>
   <p style="font-size:9px;color:var(--text3);margin:-4px 0 10px;letter-spacing:.02em">Auction Maturity &amp; Auction Sales (repeat-sale count) from MW research DB &middot; Auction Record &amp; Museum Shows (solo museum/institutional shows 2021&ndash;25) web-sourced, best-effort draft</p>
@@ -840,13 +841,21 @@ function renderArtists(){
       <td class="ctr">${r.sharpe!=null?fmtN(r.sharpe):''}</td>
       <td class="ctr">${r.repAppre!=null?(()=>{const p=Math.round(parseFloat(r.repAppre)*100);return p<0?`<span style="color:#c0392b;font-style:italic">${p}%</span>`:p+'%';})():''}</td>
       <td class="ctr">${r.liq!=null?r.liq:''}</td>
-      <td class="ctr">${r.mat==null?'':(typeof r.mat==='number'?r.mat+' yrs':r.mat)}</td>
-      <td class="ctr">${r.rec!=null?(r.rec>=10?Math.round(r.rec):r.rec.toFixed(1)):''}</td>
+      <td class="ctr">${r.mat==null?'':(typeof r.mat==='number'?r.mat+'yrs':'>30yrs')}</td>
+      <td class="ctr">${r.rec!=null?'$'+(r.rec>=10?Math.round(r.rec):r.rec.toFixed(1)):''}</td>
       <td class="ctr">${r.shows!=null?r.shows:''}</td>
-      <td class="ctr">${fmt$(r.totalIpo)}</td>
+      <td class="ctr">${r.totalIpo?'$'+(r.totalIpo/1e6).toFixed(1)+'M':''}</td>
       <td class="note-cell">${r.notes||''}</td>
     </tr>`;
   }).join('');
+}
+
+function resetArtistFilters(){
+  document.getElementById('asrch').value='';
+  document.getElementById('afRisk').value='';
+  aSortCol=-1; aSortDir=1;
+  document.querySelectorAll('#atbl thead th').forEach(th=>th.classList.remove('asc','desc'));
+  renderArtists();
 }
 
 function asort(col){
