@@ -1029,21 +1029,16 @@ function renderBundleCharts(mode, alloc){
   const agg=[0,0,0,0]; let rw=0;
   rows.forEach(r=>{ const s=workScores(r); if(s){ const w=wt(r); s.forEach((v,i)=>{agg[i]+=w*(v/SCORE_MAX[i]*100);}); rw+=w; } });
   const profile = rw ? agg.map(x=>+(x/rw).toFixed(1)) : [0,0,0,0];
-  // Futuristic / HUD look: cyan->violet gradient stroke, glowing radial fill + nodes
-  const strokeGrad=c=>{const a=c.chart.chartArea; if(!a) return '#34e7f0'; const g=c.chart.ctx.createLinearGradient(a.left,a.top,a.right,a.bottom); g.addColorStop(0,'#34e7f0'); g.addColorStop(.5,'#7c3aed'); g.addColorStop(1,'#e645ff'); return g;};
-  const fillGrad=c=>{const a=c.chart.chartArea; if(!a) return 'rgba(124,58,237,.18)'; const cx=(a.left+a.right)/2,cy=(a.top+a.bottom)/2,rr=Math.min(a.right-a.left,a.bottom-a.top)/2; const g=c.chart.ctx.createRadialGradient(cx,cy,0,cx,cy,rr); g.addColorStop(0,'rgba(124,58,237,.42)'); g.addColorStop(1,'rgba(52,231,240,.04)'); return g;};
-  const glow={id:'radarGlow',beforeDatasetDraw(ch){const x=ch.ctx;x.save();x.shadowColor='rgba(124,58,237,.85)';x.shadowBlur=14;},afterDatasetDraw(ch){ch.ctx.restore();}};
   bundleCharts['bcScore']=new Chart(document.getElementById('bcScore'),{
     type:'radar',
     data:{labels:[['Commercial','maturity'],['Market','liquidity'],['Commercial','success'],['Cultural','significance']],
-      datasets:[{data:profile,backgroundColor:fillGrad,borderColor:strokeGrad,borderWidth:2,tension:0,
-        pointBackgroundColor:'#34e7f0',pointBorderColor:'#ffffff',pointBorderWidth:1,pointRadius:3.5,pointHoverRadius:5}]},
-    plugins:[glow],
+      datasets:[{data:profile,backgroundColor:'rgba(124,58,237,.16)',borderColor:'#7c3aed',borderWidth:1.5,
+        tension:0.4,pointBackgroundColor:'#7c3aed',pointRadius:2.5}]},
     options:{maintainAspectRatio:false,plugins:{legend:{display:false},
       tooltip:{callbacks:{label:c=>c.parsed.r.toFixed(0)+' / 100'}}},
       scales:{r:{min:0,max:100,ticks:{display:false,stepSize:25},
-        pointLabels:{font:{size:8.5,weight:'600'},color:'#9fb3d1'},
-        grid:{color:'rgba(124,58,237,.18)'},angleLines:{color:'rgba(52,231,240,.22)'}}}}
+        pointLabels:{font:{size:8.5},color:'#4a5363'},
+        grid:{color:'#2e3650',circular:true},angleLines:{color:'#2e3650'}}}}
   });
 }
 
