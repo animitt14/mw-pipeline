@@ -223,11 +223,11 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
   </div>
   <div class="port-controls">
     <input class="port-search" id="bsrch" placeholder="Search artist, title..." oninput="renderBundle()">
+    <button class="port-filter" onclick="resetBundleFilters()" style="margin-left:4px;cursor:pointer;">Reset</button>
     <select class="port-filter" id="bfRegion" onchange="renderBundle()"><option value="">All regions</option>
       <option value="Americas">Americas</option><option value="Europe">Europe</option><option value="Asia">Asia</option><option value="Africa">Africa</option></select>
     <select class="port-filter" id="bfLiving" onchange="renderBundle()"><option value="">Living &amp; Deceased</option>
       <option value="Living">Living</option><option value="Deceased">Deceased</option></select>
-    <button class="port-filter" onclick="resetBundleFilters()" style="margin-left:4px;cursor:pointer;">Reset</button>
     <button class="csv-btn" onclick="exportBundle()">&#8595; CSV</button>
     <div class="risk-slider">
       <span class="rs-lbl">Risk Tolerance</span>
