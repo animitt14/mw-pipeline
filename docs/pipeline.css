@@ -497,13 +497,14 @@ a:hover { text-decoration: underline; }
 .li-inline:hover { color: var(--accent-2) !important; background: var(--accent-bg) !important; text-decoration: none !important; }
 
 .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: 500; white-space: nowrap; letter-spacing: 0.01em; }
+/* Deal-stage badges match the navy "Active Deals by Stage" funnel gradient */
 .stage-event     { background: #e2e5ea; color: #4a5363; }
-.stage-advisor   { background: #e2e5ea; color: #4a5363; }
-.stage-active    { background: #e2e5ea; color: #4a5363; }
-.stage-longterm  { background: #e2e5ea; color: #4a5363; }
-.stage-meeting   { background: var(--accent-bg); color: var(--accent-2); }
-.stage-nurture   { background: #e2e5ea; color: #4a5363; }
-.stage-rec       { background: var(--accent-bg); color: var(--accent-2); }
+.stage-advisor   { background: #8a96a8; color: #ffffff; }
+.stage-active    { background: #6e7d92; color: #ffffff; }
+.stage-longterm  { background: #54657c; color: #ffffff; }
+.stage-meeting   { background: #3d556e; color: #ffffff; }
+.stage-nurture   { background: #26405e; color: #ffffff; }
+.stage-rec       { background: #11203a; color: #ffffff; }
 .stage-won       { background: #d8e3d5; color: var(--green-2); }
 .stage-lost      { background: #e5d3ce; color: var(--red-2); }
 .stage-disq      { background: #ebedf0; color: #8a8d96; }
@@ -511,14 +512,24 @@ a:hover { text-decoration: underline; }
 .status-active   { background: #d8e3d5; color: var(--green-2); }
 .status-dormant  { background: #ebedf0; color: #8a8d96; }
 
-/* --- HEAT COLORING (days since last contact) --- */
-tr.heat-1 td { background: var(--heat-1); }
-tr.heat-1:hover td { background: var(--heat-1-hover); }
-tr.heat-2 td { background: var(--heat-2); }
-tr.heat-2:hover td { background: var(--heat-2-hover); }
-tr.heat-3 td { background: var(--heat-3); }
-tr.heat-3:hover td { background: var(--heat-3-hover); }
-tr.contacted-today td { opacity: 0.4; }
+/* --- ALL CONTACTS: light alternating rows --- */
+#pipeline-table tbody tr:nth-child(even) td { background: #f6f7f9; }
+#pipeline-table tbody tr:hover td { background: #eef1f6; }
+
+/* --- LAST CONTACTED cell: deeper red the longer since contact --- */
+td.lc-1 { background: #fbe9e7 !important; color: #b23b2e; font-weight: 500; }
+td.lc-2 { background: #f3c7c0 !important; color: #962d22; font-weight: 600; }
+td.lc-3 { background: #e79a8e !important; color: #6e1a12; font-weight: 600; }
+
+/* --- ANI / ERIK sub-toggle (under the single "Pipeline" nav entry) --- */
+.pipe-toggle { display: flex; gap: 5px; margin: 12px 0 4px; padding: 0 2px; }
+.pipe-toggle .pt {
+  font-size: 0.8rem; font-weight: 600; color: var(--text-3);
+  background: var(--surface-2); padding: 6px 18px; border-radius: 6px;
+  text-decoration: none; transition: all .12s;
+}
+.pipe-toggle .pt:hover { color: var(--text); }
+.pipe-toggle .pt.active { background: #11203a; color: #fff; }
 
 /* --- NAV (top-of-page links): see nav.css (imported at top) --- */
 

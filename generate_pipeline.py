@@ -97,13 +97,17 @@ ALL_PAGES = OWNERS + [OVERVIEW_CFG, VELOCITY_CFG, SCORED_CFG, MAGAZINE_CFG, DELI
 
 
 def render_nav(active_cfg):
-    """Single source of truth for the top-nav markup (styled by nav.css)."""
-    return '<div class="nav">' + ''.join(
-        f'<a href="{Path(o["out"]).name}" class="active">{o["name"]}</a>'
-        if o is active_cfg else
-        f'<a href="{Path(o["out"]).name}">{o["name"]}</a>'
-        for o in ALL_PAGES
-    ) + '</div>'
+    """Single source of truth for the top-nav markup (styled by nav.css).
+    Ani + Erik are collapsed into one 'Pipeline' entry (an Ani/Erik sub-toggle
+    is added on the owner pages). Portfolio is a static page included here so the
+    link survives regeneration."""
+    owner_active = active_cfg in OWNERS
+    items = ['<a href="index.html"' + (' class="active"' if owner_active else '') + '>Pipeline</a>']
+    for o in [OVERVIEW_CFG, VELOCITY_CFG, SCORED_CFG, MAGAZINE_CFG, DELIVERABLES_CFG]:
+        active = ' class="active"' if o is active_cfg else ''
+        items.append(f'<a href="{Path(o["out"]).name}"{active}>{o["name"]}</a>')
+    items.append('<a href="portfolio.html">Portfolio</a>')
+    return '<div class="nav">' + ''.join(items) + '</div>'
 
 
 OVERVIEW_OWNER_IDS = {'77771452', '73613833'}
@@ -1269,13 +1273,10 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
                 contacted_today = ct.date() == today_date
             except Exception:
                 pass
-        _classes = []
-        if contacted_today:
-            _classes.append('contacted-today')
-        else:
-            _heat = heat_cls(r.get('days_since'))
-            if _heat: _classes.append(_heat)
-        row_class = f' class="{" ".join(_classes)}"' if _classes else ''
+        # Recency shading now lives on the Last Contacted cell only (plain alternating rows otherwise)
+        _lc_map = {'heat-1': 'lc-1', 'heat-2': 'lc-2', 'heat-3': 'lc-3'}
+        lc_cls = _lc_map.get(heat_cls(r.get('days_since')), '')
+        row_class = ''
         tc_parts = [shorten_title(r['title'])[:28] if r['title'] else '', r['company'][:24] if r['company'] else '']
         tc_str = ', '.join(p for p in tc_parts if p)
         li_bit = f'<a href="{escape(r["li_url"])}" target="_blank" class="li-inline">LI</a> ' if r['li_url'] else ''
@@ -1293,7 +1294,7 @@ def build_html(contacts, records, by_name, by_last_name=None, tasks=None, meetin
             f'      <td>{stage_cell}</td>\n'
             f'      <td>{escape(r["amount_fmt"])}</td>\n'
             f'      <td>{r["rsvp_date"]}</td>\n'
-            f'      <td>{fmt_days_ago(r.get("days_since"))}</td>\n'
+            f'      <td class="lc-cell {lc_cls}">{fmt_days_ago(r.get("days_since"))}</td>\n'
             f'      <td>{mtg_cell}</td>\n'
             f'      <td>{task_cell}</td>\n'
             f'      <td>{escape(r["times_contacted"])}</td>\n'
@@ -2520,6 +2521,12 @@ def main():
     for owner_cfg in OWNERS:
         print(f'\n=== {owner_cfg["name"]} ===', flush=True)
         nav_html = render_nav(owner_cfg)
+        # Ani/Erik sub-toggle under the single "Pipeline" nav entry
+        _ani = ' active' if owner_cfg['name'] == 'Ani' else ''
+        _erik = ' active' if owner_cfg['name'] == 'Erik' else ''
+        nav_html += (f'<div class="pipe-toggle">'
+                     f'<a href="index.html" class="pt{_ani}">Ani</a>'
+                     f'<a href="erik.html" class="pt{_erik}">Erik</a></div>')
 
         print('Fetching contacts...', flush=True)
         contacts = fetch_all_contacts(owner_cfg['id'])
