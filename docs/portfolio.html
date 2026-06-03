@@ -1020,9 +1020,10 @@ function computeAlloc(v){
   const remaining=new Set(BUNDLE);
   const cG={},cR={},cL={};  // running counts of gender / region / living among picks
   const picked=[];
-  // Always anchor the book with our top-performing Basquiat (best repeat-sales appreciation)
-  const basq=BUNDLE.filter(r=>String(r[3]).indexOf('Basquiat')>=0)
-                   .sort((a,b)=>(parseFloat(b[9])||0)-(parseFloat(a[9])||0)||(b[0]||0)-(a[0]||0))[0];
+  // Always anchor the book with the Basquiat "Made in Japan II" (top performer)
+  const basq=BUNDLE.find(r=>String(r[2])==='Made in Japan II')
+            || BUNDLE.filter(r=>String(r[3]).indexOf('Basquiat')>=0)
+                     .sort((a,b)=>(parseFloat(b[9])||0)-(parseFloat(a[9])||0)||(b[0]||0)-(a[0]||0))[0];
   if(basq){ picked.push(basq); remaining.delete(basq); cG[basq[6]]=1; cR[basq[8]]=1; cL[basq[7]]=1; }
   while(picked.length<N && remaining.size){
     let best=null,bs=-Infinity;
