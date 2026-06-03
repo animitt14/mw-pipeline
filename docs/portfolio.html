@@ -89,8 +89,73 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
 .bar-wrap{width:64px;margin:4px auto 0;height:5px;background:var(--surface-2,#e2e5ea);border-radius:3px;overflow:hidden;}
 #btbl th:first-child,#btbl td:first-child{width:270px;max-width:270px;}
 #btbl td:first-child .bw-title{white-space:normal;line-height:1.2;font-weight:600;color:var(--text,#0e1422);}
+/* ===== Proposal overlay — recreates deliverables deck pages 1-4, print-ready ===== */
+#pv{position:fixed;inset:0;z-index:9999;background:#c9ccd3;overflow:auto;display:none;
+  --indigo:#5c60d6;--ink:#3c3c3c;--sub:#6e6e6e;--page-bg:#eef0f5;--line:#d9dce3;--pw:10in;--ph:7.5in;}
+#pv.show{display:block;}
+#pv .pv-toolbar{position:sticky;top:0;z-index:10;display:flex;gap:10px;align-items:center;
+  background:#22242b;padding:10px 16px;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+#pv .pv-title{margin-right:auto;color:#cfd2da;font:600 13px Arial,sans-serif;letter-spacing:.03em;}
+#pv .pv-toolbar button{font:600 13px Arial,sans-serif;border:none;border-radius:7px;padding:9px 16px;cursor:pointer;}
+#pv .pv-print{background:#5c60d6;color:#fff;}
+#pv .pv-close{background:#3a3d46;color:#cfd2da;}
+#pv .pv-pages{padding:24px 0 60px;}
+#pv .page{width:var(--pw);height:var(--ph);position:relative;overflow:hidden;background:var(--page-bg);
+  margin:0 auto 26px;box-shadow:0 18px 60px rgba(0,0,0,.28);page-break-after:always;font-family:Arial,Helvetica,sans-serif;}
+#pv .page::before,#pv .page::after{content:"";position:absolute;height:7px;width:1.15in;background:var(--indigo);top:0;}
+#pv .page::before{left:0;} #pv .page::after{right:0;}
+#pv .corner-b{position:absolute;bottom:0;height:7px;width:1.15in;background:var(--indigo);}
+#pv .corner-b.l{left:0;} #pv .corner-b.r{right:0;}
+#pv .title{position:absolute;left:.55in;top:.34in;font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:32px;color:var(--ink);line-height:1.05;}
+#pv .subtitle{position:absolute;left:.56in;top:.92in;font-size:14.5px;color:var(--sub);max-width:8.9in;line-height:1.4;}
+#pv .footer{position:absolute;left:0;right:0;bottom:.18in;height:.5in;}
+#pv .footer .wm{position:absolute;left:.55in;bottom:.07in;font:700 12px Georgia,serif;letter-spacing:.18em;color:#8b8b8b;}
+#pv .footer .disc{position:absolute;left:1.95in;right:.7in;bottom:0;font-size:5.6px;line-height:1.32;color:#8b8b8b;}
+#pv .footer .pno{position:absolute;right:.34in;bottom:.06in;font-size:9px;color:#8b8b8b;}
+#pv .zcover{background:#15233f;} #pv .zcover::before,#pv .zcover::after{display:none;}
+#pv .zleft{position:absolute;left:0;top:0;bottom:0;width:9px;background:#c9a86a;}
+#pv .cwm{position:absolute;left:.62in;top:.62in;font:700 21px Georgia,serif;letter-spacing:.16em;color:#fff;opacity:.95;}
+#pv .zcover .title{top:1.95in;color:#fff;font-size:46px;}
+#pv .zcover .subtitle{top:3.02in;color:#cdad6e;font-style:italic;font-size:18px;max-width:8in;}
+#pv .zc-body{position:absolute;left:.55in;right:.55in;top:4.05in;}
+#pv .zrule{height:1px;background:rgba(201,168,106,.45);}
+#pv .stats{display:flex;gap:.45in;padding:30px 2px;}
+#pv .stat-item{flex:1;}
+#pv .stat-num{font-family:Georgia,serif;font-size:30px;color:#f4f6fa;line-height:1;}
+#pv .stat-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#bd9f6c;margin-top:8px;}
+#pv .prepared{margin-top:38px;}
+#pv .prep-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#bd9f6c;}
+#pv .prep-name{font-family:Georgia,serif;font-style:italic;font-size:34px;color:#f4f6fa;margin-top:7px;}
+#pv .cover-date{position:absolute;right:.6in;bottom:.85in;font-style:italic;color:#97a0b5;font-size:13px;}
+#pv .chart-area{position:absolute;left:.55in;right:.55in;top:1.4in;bottom:.82in;display:flex;align-items:center;justify-content:center;}
+#pv .pie-panels{position:absolute;left:.55in;right:.55in;top:1.5in;bottom:.82in;display:flex;gap:.28in;}
+#pv .panel{flex:1;background:#f3f2ef;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 8px;}
+#pv .panel h4{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:15px;color:#4a4a4a;margin-bottom:8px;}
+#pv .statbox-row{position:absolute;left:.55in;right:.55in;top:1.5in;display:flex;gap:.2in;}
+#pv .statbox{flex:1;border:1px solid #d3d8ef;border-left:5px solid var(--indigo);background:#eef0fb;border-radius:7px;padding:16px 20px;}
+#pv .statbox .n{font-family:Georgia,serif;font-size:25px;color:#1e2a44;line-height:1;}
+#pv .statbox .l{font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#6b6f86;margin-top:8px;}
+#pv .ztable-wrap{position:absolute;left:.55in;right:.55in;top:2.62in;bottom:.82in;}
+#pv .zt{width:100%;border-collapse:collapse;font-size:11px;}
+#pv .zt thead th{background:#1e2a44;color:#fff;font-weight:600;padding:9px 13px;text-align:left;font-size:10.5px;}
+#pv .zt th.num,#pv .zt td.num{text-align:right;}
+#pv .zt th.ctr,#pv .zt td.ctr{text-align:center;}
+#pv .zt td{padding:7px 13px;border-bottom:1px solid #e9e9e9;color:#333;}
+#pv .zt tbody tr:nth-child(even){background:#faf9f7;}
+#pv .tier-mature{color:#1e2a44;font-style:italic;font-weight:600;}
+#pv .tier-established{color:#3a4f8a;font-style:italic;}
+#pv .tier-emerging{color:#5b87c0;font-style:italic;}
+@media print{
+  body>*:not(#pv){display:none!important;}
+  #pv{position:static;display:block;background:#fff;overflow:visible;}
+  #pv .pv-toolbar{display:none!important;}
+  #pv .pv-pages{padding:0;}
+  #pv .page{box-shadow:none;margin:0;}
+  @page{size:10in 7.5in;margin:0;}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 </head>
 <body>
 <div id="pw-gate"><div id="pw-box"><h2>MW PORTFOLIO CATALOG</h2>
@@ -231,6 +296,8 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
     <select class="port-filter" id="bfLiving" onchange="renderBundle()"><option value="">Living &amp; Deceased</option>
       <option value="Living">Living</option><option value="Deceased">Deceased</option></select>
     <button class="csv-btn" onclick="exportBundle()">&#8595; CSV</button>
+    <input id="pvName" class="amt-input" placeholder="Prepared for&hellip;" style="width:128px">
+    <button class="csv-btn" onclick="openProposal()" style="border-color:#7c3aed;color:#7c3aed;font-weight:600">&#9633; Generate Proposal</button>
     <div class="risk-slider">
       <span class="rs-lbl">Risk Tolerance</span>
       <span class="rs-end">1&nbsp;Cons.</span>
@@ -1325,9 +1392,141 @@ document.querySelectorAll('table.port thead th[title]').forEach(th=>{
   th.setAttribute('data-tip', th.getAttribute('title')); th.removeAttribute('title');
 });
 
+// ===== Proposal: recreate deliverables deck pages 1-4 from the live bundle =====
+// datalabels auto-registers globally via its CDN; unregister so it only applies to
+// the proposal charts (passed per-chart), not the Bundle donuts.
+try{ if(window.ChartDataLabels) Chart.unregister(window.ChartDataLabels); }catch(e){}
+let pvCharts={};
+function pvTier(artist){
+  const m=ARTIST_META[(artist||'').toUpperCase()];
+  let mat=m?m[0]:null;
+  if(mat==='pre-1996') return 'Mature';
+  if(typeof mat!=='number') return 'Established';
+  if(mat>=25) return 'Mature';
+  if(mat>=10) return 'Established';
+  return 'Emerging';
+}
+function openProposal(){
+  const mode=+document.getElementById('riskSlider').value;
+  const fr=document.getElementById('bfRegion').value, fl=document.getElementById('bfLiving').value;
+  let universe=[...BUNDLE];
+  if(fr) universe=universe.filter(r=>r[8]===fr);
+  if(fl) universe=universe.filter(r=>r[7]===fl);
+  const alloc=computeAlloc(mode, universe);
+  if(!alloc.size){ alert('No allocation to show — set the risk slider first.'); return; }
+  const amtRaw=(document.getElementById('allocAmt').value||'').replace(/[^0-9.]/g,'');
+  const amount=amtRaw?parseFloat(amtRaw):100000;
+  // aggregate work-level allocation up to the artist level
+  const byArtist={};
+  alloc.forEach((p,r)=>{
+    const a=r[3]||'Unknown';
+    if(!byArtist[a]) byArtist[a]={artist:a,pct:0,gender:r[6]||'',region:r[8]||'',tier:pvTier(a)};
+    byArtist[a].pct+=p;
+  });
+  const arts=Object.values(byArtist).sort((x,y)=>y.pct-x.pct);
+  const strat=mode<=3?'Conservative':mode<=7?'Balanced':'Aggressive';
+  const usd=v=>'$'+Math.round(v).toLocaleString();
+  document.getElementById('pvCovSub').innerHTML=strat+' Portfolio Strategy&nbsp;&nbsp;&middot;&nbsp;&nbsp;'+usd(amount)+' Total Allocation';
+  document.getElementById('pvCovStats').innerHTML=
+    '<div class="stat-item"><div class="stat-num">'+arts.length+'</div><div class="stat-label">Artists</div></div>'+
+    '<div class="stat-item"><div class="stat-num">'+usd(amount)+'</div><div class="stat-label">Total Allocation</div></div>'+
+    '<div class="stat-item"><div class="stat-num">'+strat+'</div><div class="stat-label">Strategy</div></div>';
+  document.getElementById('pvCovName').textContent=document.getElementById('pvName').value||'Valued Client';
+  document.getElementById('pvCovDate').textContent=new Date().toLocaleString('en-US',{month:'long',year:'numeric'});
+  document.getElementById('pvAllocSub').innerHTML='Individual weighting across '+arts.length+' artists &mdash; '+usd(amount)+' portfolio';
+  let male=0,female=0; const regions=new Set();
+  arts.forEach(a=>{ if(a.gender==='Male')male+=a.pct; else if(a.gender==='Female')female+=a.pct; if(a.region)regions.add(a.region); });
+  const gt=(male+female)||1;
+  document.getElementById('pvStatboxes').innerHTML=
+    '<div class="statbox"><div class="n">'+arts.length+'</div><div class="l">Artists</div></div>'+
+    '<div class="statbox"><div class="n">'+usd(amount)+'</div><div class="l">Total Allocation</div></div>'+
+    '<div class="statbox"><div class="n">'+Math.round(female/gt*100)+'% / '+Math.round(male/gt*100)+'%</div><div class="l">Female / Male</div></div>'+
+    '<div class="statbox"><div class="n">'+regions.size+'</div><div class="l">Regions</div></div>';
+  const tcls={'Mature':'tier-mature','Established':'tier-established','Emerging':'tier-emerging'};
+  document.getElementById('pvTbody').innerHTML=arts.map(a=>{
+    const dollars=Math.round(a.pct/100*amount/20)*20;
+    return '<tr><td>'+a.artist+'</td><td class="num">'+usd(dollars)+'</td><td class="ctr">'+a.pct.toFixed(1)+'%</td>'+
+      '<td class="ctr '+(tcls[a.tier]||'')+'">'+a.tier+'</td><td class="ctr">'+(a.gender||'')+'</td><td class="ctr">'+(a.region||'')+'</td></tr>';
+  }).join('');
+  document.getElementById('pv').classList.add('show');
+  buildProposalCharts(arts);
+}
+function closeProposal(){ document.getElementById('pv').classList.remove('show'); }
+function buildProposalCharts(arts){
+  Object.values(pvCharts).forEach(c=>{try{c.destroy();}catch(e){}}); pvCharts={};
+  const PAL=['#1e2a44','#2f4470','#3a4f8a','#5c60d6','#7d86c9','#9fb0d8','#c9a86a','#b07f4f','#5f7a52','#8aa67e','#3a8a8a'];
+  const tally=key=>{const m={};arts.forEach(a=>{const k=a[key]||'Other';m[k]=(m[k]||0)+a.pct;});return m;};
+  const dl=window.ChartDataLabels?[window.ChartDataLabels]:[];
+  const pie=(id,labels,data,colors,opts)=>{
+    opts=opts||{};
+    const el=document.getElementById(id); if(!el) return;
+    pvCharts[id]=new Chart(el,{type:'pie',
+      data:{labels:labels,datasets:[{data:data,backgroundColor:colors,borderColor:'#fff',borderWidth:1.5}]},
+      plugins:dl,
+      options:{responsive:false,animation:false,devicePixelRatio:2,layout:{padding:6},
+        plugins:{legend:{position:'bottom',labels:{boxWidth:9,boxHeight:9,padding:7,font:{size:opts.legendSize||10},color:'#444'}},
+          datalabels:{color:'#fff',font:{size:opts.dlSize||11,weight:'bold'},formatter:v=>v>=(opts.dlMin||0)?Math.round(v)+'%':''}}}
+    });
+  };
+  pie('pvAlloc', arts.map(a=>a.artist), arts.map(a=>+a.pct.toFixed(1)), arts.map((a,i)=>PAL[i%PAL.length]), {legendSize:10,dlSize:13,dlMin:5});
+  const g=tally('gender'); pie('pvGender', Object.keys(g), Object.values(g).map(v=>Math.round(v)), ['#1e2a44','#c9a86a','#9fb0d8'], {legendSize:10,dlSize:14});
+  const rg=tally('region'); pie('pvRegion', Object.keys(rg), Object.values(rg).map(v=>Math.round(v)), ['#1e2a44','#3a4f8a','#c9a86a','#b07f4f'], {legendSize:10,dlSize:12,dlMin:4});
+  const t=tally('tier'); pie('pvTier', Object.keys(t), Object.values(t).map(v=>Math.round(v)), ['#1e2a44','#3a4f8a','#5b87c0'], {legendSize:10,dlSize:12,dlMin:4});
+}
+
 buildOverview();
 render();
 renderArtists();
 _lastChartMode=null; renderBundle();
 </script>
+
+<div id="pv">
+  <div class="pv-toolbar">
+    <span class="pv-title">Proposed Custom Art Portfolio &mdash; deck pages 1&ndash;4</span>
+    <button class="pv-print" onclick="window.print()">Print / Save PDF</button>
+    <button class="pv-close" onclick="closeProposal()">Close</button>
+  </div>
+  <div class="pv-pages">
+    <div class="page zcover">
+      <span class="zleft"></span>
+      <div class="cwm">MASTERWORKS</div>
+      <div class="title">Proposed Custom Art Portfolio</div>
+      <div class="subtitle" id="pvCovSub"></div>
+      <div class="zc-body">
+        <div class="zrule"></div>
+        <div class="stats" id="pvCovStats"></div>
+        <div class="zrule"></div>
+        <div class="prepared"><div class="prep-label">Prepared For</div><div class="prep-name" id="pvCovName"></div></div>
+      </div>
+      <div class="cover-date" id="pvCovDate"></div>
+      <div class="footer"><span class="wm">MASTERWORKS</span><div class="disc">For discussion purposes only. Hypothetical portfolio &mdash; not an offer to buy or sell securities. Past performance is not indicative of future results.</div><div class="pno">1</div></div>
+    </div>
+    <div class="page zchart">
+      <span class="corner-b l"></span><span class="corner-b r"></span>
+      <div class="title">Artist Allocation</div>
+      <div class="subtitle" id="pvAllocSub"></div>
+      <div class="chart-area"><canvas id="pvAlloc" width="700" height="515"></canvas></div>
+      <div class="footer"><span class="wm">MASTERWORKS</span><div class="disc">For discussion purposes only. Hypothetical portfolio &mdash; not an offer to buy or sell securities. Past performance is not indicative of future results.</div><div class="pno">2</div></div>
+    </div>
+    <div class="page zchart">
+      <span class="corner-b l"></span><span class="corner-b r"></span>
+      <div class="title">Portfolio Diversification</div>
+      <div class="subtitle">Breakdown by gender, geographic region, and artist market tier</div>
+      <div class="pie-panels">
+        <div class="panel"><h4>By Gender</h4><canvas id="pvGender" width="250" height="410"></canvas></div>
+        <div class="panel"><h4>By Region</h4><canvas id="pvRegion" width="250" height="410"></canvas></div>
+        <div class="panel"><h4>By Artist Tier</h4><canvas id="pvTier" width="250" height="410"></canvas></div>
+      </div>
+      <div class="footer"><span class="wm">MASTERWORKS</span><div class="disc">For discussion purposes only. Hypothetical portfolio &mdash; not an offer to buy or sell securities. Past performance is not indicative of future results.</div><div class="pno">3</div></div>
+    </div>
+    <div class="page zbreak">
+      <span class="corner-b l"></span><span class="corner-b r"></span>
+      <div class="title">Portfolio Breakdown</div>
+      <div class="subtitle">Individual artist allocations, weights, and classification</div>
+      <div class="statbox-row" id="pvStatboxes"></div>
+      <div class="ztable-wrap"><table class="zt"><thead><tr><th>Artist</th><th class="num">Allocation</th><th class="ctr">Weight</th><th class="ctr">Tier</th><th class="ctr">Gender</th><th class="ctr">Region</th></tr></thead><tbody id="pvTbody"></tbody></table></div>
+      <div class="footer"><span class="wm">MASTERWORKS</span><div class="disc">For discussion purposes only. Hypothetical portfolio &mdash; not an offer to buy or sell securities. Past performance is not indicative of future results.</div><div class="pno">4</div></div>
+    </div>
+  </div>
+</div>
 </body></html>
