@@ -68,7 +68,7 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
 @media(max-width:1100px){.ov-kpis{grid-template-columns:repeat(4,1fr);}.ov-charts{grid-template-columns:1fr;}}
 .csv-btn{background:var(--surface-2,#1e2535);border:1px solid var(--border,#2e3650);border-radius:7px;color:var(--text2,#4a5363);font-size:12px;padding:7px 12px;cursor:pointer;}
 .csv-btn:hover{border-color:#7c3aed;color:#7c3aed;}
-.bundle-charts{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:4px 0 18px;}
+.bundle-charts{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:4px 0 18px;}
 .bc-box{background:var(--surface,#1a1f2e);border:1px solid var(--border,#2e3650);border-radius:10px;padding:12px 14px;}
 .bc-title{font-size:10.5px;font-weight:600;color:var(--text2,#4a5363);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;text-align:center;}
 .bc-wrap{position:relative;height:170px;}
@@ -219,6 +219,7 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
     <div class="bc-box"><div class="bc-title">Gender</div><div class="bc-wrap"><canvas id="bcGender"></canvas></div></div>
     <div class="bc-box"><div class="bc-title">Living / Deceased</div><div class="bc-wrap"><canvas id="bcLiving"></canvas></div></div>
     <div class="bc-box"><div class="bc-title">Region</div><div class="bc-wrap"><canvas id="bcRegion"></canvas></div></div>
+    <div class="bc-box"><div class="bc-title">Artist Scorecard</div><div class="bc-wrap"><canvas id="bcScore"></canvas></div></div>
   </div>
   <div class="port-controls">
     <input class="port-search" id="bsrch" placeholder="Search artist, title..." oninput="renderBundle()">
@@ -265,7 +266,8 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
     <b>How many works.</b> The book is broadest in the middle of the scale (~15 works) and more concentrated at the extremes (~9 works), so a higher risk tolerance means fewer, larger positions.<br>
     <b>Balance.</b> Among works that fit the target risk, selection favors variety across gender, living vs. deceased, and region &mdash; so the mix stays diversified rather than clustering. This is a visual tilt, not a hard rule.<br>
     <b>Weighting.</b> &ldquo;Made in Japan II&rdquo; (Basquiat) is held in every portfolio and overweighted to roughly twice a normal position (capped at 25%). All remaining works split the rest evenly, so weights total 100%.<br>
-    <b>Dollars.</b> When an Amount is entered, each weight is converted to dollars and rounded to whole $20 shares (no fractional ownership). Blended appreciation = the average of each work&rsquo;s repeat-sales appreciation, weighted by the dollars actually deployed after $20-share rounding (or by target % when no Amount is entered).
+    <b>Dollars.</b> When an Amount is entered, each weight is converted to dollars and rounded to whole $20 shares (no fractional ownership). Blended appreciation = the average of each work&rsquo;s repeat-sales appreciation, weighted by the dollars actually deployed after $20-share rounding (or by target % when no Amount is entered).<br>
+    <b>Artist Scorecard.</b> The radar is the allocation-weighted average of the picked works across four artist measures &mdash; commercial maturity (years since first auction sale), market liquidity (auction volume), commercial success (record auction price), and cultural significance (museum shows over the last ~5 years). Each axis is scaled 0&ndash;100 against the strongest artist in the active bundle, and it re-draws as the risk slider or dropdowns change the picks.
   </div>
   </div>
 </div>
@@ -989,6 +991,19 @@ function switchPortTab(tab){
 // Charts reflect the current allocation: at "All" they count every active work;
 // once a profile is chosen they show the PICKED book, weighted by allocation %.
 let bundleCharts={}, _lastChartMode=null;
+// Artist scorecard (page-7 radar): commercial maturity (yrs since first auction),
+// market liquidity (auction volume), commercial success (record price $M), cultural
+// significance (museum shows, 5y). Source: embedded ARTIST_META, keyed by upper-case name.
+function workScores(r){
+  const m=ARTIST_META[(r[3]||'').toUpperCase()];
+  if(!m) return null;
+  let mat=m[0]; if(mat==='pre-1996'||mat<0) mat=30;   // >30yrs floor
+  return [mat, m[1], m[2], m[3]];
+}
+// Per-axis max across the full active bundle — fixed scale so the radar is comparable
+// as the slider/dropdowns change which works are picked.
+const SCORE_MAX=(function(){ const mx=[1,1,1,1]; BUNDLE.forEach(r=>{const s=workScores(r); if(s)s.forEach((v,i)=>{if(v>mx[i])mx[i]=v;});}); return mx; })();
+
 function renderBundleCharts(mode, alloc){
   Object.values(bundleCharts).forEach(c=>{ try{c.destroy();}catch(e){} });
   bundleCharts={};
@@ -1010,6 +1025,19 @@ function renderBundleCharts(mode, alloc){
   donut('bcGender',tally(6),{'Male':'#4a6fa5','Female':'#d98ab0'});
   donut('bcLiving',tally(7),{'Living':'#37a26b','Deceased':'#8a8f9c'});
   donut('bcRegion',tally(8),{'Americas':'#2e5cb8','Europe':'#37a26b','Asia':'#e07b39','Africa':'#d1495b'});
+  // Artist Scorecard radar — allocation-weighted, normalized 0-100 to the bundle max per axis
+  const agg=[0,0,0,0]; let rw=0;
+  rows.forEach(r=>{ const s=workScores(r); if(s){ const w=wt(r); s.forEach((v,i)=>{agg[i]+=w*(v/SCORE_MAX[i]*100);}); rw+=w; } });
+  const profile = rw ? agg.map(x=>+(x/rw).toFixed(1)) : [0,0,0,0];
+  bundleCharts['bcScore']=new Chart(document.getElementById('bcScore'),{
+    type:'radar',
+    data:{labels:[['Commercial','maturity'],['Market','liquidity'],['Commercial','success'],['Cultural','significance']],
+      datasets:[{data:profile,backgroundColor:'rgba(124,58,237,.16)',borderColor:'#7c3aed',borderWidth:1.5,pointBackgroundColor:'#7c3aed',pointRadius:2.5}]},
+    options:{maintainAspectRatio:false,plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>c.parsed.r.toFixed(0)+' / 100'}}},
+      scales:{r:{min:0,max:100,ticks:{display:false,stepSize:25},
+        pointLabels:{font:{size:8.5},color:'#4a5363'},grid:{color:'#2e3650'},angleLines:{color:'#2e3650'}}}}
+  });
 }
 
 // ── BUNDLE tab (active offerings) ── cols: 0 artist 1 title 2 risk 3 gender 4 living 5 region 6 shares
