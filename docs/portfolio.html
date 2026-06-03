@@ -122,9 +122,9 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
   <div class="ov-kpis" id="ovKpis"></div>
 
   <div class="port-tabs" id="portTabs">
-    <button class="port-tab active" onclick="switchPortTab('artists')">Artists</button>
+    <button class="port-tab active" onclick="switchPortTab('bundle')">Bundle</button>
+    <button class="port-tab" onclick="switchPortTab('artists')">Artists</button>
     <button class="port-tab" onclick="switchPortTab('paintings')">Paintings</button>
-    <button class="port-tab" onclick="switchPortTab('bundle')">Bundle</button>
   </div>
 
   <!-- PAINTINGS TAB -->
@@ -174,7 +174,7 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
   </div>
 
   <!-- ARTISTS TAB -->
-  <div id="tab-artists">
+  <div id="tab-artists" style="display:none">
   <div class="port-controls">
     <input class="port-search" id="asrch" placeholder="Search artist..." oninput="renderArtists()">
     <select class="port-filter" id="afRisk" onchange="renderArtists()">
@@ -213,7 +213,7 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
   </div>
 
   <!-- BUNDLE TAB -->
-  <div id="tab-bundle" style="display:none">
+  <div id="tab-bundle">
   <div class="bundle-charts">
     <div class="bc-box"><div class="bc-title">Risk Category</div><div class="bc-wrap"><canvas id="bcRisk"></canvas></div></div>
     <div class="bc-box"><div class="bc-title">Gender</div><div class="bc-wrap"><canvas id="bcGender"></canvas></div></div>
@@ -968,7 +968,7 @@ function resetFilters(){
 
 // ── TAB SWITCHING ────────────────────────────────────────────────────────────
 function switchPortTab(tab){
-  const order=['artists','paintings','bundle'];
+  const order=['bundle','artists','paintings'];
   document.getElementById('tab-artists').style.display=tab==='artists'?'':'none';
   document.getElementById('tab-paintings').style.display=tab==='paintings'?'':'none';
   document.getElementById('tab-bundle').style.display=tab==='bundle'?'':'none';
@@ -1207,5 +1207,6 @@ document.querySelectorAll('table.port thead th[title]').forEach(th=>{
 buildOverview();
 render();
 renderArtists();
+_lastChartMode=null; renderBundle();
 </script>
 </body></html>
