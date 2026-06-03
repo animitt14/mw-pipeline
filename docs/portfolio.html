@@ -68,6 +68,12 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
 .bc-title{font-size:10.5px;font-weight:600;color:var(--text2,#4a5363);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;text-align:center;}
 .bc-wrap{position:relative;height:170px;}
 @media(max-width:1100px){.bundle-charts{grid-template-columns:repeat(2,1fr);}}
+.risk-slider{display:flex;align-items:center;gap:7px;margin-left:8px;}
+.risk-slider .rs-lbl{font-size:11px;font-weight:600;color:var(--text2,#4a5363);}
+.risk-slider .rs-end{font-size:10px;color:var(--text3,#64748b);}
+.risk-slider input[type=range]{width:120px;accent-color:#7c3aed;cursor:pointer;}
+.risk-slider .rs-mode{font-size:11px;font-weight:700;color:#7c3aed;min-width:78px;}
+td.alloc-on{font-weight:700;color:#7c3aed;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 </head>
@@ -209,6 +215,13 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
       <option value="Living">Living</option><option value="Deceased">Deceased</option></select>
     <button class="port-filter" onclick="resetBundleFilters()" style="margin-left:4px;cursor:pointer;">Reset</button>
     <button class="csv-btn" onclick="exportBundle()">&#8595; CSV</button>
+    <div class="risk-slider">
+      <span class="rs-lbl">Allocation</span>
+      <span class="rs-end">Cons.</span>
+      <input type="range" min="0" max="2" step="1" value="0" id="riskSlider" oninput="renderBundle()">
+      <span class="rs-end">Aggr.</span>
+      <span class="rs-mode" id="riskMode">Conservative</span>
+    </div>
     <span class="port-count" id="bcnt"></span>
   </div>
   <p style="font-size:9px;color:var(--text3);margin:-4px 0 10px;letter-spacing:.02em">Active (open) offerings only &middot; Available ($) = unsold shares &times; $20/share, as of Jun 2026</p>
@@ -968,10 +981,30 @@ function renderBundleCharts(){
 
 // ── BUNDLE tab (active offerings) ── cols: 0 artist 1 title 2 risk 3 gender 4 living 5 region 6 shares
 let bSortCol=0, bSortDir=-1;   // default: Available ($), high to low
+
+function fmtAlloc(p){return (Number.isInteger(p)?p:p.toFixed(1))+'%';}
+// Allocation by risk profile. BUNDLE is sorted by Available desc, so slice(0,n)=top-N by availability.
+// cols: 5 risk. Conservative core = Conservative + Mod. Conservative.
+function computeAlloc(mode){
+  const isCons=r=>r[5]==='Conservative'||r[5]==='Mod. Conservative';
+  const isMod=r=>r[5]==='Moderate';
+  const isAgg=r=>r[5]==='Mod. Aggressive'||r[5]==='Aggressive'||r[5]==='Speculative';
+  const cons=BUNDLE.filter(isCons), mod=BUNDLE.filter(isMod), agg=BUNDLE.filter(isAgg);
+  const m=new Map();
+  const give=(arr,n,total)=>{const p=arr.slice(0,n);const e=p.length?total/p.length:0;p.forEach(r=>m.set(r,(m.get(r)||0)+e));};
+  if(mode===0) give(cons,5,100);                       // Conservative: top 5 conservative
+  else if(mode===1){ give(cons,5,85); give(mod,3,15); }  // Moderate: 85% cons + 15% moderate
+  else { give(cons,5,70); give(agg,4,30); }              // Aggressive: 70% cons + 30% aggressive
+  return m;
+}
+
 function renderBundle(){
   const q=(document.getElementById('bsrch').value||'').toLowerCase();
   const fr=document.getElementById('bfRegion').value;
   const fl=document.getElementById('bfLiving').value;
+  const mode=+document.getElementById('riskSlider').value;
+  document.getElementById('riskMode').textContent=['Conservative','Moderate','Aggressive'][mode];
+  const alloc=computeAlloc(mode);
   let rows=[...BUNDLE];
   if(q) rows=rows.filter(r=>(r[2]||'').toLowerCase().includes(q)||(r[3]||'').toLowerCase().includes(q));
   if(fr) rows=rows.filter(r=>r[8]===fr);
@@ -996,7 +1029,7 @@ function renderBundle(){
       <td class="ctr">${r[6]==='Male'?'M':r[6]==='Female'?'F':r[6]||''}</td>
       <td class="ctr">${r[7]||''}</td>
       <td class="ctr">${r[8]||''}</td>
-      <td class="ctr" style="color:var(--text3,#94a3b8)">&mdash;</td>
+      <td class="ctr ${alloc.has(r)?'alloc-on':''}">${alloc.has(r)?fmtAlloc(alloc.get(r)):'<span style="color:var(--text3,#94a3b8)">&mdash;</span>'}</td>
     </tr>`;
   }).join('');
 }
@@ -1007,6 +1040,7 @@ function bsort(col){
 }
 function resetBundleFilters(){
   document.getElementById('bsrch').value='';document.getElementById('bfRegion').value='';document.getElementById('bfLiving').value='';
+  document.getElementById('riskSlider').value=0;
   bSortCol=0;bSortDir=-1;
   document.querySelectorAll('#btbl thead th').forEach(th=>th.classList.remove('asc','desc'));
   renderBundle();
