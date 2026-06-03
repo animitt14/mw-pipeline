@@ -516,10 +516,10 @@ a:hover { text-decoration: underline; }
 #pipeline-table tbody tr:nth-child(even) td { background: #f6f7f9; }
 #pipeline-table tbody tr:hover td { background: #eef1f6; }
 
-/* --- LAST CONTACTED cell: deeper red the longer since contact --- */
-td.lc-1 { background: #fbe9e7 !important; color: #b23b2e; font-weight: 500; }
-td.lc-2 { background: #f3c7c0 !important; color: #962d22; font-weight: 600; }
-td.lc-3 { background: #e79a8e !important; color: #6e1a12; font-weight: 600; }
+/* --- LAST CONTACTED: deeper red TEXT the longer since contact (no cell fill) --- */
+td.lc-1 { color: #d98a5b; font-weight: 500; }
+td.lc-2 { color: #c0392b; font-weight: 600; }
+td.lc-3 { color: #8c1d12; font-weight: 700; }
 
 /* Heat shading retained for the small "going cold" widget only
    (the All Contacts table no longer uses row heat classes). */
