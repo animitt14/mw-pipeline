@@ -19,6 +19,7 @@ table.port thead th{background:#1a2035;color:#cbd5e1;font-size:10px;font-weight:
   text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;text-align:left;
   cursor:pointer;user-select:none;position:sticky;top:0;z-index:2;}
 table.port thead th:hover{color:var(--text,#f1f5f9);}
+table.port thead th[title]{text-decoration:underline dotted rgba(124,116,183,.5);text-underline-offset:3px;}
 table.port thead th.asc::after{content:" \2191";color:#7c3aed;}
 table.port thead th.desc::after{content:" \2193";color:#7c3aed;}
 table.port tbody tr{border-bottom:1px solid var(--border,#2e3650);transition:background .1s;}
@@ -129,17 +130,17 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
   <div class="port-tbl-wrap">
     <table class="port" id="tbl">
       <thead><tr>
-        <th data-c="0" onclick="sort(0)">Artist</th>
-        <th data-c="1" onclick="sort(1)">Title</th>
-        <th data-c="4" onclick="sort(4)" class="ctr">Offering Date</th>
-        <th data-c="5" onclick="sort(5)" class="ctr">IPO Value</th>
-        <th data-c="6" onclick="sort(6)" class="ctr">Status</th>
-        <th data-c="7" onclick="sort(7)" class="ctr">Days Held</th>
-        <th data-c="8" onclick="sort(8)">Appraised Value</th>
-        <th data-c="14" onclick="sort(14)" class="ctr">Unrealized Gain</th>
-        <th data-c="9" onclick="sort(9)" class="ctr">Sale Price</th>
-        <th data-c="10" onclick="sort(10)" class="ctr">Net Return</th>
-        <th data-c="11" onclick="sort(11)" class="ctr">IRR</th>
+        <th data-c="0" onclick="sort(0)" title="Source: Redshift — offering's artist">Artist</th>
+        <th data-c="1" onclick="sort(1)" title="Source: Redshift — offering display name">Title</th>
+        <th data-c="4" onclick="sort(4)" class="ctr" title="Source: Redshift — offerings.launched_at (date the offering opened)">Offering Date</th>
+        <th data-c="5" onclick="sort(5)" class="ctr" title="Source: Redshift — offerings.total_price (total amount the offering raised)">IPO Value</th>
+        <th data-c="6" onclick="sort(6)" class="ctr" title="Calculated from Redshift: Active = open; Closed = sold_out/ended, still held; Exited = sold">Status</th>
+        <th data-c="7" onclick="sort(7)" class="ctr" title="Source: Redshift — offerings.number_of_days_held; for held works, launch date to today">Days Held</th>
+        <th data-c="8" onclick="sort(8)" title="Source: Redshift — offering_appraisals (most recent quarterly fair-market value)">Appraised Value</th>
+        <th data-c="14" onclick="sort(14)" class="ctr" title="Calculated: (Appraised Value − IPO Value) / IPO Value">Unrealized Gain</th>
+        <th data-c="9" onclick="sort(9)" class="ctr" title="Source: Redshift — offerings.sale_price (realized at exit)">Sale Price</th>
+        <th data-c="10" onclick="sort(10)" class="ctr" title="Source: Redshift — offerings.total_net_return (realized, net of fees)">Net Return</th>
+        <th data-c="11" onclick="sort(11)" class="ctr" title="Source: Redshift — offerings.irr (realized annualized return at exit)">IRR</th>
       </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -167,18 +168,18 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
   <div class="port-tbl-wrap">
     <table class="port" id="atbl">
       <thead><tr>
-        <th onclick="asort(0)">Artist</th>
-        <th onclick="asort(1)" class="ctr">Gender</th>
-        <th onclick="asort(2)" class="ctr">Risk Category</th>
-        <th onclick="asort(3)" class="ctr">MW Pieces</th>
-        <th onclick="asort(4)" class="ctr">Portfolio Value</th>
-        <th onclick="asort(5)" class="ctr">Sharpe Ratio</th>
-        <th onclick="asort(6)" class="ctr">Repeat Sales %</th>
-        <th onclick="asort(7)" class="ctr">Auction Sales</th>
-        <th onclick="asort(8)" class="ctr">Auction Maturity</th>
-        <th onclick="asort(9)" class="ctr">Auction Record</th>
-        <th onclick="asort(10)" class="ctr">Museum Shows (5y)</th>
-        <th onclick="asort(11)">Source Notes</th>
+        <th onclick="asort(0)" title="Source: Redshift — MW artists table">Artist</th>
+        <th onclick="asort(1)" class="ctr" title="Source: Redshift — artists.gender">Gender</th>
+        <th onclick="asort(2)" class="ctr" title="Source: Redshift — artists.risk_category (MW internal classification)">Risk Category</th>
+        <th onclick="asort(3)" class="ctr" title="Calculated: number of MW offerings for this artist">MW Pieces</th>
+        <th onclick="asort(4)" class="ctr" title="Calculated: sum of IPO values across this artist's MW offerings">Portfolio Value</th>
+        <th onclick="asort(5)" class="ctr" title="Source: Redshift — artists.sharpe_ratio (risk-adjusted return; shown only when ≥15 repeat-sale pairs)">Sharpe Ratio</th>
+        <th onclick="asort(6)" class="ctr" title="Source: Redshift — artists.sales_pair_appreciation_average (avg annual appreciation across repeat auction sales)">Repeat Sales %</th>
+        <th onclick="asort(7)" class="ctr" title="Source: Redshift — artists.sales_pair_count (number of repeat-sale pairs at auction; a liquidity proxy)">Auction Sales</th>
+        <th onclick="asort(8)" class="ctr" title="Calculated from Redshift artists.sales_pair_first_date (years in the tracked auction record; >30yrs where data floors at 1996)">Auction Maturity</th>
+        <th onclick="asort(9)" class="ctr" title="Web research (Jun 2026): artist's all-time public auction record">Auction Record</th>
+        <th onclick="asort(10)" class="ctr" title="Web research (Jun 2026): solo museum/institutional exhibitions 2021–25 (best-effort draft)">Museum Shows (5y)</th>
+        <th onclick="asort(11)" title="Web research (Jun 2026): context for the auction record and recent museum shows">Source Notes</th>
       </tr></thead>
       <tbody id="atbody"></tbody>
     </table>
