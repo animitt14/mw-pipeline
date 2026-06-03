@@ -1037,8 +1037,18 @@ function computeAlloc(v){
     picked.push(best); remaining.delete(best);
     cG[best[6]]=(cG[best[6]]||0)+1; cR[best[8]]=(cR[best[8]]||0)+1; cL[best[7]]=(cL[best[7]]||0)+1;
   }
-  const e=picked.length?100/picked.length:0;
-  picked.forEach(r=>m.set(r,e));
+  // Overweight the anchor (~2x an equal slice, capped at 25%); split the rest evenly
+  const others=basq?picked.filter(r=>r!==basq):picked;
+  if(basq && others.length){
+    const eq=100/picked.length;
+    const aw=Math.min(25, eq*2);
+    const ew=(100-aw)/others.length;
+    m.set(basq, aw);
+    others.forEach(r=>m.set(r, ew));
+  } else {
+    const e=picked.length?100/picked.length:0;
+    picked.forEach(r=>m.set(r,e));
+  }
   return m;
 }
 
