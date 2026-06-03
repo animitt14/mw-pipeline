@@ -215,13 +215,13 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
   <div class="port-tbl-wrap">
     <table class="port" id="btbl">
       <thead><tr>
-        <th onclick="bsort(0)" class="ctr" title="Calculated: unsold shares &times; price-per-share ($20), as of Jun 2026">Available ($)</th>
-        <th onclick="bsort(1)" title="Source: Redshift — offering's artist">Artist</th>
-        <th onclick="bsort(2)" title="Source: Redshift — offering display name">Title</th>
-        <th onclick="bsort(3)" class="ctr" title="Source: Redshift — artists.risk_category">Risk Category</th>
-        <th onclick="bsort(4)" class="ctr" title="Source: Redshift — artists.gender">Gender</th>
-        <th onclick="bsort(5)" class="ctr" title="Calculated from Redshift artists.death_date">Living / Deceased</th>
-        <th onclick="bsort(6)" class="ctr" title="Calculated from Redshift artists.nationality">Region</th>
+        <th data-c="3" onclick="bsort(3)" title="Source: Redshift — painting & artist (image from MW catalog)">Work</th>
+        <th data-c="0" onclick="bsort(0)" class="ctr" title="Calculated: unsold shares &times; $20/share, with % sold underneath. As of Jun 2026">Available ($)</th>
+        <th data-c="5" onclick="bsort(5)" class="ctr" title="Source: Redshift — artists.risk_category">Risk Category</th>
+        <th data-c="6" onclick="bsort(6)" class="ctr" title="Source: Redshift — artists.gender">Gender</th>
+        <th data-c="7" onclick="bsort(7)" class="ctr" title="Calculated from Redshift artists.death_date">Living / Deceased</th>
+        <th data-c="8" onclick="bsort(8)" class="ctr" title="Calculated from Redshift artists.nationality">Region</th>
+        <th class="ctr" title="To be filled — suggested portfolio allocation">Allocation</th>
       </tr></thead>
       <tbody id="btbody"></tbody>
     </table>
@@ -233,40 +233,40 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
 const ARTIST_META = {"ADRIAN GHENIE":[12, 14, 10.3, 3],"AGNES MARTIN":["pre-1996", 11, 18.7, 1],"ALBERT OEHLEN":[25, 21, 7.55, 3],"ALEX KATZ":["pre-1996", 45, 4.15, 6],"ALICE NEEL":[24, 7, 5.69, 5],"ALIGHIERO BOETTI":[27, 36, 8.8, 1],"ALMA THOMAS":[7, 2, 3.9, 4],"ANDY WARHOL":["pre-1996", 394, 195.0, 8],"AVERY SINGER":[5, 4, 5.25, 2],"AYAKO ROKKAKU":[16, 14, 1.2, 3],"BANKSY":[19, 34, 25.4, 0],"BARBARA KRUGER":[27, 16, 1.56, 5],"BARKLEY L. HENDRICKS":[16, 3, 8.38, 3],"BRIDGET RILEY":[29, 25, 5.81, 4],"CARL ANDRE":[29, 17, 2.97, 1],"CARMEN HERRERA":[11, 1, 2.9, 2],"CECILY BROWN":[26, 41, 9.81, 6],"CHARLINE VON HEYL":[4, 1, 0.54, 1],"CHRISTINE AY TJOE":[25, 32, 2.17, 1],"CHRISTOPHER WOOL":["pre-1996", 33, 29.93, 1],"CHU TEH-CHUN":[27, 98, 29.5, 3],"CLAUDE MONET":["pre-1996", 87, 110.7, 5],"DANA SCHUTZ":[19, 13, 6.5, 2],"DAVID HOCKNEY":[29, 40, 90.3, 4],"DONALD JUDD":["pre-1996", 42, 14.2, 2],"EDWARD RUSCHA":[29, 51, 68.3, 2],"ELAINE DE KOONING":[21, 8, 0.56, 1],"ELIZABETH PEYTON":[26, 17, 2.88, 1],"ERNIE BARNES":[13, 3, 15.3, 1],"GEORGE CONDO":["pre-1996", 106, 6.85, 3],"GERHARD RICHTER":["pre-1996", 154, 46.4, 5],"GLENN LIGON":[19, 8, 3.97, 3],"GRACE HARTIGAN":[29, 4, 1.63, 1],"GUNTHER FORG":[28, 53, 1.43, 1],"GUNTHER UECKER":[26, 12, 3.2, 2],"HANS HOFMANN":["pre-1996", 25, 8.86, 1],"HELEN FRANKENTHALER":["pre-1996", 29, 7.9, 3],"HENRY TAYLOR":[15, 9, 2.48, 2],"HERNAN BAS":[18, 11, 1.44, 3],"JACQUELINE HUMPHRIES":[23, 2, null, 2],"JEAN-MICHEL BASQUIAT":["pre-1996", 104, 110.5, 4],"JOAN MITCHELL":[29, 57, 29.1, 3],"JONAS WOOD":[13, 8, 6.5, 1],"JULIE MEHRETU":[21, 5, 10.7, 4],"KAWS":[16, 43, 14.8, 6],"KAZUO SHIRAGA":[23, 54, 5.3, 1],"KEITH HARING":["pre-1996", 30, 6.5, 5],"KENNY SCHARF":[24, 23, 1.0, 1],"KERRY JAMES MARSHALL":[10, 3, 21.1, 2],"LAURA OWENS":[22, 4, 1.8, 2],"LIU YE":[21, 45, 12.6, 1],"LOIE HOLLOWELL":[7, 5, 2.3, 3],"LUCIO FONTANA":["pre-1996", 111, 29.2, 1],"LYNETTE YIADOM-BOAKYE":[13, 6, 3.6, 2],"LYNNE MAPP DREXLER":[9, 3, 2.0, 1],"MARK BRADFORD":[15, 4, 12.0, 3],"MARK ROTHKO":["pre-1996", 18, 98.4, 1],"MARTIN WONG":[25, 5, 1.6, 2],"MATTHEW WONG":[6, 5, 6.7, 2],"MICKALENE THOMAS":[16, 6, 1.8, 3],"NICOLAS PARTY":[6, 4, 6.7, 4],"NINA CHANEL ABNEY":[7, 2, 0.99, 2],"PABLO PICASSO":["pre-1996", 176, 179.4, 8],"PARK SEO-BO":[20, 8, 4.1, 3],"PAT STEIR":[20, 8, 2.3, 2],"PETER DOIG":[27, 39, 39.9, 2],"PIERRE SOULAGES":["pre-1996", 35, 20.1, 2],"RASHID JOHNSON":[27, 7, 3.0, 3],"RICHARD ESTES":[28, 17, 1.28, 0],"RICHARD PRINCE":[28, 52, 12.1, 2],"ROBERT COLESCOTT":["pre-1996", 5, 15.3, 1],"ROBERT RYMAN":[28, 16, 20.6, 1],"SAM GILLIAM":[23, 21, 2.43, 2],"SHARA HUGHES":[13, 23, 2.94, 3],"SIMONE LEIGH":[null, null, 2.7, 5],"STANLEY WHITNEY":[7, 2, 2.3, 2],"TRACEY EMIN":[16, 2, 4.4, 3],"YAYOI KUSAMA":[28, 203, 10.5, 12],"YOSHITOMO NARA":[23, 83, 25.0, 3],"ZAO WOU-KI":["pre-1996", 128, 65.0, 1]};
 const ARTIST_NOTES = {"ADRIAN GHENIE":"Record ~$10.3M 'Pie Fight Interior 12' Christie's HK '22; Albertina Vienna '24-25, Dresden, Art Encounters Timisoara '23","AGNES MARTIN":"Record $18.7M 'Grey Stone II' Sotheby's '23; major retrospective was '15-16, few solos since","ALBERT OEHLEN":"Record ~$7.6M Sotheby's '19; MASI Lugano '21-22, Hamburger Kunsthalle '24-25, Marciano '21","ALEX KATZ":"Record ~$4.2M Phillips '19; Guggenheim retrospective '22-23, Albertina '23, MoMA '24, Brandhorst '24","ALICE NEEL":"Record $5.7M Christie's '26; touring retrospective Met '21, Guggenheim Bilbao, Pompidou '22, Barbican '23","ALIGHIERO BOETTI":"Record ~$8.8M Sotheby's '22; mostly gallery shows in window","ALMA THOMAS":"Record ~$3.9M Christie's '23; 'Everything Is Beautiful' tour '21-22, SAAM '23-24","ANDY WARHOL":"Record $195M 'Shot Sage Blue Marilyn' Christie's '22; Neue Nationalgalerie Berlin '24, Thyssen Madrid '25","AVERY SINGER":"Record $5.25M Sotheby's '22; ICA Miami '23, Serralves '25; mostly gallery (Hauser & Wirth)","AYAKO ROKKAKU":"Record ~$1.2M SBI Tokyo '22; Long Museum Shanghai '23, Seoul Arts Center '23-24, Thyssen Madrid '24","BANKSY":"Record ~$25.4M 'Love is in the Bin' Sotheby's '21; no authorized museum solos","BARBARA KRUGER":"Record ~$1.6M Sotheby's '22; 'Thinking of You' AIC '21, LACMA '22, MoMA '22-23, Serpentine '24","BARKLEY L. HENDRICKS":"Record ~$8.4M 'Yocks' Sotheby's '23; Frick '23-24, Rose Art Museum '22","BRIDGET RILEY":"Record ~$5.8M Christie's '16; Yale Center '22, Zentrum Paul Klee '22, Phillips Collection '22, AIC '23","CARL ANDRE":"Record ~$3.0M Christie's '19; Daegu / Kawamura DIC '23-24; died 2024","CARMEN HERRERA":"Record $2.9M Sotheby's '19; SITE Santa Fe '24, Parrish '24 (posthumous); died 2022","CECILY BROWN":"Record $9.8M 'High Society' Sotheby's '25; Met '23, Courtauld '21-23, Pinakothek '22, Naples '22","CHARLINE VON HEYL":"Record ~$0.5M Sotheby's '22; mostly gallery shows in window","CHRISTINE AY TJOE":"Record ~$2.2M Christie's HK '26; Hall Art Foundation '22; mostly gallery (White Cube, Ota)","CHRISTOPHER WOOL":"Record ~$29.9M 'Untitled (Riot)' Sotheby's '15; 'See Stop Run' '24 self-organized; no museum retrospective in window","CHU TEH-CHUN":"Record ~$29.5M triptych Sotheby's HK '21; Odyssey retrospective; 'In Nebula' Fondazione Cini Venice '24","CLAUDE MONET":"Record $110.7M 'Meules' Sotheby's '19; frequent museum shows (Potsdam, Denver, etc.)","DANA SCHUTZ":"Record ~$6.5M 'Elevator' Christie's '20; 'The Visible World' Louisiana + Paris MAM '23-24","DAVID HOCKNEY":"Record $90.3M 'Portrait of an Artist' Christie's '18; Fondation Louis Vuitton retrospective '25","DONALD JUDD":"Record $14.2M Christie's '13; MoMA retrospective '20-21","EDWARD RUSCHA":"Record $68.3M 'Standard Station' Christie's '24; MoMA/LACMA 'NOW THEN' retrospective '23-24","ELAINE DE KOONING":"Record ~$0.6M Christie's; few solo museum shows in window","ELIZABETH PEYTON":"Record $2.9M 'Kurt' Christie's '25; major retrospective era was '19-20","ERNIE BARNES":"Record $15.3M 'The Sugar Shack' Christie's '22; CAAM solo '19; recent museum loans","GEORGE CONDO":"Record ~$6.9M 'Force Field' Christie's HK '20; Long Museum '21, Morgan Library '23, NMNM Monaco '23","GERHARD RICHTER":"Record $46.4M 'Abstraktes Bild' Sotheby's '15; Nationalgalerie Berlin, Fondation Louis Vuitton, Tate","GLENN LIGON":"Record $4.0M Sotheby's '14; Henry Moore Institute '23, Fitzwilliam '24-25","GRACE HARTIGAN":"Record $1.6M 'The Fourth' Phillips '25; limited solo museum shows in window","GUNTHER FORG":"Record ~$1.4M Sotheby's '22; first comprehensive Asia solo Long Museum Shanghai '23","GUNTHER UECKER":"Record ~$3.2M 'Spirale' Christie's '17; institutional/gallery solos '21-25","HANS HOFMANN":"Record $8.9M 'Lava' Christie's '17; touring retrospective ~'19-21","HELEN FRANKENTHALER":"Record ~$7.9M 'Royal Fireworks' Sotheby's '20; Dulwich 'Radical Beauty' '21-22","HENRY TAYLOR":"Record $2.5M Sotheby's '23; 'B Side' MOCA '22-23 + Whitney '23-24","HERNAN BAS":"Record ~$1.4M Christie's HK '22; Yuz Shanghai '21, Space K Seoul '21, Bass Miami '23","JACQUELINE HUMPHRIES":"Auction record not confidently found (likely <$0.5M); museum survey Wexner '21-22, Aspen Art Museum","JEAN-MICHEL BASQUIAT":"Record $110.5M 'Untitled' (skull) Sotheby's '17; 'King Pleasure' '22, Brant Foundation, Albertina","JOAN MITCHELL":"Record ~$29.1M Christie's '23; touring retrospective SFMOMA '21, Baltimore '22, Fondation Louis Vuitton '22-23","JONAS WOOD":"Record ~$6.5M Christie's '21; Dallas Museum solo; few institutional solos in window","JULIE MEHRETU":"Record ~$10.7M Sotheby's '23; mid-career survey Whitney '21, Walker '21, Palazzo Grassi Venice '24","KAWS":"Record ~$14.8M 'The KAWS Album' Sotheby's HK '19; Brooklyn Museum '21, Serpentine '22, High '22, AGO '23, Parrish '24","KAZUO SHIRAGA":"Record ~$5.3M Sotheby's Paris '14; Gutai member; few dedicated solos in window","KEITH HARING":"Record ~$6.5M Sotheby's '17; 'Art Is for Everybody' The Broad '23, Walker '23-24, AGO '24","KENNY SCHARF":"Record ~$1.0M Bonhams '22; limited major museum solos in window","KERRY JAMES MARSHALL":"Record $21.1M 'Past Times' Sotheby's '18; Columbia Museum '21-22, NGA '23-25","LAURA OWENS":"Record ~$1.8M; Fondation Vincent van Gogh Arles '21, Cleveland Museum '21","LIU YE":"Record ~$12.6M Poly Auction '21; mostly gallery shows in window (Zwirner '23)","LOIE HOLLOWELL":"Record ~$2.3M Sotheby's HK '23; Long Museum '21, UC Davis '22, Aldrich '24","LUCIO FONTANA":"Record ~$29.2M 'Concetto spaziale, La fine di Dio' Christie's '15; Met retrospective was '19","LYNETTE YIADOM-BOAKYE":"Record ~$3.6M Sotheby's '23; 'Fly in League With the Night' Tate Britain '22","LYNNE MAPP DREXLER":"Record ~$2.0M Christie's '25; gallery surveys '22-24, Farnsworth '24; retrospective begins '26","MARK BRADFORD":"Record ~$12M 'Helter Skelter I' Phillips '18; Serralves '21-22, Hamburger Bahnhof Berlin '24","MARK ROTHKO":"Record $98.4M Christie's '26; Fondation Louis Vuitton retrospective '23-24","MARTIN WONG":"Record ~$1.6M Christie's '24; 'Malicious Mischief' KW Berlin, Camden, Stedelijk '22-24","MATTHEW WONG":"Record ~$6.7M 'River at Dusk' Sotheby's HK '23; MFA Boston/Dallas '23, Van Gogh Museum '24","MICKALENE THOMAS":"Record ~$1.8M Christie's '21; 'All About Love' The Broad '24, Barnes, Hayward London","NICOLAS PARTY":"Record $6.7M 'Blue Sunset' Christie's HK '22; MASI Lugano '21, Hirshhorn '21-22, Montreal MFA '22","NINA CHANEL ABNEY":"Record ~$1.0M Christie's '21; fewer solo museum shows in window, mostly gallery/group","PABLO PICASSO":"Record $179.4M 'Les Femmes d'Alger' Christie's '15; numerous major museum shows globally","PARK SEO-BO":"Record ~$4.1M Korea '16; died 2023; Chateau La Coste '21; dedicated museum opening '25","PAT STEIR":"Record ~$2.3M Phillips '18; Hirshhorn 'Color Wheel' '19-21, Long Museum '21","PETER DOIG":"Record $39.9M 'Swamped' Christie's '21; Courtauld '23, Musee d'Orsay '24","PIERRE SOULAGES":"Record ~$20.1M Sotheby's '21; died 2022; Maeght Foundation '22 and tributes","RASHID JOHNSON":"Record $3.0M 'Sunshine' '22; Moderna Museet '23, Storm King, Guggenheim '25","RICHARD ESTES":"Record $1.3M Christie's '23; no major solo museum shows in window (last retrospective '14-15)","RICHARD PRINCE":"Record ~$12.1M 'Runaway Nurse' Sotheby's HK '21; incl. Louisiana Museum","ROBERT COLESCOTT":"Record $15.3M 'George Washington Carver...' Sotheby's '21; touring retrospective into early '21","ROBERT RYMAN":"Record $20.6M 'Bridge' Christie's '15; died 2019; Musee de l'Orangerie '24","SAM GILLIAM":"Record ~$2.4M 'Ray II' Sotheby's '25; died 2022; Hirshhorn survey '22, posthumous shows","SHARA HUGHES":"Record $2.9M Christie's '22; CAM St. Louis '21, Yuz Shanghai '21, Kunstmuseum Luzern '22","SIMONE LEIGH":"Record $2.7M 'Stick' Christie's '23; Venice Biennale US Pavilion '22, ICA Boston/Hirshhorn/LACMA tour '23-25","STANLEY WHITNEY":"Record ~$2.3M Sotheby's '21; Buffalo AKG retrospective '24, Venice '22","TRACEY EMIN":"Record $4.4M 'My Bed' Christie's '14; RA Munch dialogue '20-21, touring solo shows","YAYOI KUSAMA":"Record ~$10.5M Phillips '22; prolific: Tate Modern, Gropius Bau, M+, Guggenheim Bilbao, SFMOMA","YOSHITOMO NARA":"Record ~$25M 'Knife Behind Back' Sotheby's HK '19; LACMA retrospective '21-22, Guggenheim Bilbao '24","ZAO WOU-KI":"Record ~$65M 'Juin-Octobre 1985' Sotheby's HK '18; China Academy of Art Hangzhou retrospective '23-24"};
 const BUNDLE = [
-[3830700,"Jean-Michel Basquiat","Made in Japan II","Conservative","Male","Deceased","Americas"],
-[1707380,"Julie Mehretu","Kabul","Moderate","Female","Living","Americas"],
-[1597640,"Kerry James Marshall","Small Pin-Up (Lens Flare)","Moderate","Male","Living","Americas"],
-[1193000,"Pierre Soulages","Peinture 71 x 181 cm, 13 juillet 2011","Conservative","Male","Deceased","Europe"],
-[854000,"Elizabeth Peyton","Max","Mod. Aggressive","Female","Living","Americas"],
-[496080,"Sam Gilliam","Into Changing","Mod. Aggressive","Male","Deceased","Americas"],
-[480900,"Alighiero Boetti","Oggi Sesto Giorno Quarto Mese Mille Nove 100 Ottanta Nove","Conservative","Male","Deceased","Europe"],
-[471860,"Cecily Brown","Mean Eyed Cat","Moderate","Female","Living","Europe"],
-[393000,"Lynette Yiadom-Boakye","Victory Sweatsuit II","Aggressive","Female","Living","Europe"],
-[388000,"Martin Wong","Untitled (Little Lulu and Tubby)","Mod. Aggressive","Male","Deceased","Americas"],
-[383000,"Richard Estes","View of Telegraph Hill from Broadway and Filbert","Mod. Aggressive","Male","Living","Americas"],
-[358780,"Kazuo Shiraga","Shintan","Conservative","Male","Deceased","Asia"],
-[349000,"Carmen Herrera","Blanco y Negro","Speculative","Female","Deceased","Americas"],
-[333000,"Martin Wong","Untitled (Inside Statue of Liberty)","Mod. Aggressive","Male","Deceased","Americas"],
-[282040,"Robert Colescott","Cactus Jack","Conservative","Male","Deceased","Americas"],
-[280000,"Ernie Barnes","The Trick Shot","Conservative","Male","Deceased","Americas"],
-[261180,"Tracey Emin","I See The Mirror","Moderate","Female","Living","Europe"],
-[233000,"Yoshitomo Nara","Mumps","Conservative","Male","Living","Asia"],
-[230040,"Alice Neel","Hubert Crehan and Sasha","Mod. Conservative","Female","Deceased","Americas"],
-[188040,"Alex Katz","Corinne","Mod. Conservative","Male","Living","Americas"],
-[178000,"Laura Owens","Untitled","Aggressive","Female","Living","Americas"],
-[114600,"Pat Steir","Red","Speculative","Female","Living","Americas"],
-[63920,"Simone Leigh","107 (Face Jug Series)","Mod. Aggressive","Female","Living","Americas"],
-[41900,"Martin Wong","Untitled (John the Baptist)","Mod. Aggressive","Male","Deceased","Americas"],
-[34980,"Sam Gilliam","Orion","Mod. Aggressive","Male","Deceased","Americas"],
-[27140,"Yoshitomo Nara","Untitled","Conservative","Male","Living","Asia"],
-[26880,"Matthew Wong","5:22 PM","Aggressive","Male","Deceased","Americas"],
-[26720,"Elizabeth Peyton","Spencer (Two Palms)","Mod. Aggressive","Female","Living","Americas"],
-[25460,"Lynette Yiadom-Boakye","Curlew","Aggressive","Female","Living","Europe"],
-[25260,"Pat Steir","Early Dawn Greek Harbor","Speculative","Female","Living","Americas"],
-[19120,"Pierre Soulages","Peinture 128 x 181 cm, 2 janvier 2009","Conservative","Male","Deceased","Europe"],
-[17760,"Pierre Soulages","Peinture 181 x 81 cm, 16 mai 2006","Conservative","Male","Deceased","Europe"],
-[16340,"Jean-Michel Basquiat","Feng Yao","Conservative","Male","Deceased","Americas"],
-[11160,"Banksy","Barcode Leopard","Moderate","Male","Living","Europe"]
+[3830700,59,"Made in Japan II","Jean-Michel Basquiat","https://images.ctfassets.net/u7fuap5iqsvx/XiBS9I01mmA3SLykp6FwM/e7a12a488eaf5d8efbfe4262a08730f9/MIJ.jpg","Conservative","Male","Deceased","Americas"],
+[1707380,49,"Kabul","Julie Mehretu","https://images.ctfassets.net/u7fuap5iqsvx/11bKP6eqmKvAXKRZzoHdWv/00e480fdf57d6cb917cf573a98cb48fb/2025_NYR_23455_0010B_000_julie_mehretu_kabul052833_.jpeg","Moderate","Female","Living","Americas"],
+[1597640,62,"Small Pin-Up (Lens Flare)","Kerry James Marshall","https://images.ctfassets.net/u7fuap5iqsvx/1LJkTFUKDzMwY5XQuoWJfN/1a479216de3f9e903c8fa082a7fc6d1a/2025_NYR_24160_0006A_000_kerry_james_marshall_small_pin-up043710_.png","Moderate","Male","Living","Americas"],
+[1193000,2,"Peinture 71 x 181 cm, 13 juillet 2011","Pierre Soulages","https://images.ctfassets.net/u7fuap5iqsvx/6rR7Ks7OBPj1bh641MEIdy/c0ea9b13f86b432250c7e9163a3ca353/Screenshot_2023-09-11_101551.png","Conservative","Male","Deceased","Europe"],
+[854000,0,"Max","Elizabeth Peyton",null,"Mod. Aggressive","Female","Living","Americas"],
+[496080,41,"Into Changing","Sam Gilliam",null,"Mod. Aggressive","Male","Deceased","Americas"],
+[480900,18,"Oggi Sesto Giorno Quarto Mese Mille Nove 100 Ottanta Nove","Alighiero Boetti",null,"Conservative","Male","Deceased","Europe"],
+[471860,69,"Mean Eyed Cat","Cecily Brown","https://images.ctfassets.net/u7fuap5iqsvx/5LSRnXoIEv0Zk1rFCWIP9F/c8ff8b7b64faef0aa1d615354e6561b8/528_-_Brown__Mean_Eyed_Cat__2012.jpg","Moderate","Female","Living","Europe"],
+[393000,0,"Victory Sweatsuit II","Lynette Yiadom-Boakye",null,"Aggressive","Female","Living","Europe"],
+[388000,18,"Untitled (Little Lulu and Tubby)","Martin Wong",null,"Mod. Aggressive","Male","Deceased","Americas"],
+[383000,0,"View of Telegraph Hill from Broadway and Filbert","Richard Estes",null,"Mod. Aggressive","Male","Living","Americas"],
+[358780,20,"Shintan","Kazuo Shiraga",null,"Conservative","Male","Deceased","Asia"],
+[349000,0,"Blanco y Negro","Carmen Herrera",null,"Speculative","Female","Deceased","Americas"],
+[333000,0,"Untitled (Inside Statue of Liberty)","Martin Wong",null,"Mod. Aggressive","Male","Deceased","Americas"],
+[282040,34,"Cactus Jack","Robert Colescott","https://images.ctfassets.net/u7fuap5iqsvx/54eJ5Wz6gAoFQJcAzbqtnZ/3cfae4fbde6182d94a206a6888987f5c/Colescott__Cactus_Jack__Recto.jpg","Conservative","Male","Deceased","Americas"],
+[280000,0,"The Trick Shot","Ernie Barnes",null,"Conservative","Male","Deceased","Americas"],
+[261180,56,"I See The Mirror","Tracey Emin","https://images.ctfassets.net/u7fuap5iqsvx/3JXwq4sFSUM0zXRGv3Arh6/67208fae5dcab31957fbf1541bc53973/Emin__I_See_The_Mirror__2022.jpg","Moderate","Female","Living","Europe"],
+[233000,84,"Mumps","Yoshitomo Nara","https://images.ctfassets.net/u7fuap5iqsvx/4HlwYoSc096VL0rAVTI8v8/81bc4e240826f2388e1ff2df7f7a582f/2025_HGK_23395_0228_000_yoshitomo_nara_mumps013549_.jpg","Conservative","Male","Living","Asia"],
+[230040,56,"Hubert Crehan and Sasha","Alice Neel","https://images.ctfassets.net/u7fuap5iqsvx/5UG2sZpkuM0QL17Uh3YLGT/c48de6c0157b318a4dbd7f1c5a419ef2/Alice_Neel_-_Hubert_Crehan_and_Sasha.jpg","Mod. Conservative","Female","Deceased","Americas"],
+[188040,62,"Corinne","Alex Katz","https://images.ctfassets.net/u7fuap5iqsvx/79w7vq5D99xDetnz3dEF7v/11781b9771637ad58eba4caa5ded5ffe/PJ5GXUt4S22i8ltKMGWbyKMXsDx4Vi-pcGlOe3QQ1QU__1_.jpeg","Mod. Conservative","Male","Living","Americas"],
+[178000,0,"Untitled","Laura Owens","https://images.ctfassets.net/u7fuap5iqsvx/6sh2keUZrQLVpKQZ8jn8Jt/6a8b3de90a1bc529bb6a1f3b925a0c9c/315_recto.jpeg","Aggressive","Female","Living","Americas"],
+[114600,47,"Red","Pat Steir",null,"Speculative","Female","Living","Americas"],
+[63920,85,"107 (Face Jug Series)","Simone Leigh","https://images.ctfassets.net/u7fuap5iqsvx/1zGE5emMNM1dZAyGWab3nn/a63f094b0a73e66b2af81527f61ecd4d/107-Face_Jug_Series_2019_C33069_view_1_High.jpg","Mod. Aggressive","Female","Living","Americas"],
+[41900,89,"Untitled (John the Baptist)","Martin Wong","https://images.ctfassets.net/u7fuap5iqsvx/3IAM36CTE5au9B3QH8THb7/d688cbc93a024bbd45edc9b382c36ff6/download.webp","Mod. Aggressive","Male","Deceased","Americas"],
+[34980,96,"Orion","Sam Gilliam","https://images.ctfassets.net/u7fuap5iqsvx/6F7tiyz5tJ6sqWPBPPHV56/fcaa67d0024ef4e403133c7953017c6c/y08Bx568-IS5tRh-B0_hoCAeWkzR4C4kmpAqO8gqPxg.jpeg","Mod. Aggressive","Male","Deceased","Americas"],
+[27140,98,"Untitled","Yoshitomo Nara","https://images.ctfassets.net/u7fuap5iqsvx/5l0xSj2WnpU20ygabv4Pxj/1fb854e667437923ee6ea77929e231ba/402_Nara.jpeg","Conservative","Male","Living","Asia"],
+[26880,96,"5:22 PM","Matthew Wong","https://images.ctfassets.net/u7fuap5iqsvx/KH8skgCcUqgugFgvQeyyx/3667ab8ccb050f6c09ff48fa6900b8bb/wong_522PM.png","Aggressive","Male","Deceased","Americas"],
+[26720,97,"Spencer (Two Palms)","Elizabeth Peyton","https://images.ctfassets.net/u7fuap5iqsvx/UNcbZmwujrNko9xpcJspY/5cce02623e063908aee3696b3464d4ec/High_Res_Image__Lot_8__Elizabeth_Peyton__Spencer__Two_Palms_.jpg","Mod. Aggressive","Female","Living","Americas"],
+[25460,86,"Curlew","Lynette Yiadom-Boakye","https://images.ctfassets.net/u7fuap5iqsvx/3ML1OrHEvb6AMUn6gVEeXF/c1a018c56fbd2e09ae2cdfe5a5cfa6ec/521_LYB_Scale.jpg","Aggressive","Female","Living","Europe"],
+[25260,91,"Early Dawn Greek Harbor","Pat Steir","https://images.ctfassets.net/u7fuap5iqsvx/4Q6FHkWPwe2lZICo0TJbOP/9bd9601210c9c37f5b53156c1289c525/FFf0NN2-7eFKs4Hbr-6ze8OLEO0E783WkUp2lErIe9Y.png","Speculative","Female","Living","Americas"],
+[19120,99,"Peinture 128 x 181 cm, 2 janvier 2009","Pierre Soulages","https://images.ctfassets.net/u7fuap5iqsvx/1bzTGNWz6S9Q8aod8y0MKh/7c5423c2de159e1c025afb43721bf3d8/326_Soulages_Recto.jpg","Conservative","Male","Deceased","Europe"],
+[17760,99,"Peinture 181 x 81 cm, 16 mai 2006","Pierre Soulages","https://images.ctfassets.net/u7fuap5iqsvx/1oOHVc9dHYTijsIztJXJcH/0007cd11a27d48e101bba3f93fd58494/PHOTO-2023-09-26-10-36-40_2_copy.jpg","Conservative","Male","Deceased","Europe"],
+[16340,98,"Feng Yao","Jean-Michel Basquiat","https://images.ctfassets.net/u7fuap5iqsvx/13U540pql44G8ERpKAMMzA/589b34249a6b6fcd09d0f03b0edfe891/479.png","Conservative","Male","Deceased","Americas"],
+[11160,98,"Barcode Leopard","Banksy","https://images.ctfassets.net/u7fuap5iqsvx/5m67tsJgUP7wQSsLmJxzlA/cd50ff449ee6934e6ce526dd59878070/10TIQA_wupAjfiWCqT-U4WW8lrmSuudgdE89UwZ7tCM.jpeg","Moderate","Male","Living","Europe"]
 ];
 const DATA = [
 ["Adrian Ghenie","The Trip","Male","Aggressive","6/14/22",4995000.0,"Closed",156,5000000.0,null,null,null,-0.04,null,0.001],
@@ -972,10 +972,10 @@ function renderBundleCharts(){
     });
   };
   const tally=(idx)=>BUNDLE.reduce((m,r)=>{const k=r[idx]||'Unknown';m[k]=(m[k]||0)+1;return m;},{});
-  donut('bcRisk',tally(3),{'Conservative':'#2e5cb8','Mod. Conservative':'#4a90d9','Moderate':'#37a26b','Mod. Aggressive':'#e3b341','Aggressive':'#e07b39','Speculative':'#d1495b'});
-  donut('bcGender',tally(4),{'Male':'#4a6fa5','Female':'#d98ab0'});
-  donut('bcLiving',tally(5),{'Living':'#37a26b','Deceased':'#8a8f9c'});
-  donut('bcRegion',tally(6),{'Americas':'#2e5cb8','Europe':'#37a26b','Asia':'#e07b39','Africa':'#d1495b'});
+  donut('bcRisk',tally(5),{'Conservative':'#2e5cb8','Mod. Conservative':'#4a90d9','Moderate':'#37a26b','Mod. Aggressive':'#e3b341','Aggressive':'#e07b39','Speculative':'#d1495b'});
+  donut('bcGender',tally(6),{'Male':'#4a6fa5','Female':'#d98ab0'});
+  donut('bcLiving',tally(7),{'Living':'#37a26b','Deceased':'#8a8f9c'});
+  donut('bcRegion',tally(8),{'Americas':'#2e5cb8','Europe':'#37a26b','Asia':'#e07b39','Africa':'#d1495b'});
 }
 
 // ── BUNDLE tab (active offerings) ── cols: 0 artist 1 title 2 risk 3 gender 4 living 5 region 6 shares
@@ -985,9 +985,9 @@ function renderBundle(){
   const fr=document.getElementById('bfRegion').value;
   const fl=document.getElementById('bfLiving').value;
   let rows=[...BUNDLE];
-  if(q) rows=rows.filter(r=>(r[1]||'').toLowerCase().includes(q)||(r[2]||'').toLowerCase().includes(q));
-  if(fr) rows=rows.filter(r=>r[6]===fr);
-  if(fl) rows=rows.filter(r=>r[5]===fl);
+  if(q) rows=rows.filter(r=>(r[2]||'').toLowerCase().includes(q)||(r[3]||'').toLowerCase().includes(q));
+  if(fr) rows=rows.filter(r=>r[8]===fr);
+  if(fl) rows=rows.filter(r=>r[7]===fl);
   if(bSortCol>=0) rows.sort((a,b)=>{
     let av=a[bSortCol],bv=b[bSortCol];
     if(av==null&&bv==null)return 0; if(av==null||av==='')return 1; if(bv==null||bv==='')return -1;
@@ -996,21 +996,25 @@ function renderBundle(){
   });
   document.getElementById('bcnt').textContent=rows.length+' active works';
   document.getElementById('btbody').innerHTML=rows.map(r=>{
-    const rc=RISK_CLASS[r[3]]||'';
+    const rc=RISK_CLASS[r[5]]||'';
+    const img=r[4]?`<img src="${r[4]}" style="width:42px;height:32px;object-fit:cover;border-radius:3px;flex:none" loading="lazy">`
+                  :`<div style="width:42px;height:32px;background:var(--surface-2,#e2e5ea);border-radius:3px;flex:none"></div>`;
+    const pct=(r[1]===''||r[1]==null)?null:r[1];
+    const bar=pct==null?'':`<div style="height:5px;background:var(--surface-2,#e2e5ea);border-radius:3px;margin-top:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:#7c3aed"></div></div><div style="font-size:9px;color:var(--text3);margin-top:1px">${pct}% sold</div>`;
     return `<tr>
-      <td class="ctr" style="font-weight:600">${r[0]!==''&&r[0]!=null?fmt$(r[0]):'<span style="color:var(--text3)">&mdash;</span>'}</td>
-      <td style="font-weight:500;color:var(--text,#0e1422)">${r[1]||''}</td>
-      <td>${r[2]||''}</td>
-      <td class="ctr">${r[3]?`<span class="risk-badge ${rc}">${r[3]}</span>`:''}</td>
-      <td class="ctr">${r[4]==='Male'?'M':r[4]==='Female'?'F':r[4]||''}</td>
-      <td class="ctr">${r[5]||''}</td>
-      <td class="ctr">${r[6]||''}</td>
+      <td><div style="display:flex;align-items:center;gap:9px">${img}<div><div style="font-weight:600;color:var(--text,#0e1422)">${r[2]||''}</div><div style="font-size:10px;color:var(--text3,#64748b)">${r[3]||''}</div></div></div></td>
+      <td class="ctr"><div style="font-weight:600">${r[0]!==''&&r[0]!=null?fmt$(r[0]):'&mdash;'}</div>${bar}</td>
+      <td class="ctr">${r[5]?`<span class="risk-badge ${rc}">${r[5]}</span>`:''}</td>
+      <td class="ctr">${r[6]==='Male'?'M':r[6]==='Female'?'F':r[6]||''}</td>
+      <td class="ctr">${r[7]||''}</td>
+      <td class="ctr">${r[8]||''}</td>
+      <td class="ctr" style="color:var(--text3,#94a3b8)">&mdash;</td>
     </tr>`;
   }).join('');
 }
 function bsort(col){
-  if(bSortCol===col)bSortDir*=-1; else{bSortCol=col;bSortDir=(col===0||col>=3)?-1:1;}
-  document.querySelectorAll('#btbl thead th').forEach((th,i)=>{th.classList.remove('asc','desc');if(i===col)th.classList.add(bSortDir===1?'asc':'desc');});
+  if(bSortCol===col)bSortDir*=-1; else{bSortCol=col;bSortDir=(col===0||col>=5)?-1:1;}
+  document.querySelectorAll('#btbl thead th').forEach(th=>{th.classList.remove('asc','desc');if(+th.dataset.c===col)th.classList.add(bSortDir===1?'asc':'desc');});
   renderBundle();
 }
 function resetBundleFilters(){
@@ -1021,8 +1025,8 @@ function resetBundleFilters(){
 }
 function exportBundle(){
   csvDownload('mw_bundle_active.csv',
-    ['Available ($)','Artist','Title','Risk Category','Gender','Living/Deceased','Region'],
-    BUNDLE.map(r=>[r[0],r[1],r[2],r[3],r[4],r[5],r[6]]));
+    ['Title','Artist','Available ($)','% Sold','Risk Category','Gender','Living/Deceased','Region','Allocation'],
+    BUNDLE.map(r=>[r[2],r[3],r[0],r[1],r[5],r[6],r[7],r[8],'']));
 }
 
 // ── ARTIST AGGREGATION ───────────────────────────────────────────────────────
