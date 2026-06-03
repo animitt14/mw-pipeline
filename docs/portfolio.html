@@ -84,6 +84,8 @@ table.port tbody td.note-cell{text-align:left;white-space:normal;font-size:10.5p
 .amt-input:focus{border-color:#7c3aed;}
 .rs-blended{font-size:11px;font-weight:700;color:#37a26b;margin-left:6px;white-space:nowrap;}
 td.alloc-on{font-weight:700;color:#7c3aed;}
+.btotal-row td{border-top:2px solid var(--border,#2e3650);background:var(--surface-2,#f3f4f6);color:var(--text,#0e1422);}
+.anchor-star{color:#e0a800;font-size:11px;vertical-align:middle;}
 .bar-wrap{width:64px;margin:4px auto 0;height:5px;background:var(--surface-2,#e2e5ea);border-radius:3px;overflow:hidden;}
 #btbl th:first-child,#btbl td:first-child{width:270px;max-width:270px;}
 #btbl td:first-child .bw-title{white-space:normal;line-height:1.2;font-weight:600;color:var(--text,#0e1422);}
@@ -235,6 +237,7 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
       <input type="range" min="1" max="10" step="1" value="5" id="riskSlider" oninput="renderBundle()">
       <span class="rs-end">10&nbsp;Aggr.</span>
       <span class="rs-mode" id="riskMode">5 / 10</span>
+      <span class="rs-count" id="allocCount" style="font-size:11px;color:var(--text3,#64748b);font-weight:500"></span>
     </div>
     <div class="amt-box">
       <span class="rs-lbl">Amount</span>
@@ -1094,16 +1097,25 @@ function computeAlloc(v, universe){
     let maxOther=0; picked.forEach(r=>{ if(r!==basq){ const x=raw.get(r); if(x>maxOther)maxOther=x; } });
     raw.set(basq, Math.max(raw.get(basq)*2, maxOther*1.25));
   }
-  let tot=0; raw.forEach(x=>tot+=x);
-  if(!tot){ return m; }
-  picked.forEach(r=>m.set(r, raw.get(r)/tot*100));
-  // cap the anchor at 25%, redistribute the excess across the others by their risk weight
-  if(basq && m.get(basq)>25){
-    const others=picked.filter(r=>r!==basq);
-    const ot=others.reduce((s,r)=>s+raw.get(r),0);
-    m.set(basq,25);
-    if(ot) others.forEach(r=>m.set(r, 75*raw.get(r)/ot));
-  }
+  // Normalize a set of works to 100% (by their risk weight), capping the anchor at 25%
+  const finalize=works=>{
+    m.clear();
+    let tot=0; works.forEach(r=>tot+=raw.get(r));
+    if(!tot) return;
+    works.forEach(r=>m.set(r, raw.get(r)/tot*100));
+    if(basq && works.indexOf(basq)>=0 && m.get(basq)>25){
+      const others=works.filter(r=>r!==basq);
+      const ot=others.reduce((s,r)=>s+raw.get(r),0);
+      m.set(basq,25);
+      if(ot) others.forEach(r=>m.set(r, 75*raw.get(r)/ot));
+    }
+  };
+  finalize(picked);
+  // Min-position floor: drop sub-2% slivers (never the anchor), then re-solve once so the
+  // book is a handful of meaningful positions rather than a long tail of tiny ones.
+  const FLOOR=2;
+  const keep=picked.filter(r=>r===basq || m.get(r)>=FLOOR);
+  if(keep.length<picked.length) finalize(keep);
   return m;
 }
 
@@ -1128,6 +1140,7 @@ function renderBundle(){
   { let s=0,w=0; alloc.forEach((p,r)=>{ if(r[9]!==''&&r[9]!=null){ const wt=amt!=null?Math.round(p/100*amt/20)*20:p; s+=wt*parseFloat(r[9]); w+=wt; } }); blended=w?s/w:null; }
   const br=document.getElementById('blendedReadout');
   br.textContent = blended!=null ? 'Blended appreciation '+(blended*100).toFixed(1)+'%' : '';
+  document.getElementById('allocCount').textContent = alloc.size ? '· '+alloc.size+' positions' : '';
   let rows=[...BUNDLE];
   if(q) rows=rows.filter(r=>(r[2]||'').toLowerCase().includes(q)||(r[3]||'').toLowerCase().includes(q));
   if(fr) rows=rows.filter(r=>r[8]===fr);
@@ -1155,7 +1168,7 @@ function renderBundle(){
       } else { allocCell=fmtAlloc(p); }
     }
     return `<tr>
-      <td><div style="display:flex;align-items:center;gap:9px">${img}<div style="min-width:0"><div class="bw-title">${r[2]||''}</div><div style="font-size:10px;color:var(--text3,#64748b)">${r[3]||''}</div></div></div></td>
+      <td><div style="display:flex;align-items:center;gap:9px">${img}<div style="min-width:0"><div class="bw-title">${r[2]||''}${r[2]==='Made in Japan II'?' <span class="anchor-star" title="Anchor holding — always held & weighted heaviest">&#9733;</span>':''}</div><div style="font-size:10px;color:var(--text3,#64748b)">${r[3]||''}</div></div></div></td>
       <td class="ctr"><div style="font-weight:600">${r[0]!==''&&r[0]!=null?fmt$(r[0]):'&mdash;'}</div>${bar}</td>
       <td class="ctr">${r[5]?`<span class="risk-badge ${rc}">${r[5]}</span>`:''}</td>
       <td class="ctr">${r[6]==='Male'?'M':r[6]==='Female'?'F':r[6]||''}</td>
@@ -1164,7 +1177,20 @@ function renderBundle(){
       <td class="ctr">${rep}</td>
       <td class="ctr ${alloc.has(r)?'alloc-on':''}">${allocCell}</td>
     </tr>`;
-  }).join('');
+  }).join('') + (function(){
+    // Portfolio total row — confirms the book sums to 100% and shows total $ deployed
+    if(!alloc.size) return '';
+    let totPct=0, totDol=0;
+    alloc.forEach((p)=>{ totPct+=p; if(amt!=null) totDol+=Math.round(p/100*amt/20)*20; });
+    const tcell = amt!=null
+      ? `<div style="display:flex;align-items:baseline;justify-content:center;gap:6px"><span style="font-size:12px;font-weight:700;color:var(--text,#0e1422)">$${totDol.toLocaleString()}</span><span style="font-size:10px;font-weight:600;color:var(--text3,#94a3b8)">${Math.round(totPct)}%</span></div>`
+      : `${Math.round(totPct)}%`;
+    return `<tr class="btotal-row">
+      <td style="font-weight:700">Portfolio total &middot; ${alloc.size} positions</td>
+      <td colspan="6"></td>
+      <td class="ctr" style="font-weight:700">${tcell}</td>
+    </tr>`;
+  })();
   // charts reflect the picked allocation — redraw when risk OR the dropdown universe changes
   const chartKey=mode+'|'+fr+'|'+fl;
   if(chartKey!==_lastChartMode){ renderBundleCharts(mode, alloc); _lastChartMode=chartKey; }
@@ -1182,9 +1208,24 @@ function resetBundleFilters(){
   renderBundle();
 }
 function exportBundle(){
+  // mirror the on-screen allocation (slider + dropdowns + amount)
+  const mode=+document.getElementById('riskSlider').value;
+  const fr=document.getElementById('bfRegion').value, fl=document.getElementById('bfLiving').value;
+  let universe=[...BUNDLE];
+  if(fr) universe=universe.filter(r=>r[8]===fr);
+  if(fl) universe=universe.filter(r=>r[7]===fl);
+  const alloc=computeAlloc(mode, universe);
+  const amtRaw=(document.getElementById('allocAmt').value||'').replace(/[^0-9.]/g,'');
+  const amt=amtRaw?parseFloat(amtRaw):null;
   csvDownload('mw_bundle_active.csv',
-    ['Title','Artist','Available ($)','% Sold','Risk Category','Gender','Living/Deceased','Region','Repeat Sales %','Allocation'],
-    BUNDLE.map(r=>[r[2],r[3],r[0],r[1],r[5],r[6],r[7],r[8],(r[9]!==''&&r[9]!=null?Math.round(r[9]*100)+'%':''),'']));
+    ['Title','Artist','Available ($)','% Sold','Risk Category','Gender','Living/Deceased','Region','Repeat Sales %','Allocation %','Allocation ($)'],
+    BUNDLE.map(r=>{
+      const p=alloc.get(r);
+      return [r[2],r[3],r[0],r[1],r[5],r[6],r[7],r[8],
+        (r[9]!==''&&r[9]!=null?Math.round(r[9]*100)+'%':''),
+        (p!=null?Math.round(p)+'%':''),
+        (p!=null&&amt!=null?Math.round(p/100*amt/20)*20:'')];
+    }));
 }
 
 // ── ARTIST AGGREGATION ───────────────────────────────────────────────────────
