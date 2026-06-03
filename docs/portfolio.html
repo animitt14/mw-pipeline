@@ -267,7 +267,7 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
     <b>Balance.</b> Among works that fit the target risk, selection favors variety across gender, living vs. deceased, and region &mdash; so the mix stays diversified rather than clustering. This is a visual tilt, not a hard rule.<br>
     <b>Weighting.</b> &ldquo;Made in Japan II&rdquo; (Basquiat) is held in every portfolio and overweighted to roughly twice a normal position (capped at 25%). All remaining works split the rest evenly, so weights total 100%.<br>
     <b>Dollars.</b> When an Amount is entered, each weight is converted to dollars and rounded to whole $20 shares (no fractional ownership). Blended appreciation = the average of each work&rsquo;s repeat-sales appreciation, weighted by the dollars actually deployed after $20-share rounding (or by target % when no Amount is entered).<br>
-    <b>Artist Scorecard.</b> The radar is the allocation-weighted average of the picked works across four artist measures &mdash; commercial maturity (years since first auction sale), market liquidity (auction volume), commercial success (record auction price), and cultural significance (museum shows over the last ~5 years). Each axis is scaled 0&ndash;100 against the strongest artist in the active bundle, and it re-draws as the risk slider or dropdowns change the picks.
+    <b>Artist Scorecard.</b> The radar is the allocation-weighted average of the picked works across four artist measures &mdash; commercial maturity (years since first auction sale), market liquidity (auction volume), commercial success (record auction price), and cultural significance (museum shows over the last ~5 years). Each axis is scaled 0&ndash;100 against the strongest artist in Masterworks&rsquo; full roster (an absolute read against the blue-chip ceiling), and it re-draws as the risk slider or dropdowns change the picks.
   </div>
   </div>
 </div>
@@ -1000,9 +1000,10 @@ function workScores(r){
   let mat=m[0]; if(mat==='pre-1996'||mat<0) mat=30;   // >30yrs floor
   return [mat, m[1], m[2], m[3]];
 }
-// Per-axis max across the full active bundle — fixed scale so the radar is comparable
-// as the slider/dropdowns change which works are picked.
-const SCORE_MAX=(function(){ const mx=[1,1,1,1]; BUNDLE.forEach(r=>{const s=workScores(r); if(s)s.forEach((v,i)=>{if(v>mx[i])mx[i]=v;});}); return mx; })();
+// Per-axis max across Masterworks' full artist roster (not just the active bundle), so
+// the radar is an absolute read against the blue-chip ceiling and is comparable as the
+// slider/dropdowns change which works are picked.
+const SCORE_MAX=(function(){ const mx=[1,1,1,1]; Object.keys(ARTIST_META).forEach(k=>{const m=ARTIST_META[k]; let mat=m[0]; if(mat==='pre-1996'||mat<0) mat=30; [mat,m[1],m[2],m[3]].forEach((v,i)=>{if(typeof v==='number'&&v>mx[i])mx[i]=v;});}); return mx; })();
 
 function renderBundleCharts(mode, alloc){
   Object.values(bundleCharts).forEach(c=>{ try{c.destroy();}catch(e){} });
