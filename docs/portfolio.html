@@ -91,7 +91,7 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
 #btbl td:first-child .bw-title{white-space:normal;line-height:1.2;font-weight:600;color:var(--text,#0e1422);}
 /* ===== Proposal overlay — recreates deliverables deck pages 1-4, print-ready ===== */
 #pv{position:fixed;inset:0;z-index:9999;background:#c9ccd3;overflow:auto;display:none;
-  --indigo:#5c60d6;--ink:#3c3c3c;--sub:#6e6e6e;--page-bg:#eef0f5;--line:#d9dce3;--pw:11in;--ph:8.5in;}
+  --indigo:#5c60d6;--ink:#3c3c3c;--sub:#6e6e6e;--page-bg:#eef0f5;--line:#d9dce3;--pw:10in;--ph:7.5in;}
 #pv.show{display:block;}
 #pv .pv-toolbar{position:sticky;top:0;z-index:10;display:flex;gap:10px;align-items:center;
   background:#22242b;padding:10px 16px;box-shadow:0 2px 8px rgba(0,0,0,.3);}
@@ -155,7 +155,7 @@ td.alloc-on{font-weight:700;color:#7c3aed;}
   #pv .pv-pages{padding:0;margin:0;}
   #pv .page{box-shadow:none;margin:0;break-inside:avoid;page-break-after:always;}
   #pv .pv-pages .page:last-child{page-break-after:auto;}
-  @page{size:letter landscape;margin:0;}
+  @page{size:10in 7.5in;margin:0;}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
