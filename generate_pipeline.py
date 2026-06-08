@@ -88,12 +88,13 @@ OWNERS = [
     {'name': 'Ani',  'id': '77771452', 'out': 'docs/index.html', 'pw': 'banksy'},
     {'name': 'Erik', 'id': '73613833', 'out': 'docs/erik.html',  'pw': 'banksy'},
 ]
+TODAY_RSVP_CFG = {'name': 'Today',       'out': 'docs/today_rsvp.html',               'pw': 'banksy'}
 OVERVIEW_CFG  = {'name': 'Overview',     'out': 'docs/overview.html',                 'pw': 'banksy'}
 VELOCITY_CFG  = {'name': 'Velocity',     'out': 'docs/velocity.html',                 'pw': 'banksy'}
 SCORED_CFG    = {'name': 'Adv Assigned', 'out': 'docs/advisor_assigned_scored.html',  'pw': 'banksy'}
 MAGAZINE_CFG  = {'name': 'Magazine',     'out': 'docs/magazine.html'}
 DELIVERABLES_CFG = {'name': 'Deliverables', 'out': 'docs/deliverables.html'}
-ALL_PAGES = OWNERS + [OVERVIEW_CFG, VELOCITY_CFG, SCORED_CFG, MAGAZINE_CFG, DELIVERABLES_CFG]
+ALL_PAGES = OWNERS + [TODAY_RSVP_CFG, OVERVIEW_CFG, VELOCITY_CFG, SCORED_CFG, MAGAZINE_CFG, DELIVERABLES_CFG]
 
 
 def render_nav(active_cfg):
@@ -103,7 +104,7 @@ def render_nav(active_cfg):
     link survives regeneration."""
     owner_active = active_cfg in OWNERS
     items = ['<a href="index.html"' + (' class="active"' if owner_active else '') + '>Pipeline</a>']
-    for o in [OVERVIEW_CFG, VELOCITY_CFG, SCORED_CFG, MAGAZINE_CFG, DELIVERABLES_CFG]:
+    for o in [TODAY_RSVP_CFG, OVERVIEW_CFG, VELOCITY_CFG, SCORED_CFG, MAGAZINE_CFG, DELIVERABLES_CFG]:
         active = ' class="active"' if o is active_cfg else ''
         items.append(f'<a href="{Path(o["out"]).name}"{active}>{o["name"]}</a>')
     items.append('<a href="portfolio.html">Portfolio</a>')
@@ -2510,6 +2511,223 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
     return ''.join(html_parts)
 
 
+# ── Today's RSVP page ─────────────────────────────────────────────────────────
+
+def _epoch_day_bounds_et(now_et):
+    """Return (start_ms, end_ms) for the current ET calendar day in UTC epoch ms."""
+    d = now_et.date()
+    tz = now_et.tzinfo
+    start = datetime(d.year, d.month, d.day, 0, 0, 0, tzinfo=tz)
+    end   = datetime(d.year, d.month, d.day, 23, 59, 59, tzinfo=tz)
+    return int(start.timestamp() * 1000), int(end.timestamp() * 1000)
+
+
+def fetch_today_rsvp_contacts(now_et):
+    start_ms, end_ms = _epoch_day_bounds_et(now_et)
+    filters = [
+        {'propertyName': 'outbound_rsvp_to_event', 'operator': 'BETWEEN',
+         'value': str(start_ms), 'highValue': str(end_ms)},
+    ]
+    props = [
+        'firstname', 'lastname', 'jobtitle', 'company',
+        'net_worth', 'total_investable_assets',
+        'unknown_rsvp',
+        'pipl_linkedin', 'hs_linkedin_url', 'outbound_team___linkedin_url',
+        'linkedin_personal_url', 'lgm_linkedinurl',
+    ]
+    contacts, after = [], None
+    while True:
+        body = {'filterGroups': [{'filters': filters}], 'properties': props, 'limit': 200}
+        if after:
+            body['after'] = after
+        r = requests.post(SEARCH_URL, headers=HEADERS, json=body)
+        r.raise_for_status()
+        data = r.json()
+        contacts.extend(data.get('results', []))
+        after = data.get('paging', {}).get('next', {}).get('after')
+        if not after:
+            break
+    # Filter out guests in Python (safer than relying on NOT_IN with a sometimes-blank field)
+    return [c for c in contacts
+            if (c.get('properties', {}).get('unknown_rsvp') or '').strip().lower() != 'guest']
+
+
+_NW_HIGH = {'$2.5 million+', '$5 million+', '$10 million+', '$2.5m+', '$5m+', '$10m+',
+            '$2.5 million to $5 million', '$5 million to $10 million', 'over $1 million',
+            '$1 million to $2.5 million', '$1m to $2.5m', '$1m+', '$2m+', '$3m+'}
+_NW_MED  = {'$500k to $1 million', '$500,000 - $1,000,000', '$500k-$1m', '$500k+',
+            '$250k to $1 million', '$250k+', '$500,000+'}
+_NW_LOW  = {'less than $1 million', '$150k-$500k', '$150,000 - $500,000', '$50k-$200k',
+            '$50,000 - $150,000', 'less than $50k', 'under $150k', 'under $50k',
+            '$100k to $250k', '$50k to $100k'}
+
+_SCORE_LABELS = {5: 'High', 4: 'Med-High', 3: 'Medium', 2: 'Low-Med', 1: 'Low'}
+_SCORE_COLORS = {5: ('#fff', '#1e3a8a'), 4: ('#fff', '#1d4ed8'),
+                 3: ('#1e40af', '#bfdbfe'), 2: ('#374151', '#e5e7eb'), 1: ('#6b7280', '#f3f4f6')}
+
+_HI_TITLES = ['managing director', 'md ', ' md,', 'general partner', 'founding partner',
+              'managing partner', 'senior partner', 'fund manager', 'portfolio manager',
+              'head of', 'chief executive', 'chief financial', 'chief operating',
+              'chief technology', 'chief information', 'chief marketing',
+              ' ceo', ' cfo', ' cto', ' coo', ' cio', 'co-founder', 'cofounder',
+              'president', 'physician', 'surgeon', 'doctor']
+_FINANCE_DOMAINS = {'jpmorgan.com', 'gs.com', 'goldmansachs.com', 'ubs.com', 'nb.com',
+                    'pimco.com', 'kkr.com', 'blackrock.com', 'morganstanley.com',
+                    'citadel.com', 'ml.com', 'alliancebernstein.com'}
+_MED_HI_TITLES = ['vice president', ' vp ', ' vp,', 'director', 'senior director',
+                  'svp', 'evp', 'avp', 'senior manager', 'senior vice', 'associate director']
+
+
+def _today_wealth_rank(p):
+    """Return integer 1-5 for rough wealth estimate. Higher = wealthier."""
+    nw  = (p.get('net_worth') or '').lower().strip()
+    ia  = (p.get('total_investable_assets') or '').lower().strip()
+    val = nw or ia
+
+    # If NW data present, use it as the primary signal
+    if val:
+        if any(v in val for v in _NW_HIGH): return 5
+        if any(v in val for v in _NW_MED):  return 4
+        if any(v in val for v in _NW_LOW):  return 2
+
+    # Fall back to title/email heuristics
+    title   = (p.get('jobtitle') or '').lower()
+    company = (p.get('company')  or '').lower()
+    email   = (p.get('email') or '').lower()
+    dom     = email.split('@')[-1] if '@' in email else ''
+    combined = title + ' ' + company
+
+    if dom in _FINANCE_DOMAINS:                         return 5
+    if any(t in combined for t in _HI_TITLES):          return 5
+    if 'partner' in title and not any(x in title for x in
+            ['account', 'channel', 'business', 'strategic', 'technology']): return 5
+    if 'founder' in title:                              return 3
+    if any(t in combined for t in _MED_HI_TITLES):     return 4
+    if not title.strip() and not company.strip():       return 2
+    return 3
+
+
+def build_today_rsvp_html(contacts, now_str, nav_html, password='banksy'):
+    today_iso = now_str[:10]
+
+    rows = []
+    for c in contacts:
+        p   = c.get('properties', {}) or {}
+        cid = c['id']
+        first = (p.get('firstname') or '').strip()
+        last  = (p.get('lastname')  or '').strip()
+        name  = f'{first} {last}'.strip() or p.get('email', '') or cid
+        title   = (p.get('jobtitle') or '').strip()
+        company = (p.get('company')  or '').strip()
+
+        li_url = (p.get('pipl_linkedin') or p.get('hs_linkedin_url') or
+                  p.get('outbound_team___linkedin_url') or
+                  p.get('linkedin_personal_url') or p.get('lgm_linkedinurl') or '').strip()
+
+        hs_url = f'https://app.hubspot.com/contacts/{PORTAL_ID}/record/0-1/{cid}'
+        rank   = _today_wealth_rank(p)
+        rows.append({'name': name, 'title': title, 'company': company,
+                     'li_url': li_url, 'hs_url': hs_url, 'rank': rank, 'cid': cid})
+
+    rows.sort(key=lambda r: (-r['rank'], r['name']))
+    n = len(rows)
+
+    def score_badge(sc):
+        fg, bg = _SCORE_COLORS[sc]
+        lbl = _SCORE_LABELS[sc]
+        return (f'<span style="background:{bg};color:{fg};padding:2px 8px;border-radius:4px;'
+                f'font-size:12px;font-weight:600">{lbl}</span>')
+
+    tr_rows = []
+    for r in rows:
+        li_btn = (f'<a href="{escape(r["li_url"])}" target="_blank" '
+                  f'style="background:#0a66c2;color:#fff;padding:2px 8px;border-radius:4px;'
+                  f'font-size:11px;font-weight:600;text-decoration:none;margin-right:4px">LI</a>'
+                  if r['li_url'] else '')
+        hs_btn = (f'<a href="{escape(r["hs_url"])}" target="_blank" '
+                  f'style="background:#ff7a59;color:#fff;padding:2px 8px;border-radius:4px;'
+                  f'font-size:11px;font-weight:600;text-decoration:none">HS</a>')
+        tc = escape(r['title'])
+        co = escape(r['company'])
+        title_co = f'{tc}<br><span style="color:#6b7280;font-size:11px">{co}</span>' if tc and co else (tc or co)
+        tr_rows.append(
+            f'<tr>'
+            f'<td style="font-weight:500;color:#111827;white-space:nowrap">{escape(r["name"])}</td>'
+            f'<td style="font-size:12px;color:#374151;line-height:1.4">{title_co}</td>'
+            f'<td style="white-space:nowrap">{score_badge(r["rank"])}</td>'
+            f'<td style="white-space:nowrap">{li_btn}{hs_btn}</td>'
+            f'</tr>'
+        )
+
+    rows_html = '\n'.join(tr_rows) if tr_rows else (
+        '<tr><td colspan="4" style="text-align:center;color:#6b7280;padding:32px">No RSVPs for today</td></tr>')
+
+    return f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Today's RSVPs</title>
+<link rel="stylesheet" href="pipeline.css">
+<style>
+*{{box-sizing:border-box}}
+.rsvp-wrap{{max-width:900px;margin:0 auto;padding:24px 16px}}
+.rsvp-meta{{color:var(--text-3);font-size:12px;margin-bottom:18px}}
+.rsvp-table{{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);
+  border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(14,20,34,.08)}}
+.rsvp-table th{{background:var(--surface-2);color:var(--accent-2);font-weight:600;
+  padding:10px 12px;text-align:left;border-bottom:2px solid var(--accent);
+  white-space:nowrap;font-size:12px;text-transform:uppercase;letter-spacing:.04em}}
+.rsvp-table td{{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}}
+.rsvp-table tr:last-child td{{border-bottom:none}}
+.rsvp-table tr:hover td{{background:var(--surface-2)}}
+.hidden{{display:none}}
+</style>
+</head>
+<body>
+<div id="pw-gate"><div id="pw-box"><h2>MASTERWORKS PIPELINE</h2>
+<input id="pw-input" type="password" placeholder="Password" autofocus />
+<div id="pw-err"></div>
+<button id="pw-btn" onclick="checkPw()">Enter</button></div></div>
+<script>
+(function(){{
+  var PW='{password}',SK='pw_ok';
+  if(localStorage.getItem(SK)==='1')document.getElementById('pw-gate').classList.add('hidden');
+  window.checkPw=function(){{
+    if(document.getElementById('pw-input').value===PW){{
+      localStorage.setItem(SK,'1');
+      document.getElementById('pw-gate').classList.add('hidden');
+    }}else{{
+      document.getElementById('pw-err').textContent='Incorrect password';
+      document.getElementById('pw-input').value='';
+    }}
+  }};
+  document.getElementById('pw-input').addEventListener('keydown',function(e){{if(e.key==='Enter')checkPw();}});
+}})();
+</script>
+{nav_html}
+<div class="rsvp-wrap">
+  <header class="page-header" style="margin-bottom:20px">
+    <div class="page-header-left">
+      <h1>Today&rsquo;s RSVPs &mdash; {today_iso}</h1>
+      <div class="meta"><span>{n} contacts</span><span>Updated {now_str}</span></div>
+    </div>
+    <div class="mw-mark">Masterworks<span class="mw-dot">&bull;</span>Advisory</div>
+  </header>
+  <p class="rsvp-meta">Contacts with outbound RSVP = today, excluding guests. Ranked by estimated wealth.</p>
+  <table class="rsvp-table">
+    <thead><tr>
+      <th>Name</th><th>Title / Company</th><th>Wealth Rating</th><th>Links</th>
+    </tr></thead>
+    <tbody>
+{rows_html}
+    </tbody>
+  </table>
+  <div class="footer" style="margin-top:24px"><span>Masterworks · Outbound · Gallery Leads · Confidential</span><span>{now_str}</span></div>
+</div>
+</body></html>'''
+
+
 def main():
     if not HUBSPOT_TOKEN:
         print('ERROR: HUBSPOT_API_KEY not set', file=sys.stderr)
@@ -2589,6 +2807,18 @@ def main():
     velo_out.parent.mkdir(parents=True, exist_ok=True)
     velo_out.write_text(velo_html, encoding='utf-8')
     print(f'Written: {velo_out}', flush=True)
+
+    # Today's RSVPs page
+    print('\n=== Today RSVPs ===', flush=True)
+    today_nav = render_nav(TODAY_RSVP_CFG)
+    print('Fetching today RSVP contacts...', flush=True)
+    today_contacts = fetch_today_rsvp_contacts(_ne)
+    print(f'  {len(today_contacts)} contacts (guests excluded)', flush=True)
+    today_html = build_today_rsvp_html(today_contacts, now_str, today_nav, password=TODAY_RSVP_CFG['pw'])
+    today_out = Path(__file__).parent / TODAY_RSVP_CFG['out']
+    today_out.parent.mkdir(parents=True, exist_ok=True)
+    today_out.write_text(today_html, encoding='utf-8')
+    print(f'Written: {today_out}', flush=True)
 
     # Magazine — inject nav into static source file
     print('\n=== Magazine ===', flush=True)
