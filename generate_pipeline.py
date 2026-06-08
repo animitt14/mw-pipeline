@@ -2514,12 +2514,13 @@ def build_overview_html(deals, activity, n_5wd_days, now_str, nav_html, password
 # ── Today's RSVP page ─────────────────────────────────────────────────────────
 
 def _epoch_day_bounds_et(now_et):
-    """Return (start_ms, end_ms) for the current ET calendar day in UTC epoch ms."""
+    """Return (start_ms, end_ms) for the current ET calendar day in UTC epoch ms.
+    HubSpot date fields are stored as midnight UTC, so bounds must use UTC midnight
+    for the ET date — not ET midnight — otherwise EDT offset pushes start 4h late."""
     d = now_et.date()
-    tz = now_et.tzinfo
-    start = datetime(d.year, d.month, d.day, 0, 0, 0, tzinfo=tz)
-    end   = datetime(d.year, d.month, d.day, 23, 59, 59, tzinfo=tz)
-    return int(start.timestamp() * 1000), int(end.timestamp() * 1000)
+    start_utc = datetime(d.year, d.month, d.day, 0, 0, 0, tzinfo=timezone.utc)
+    end_utc   = datetime(d.year, d.month, d.day, 23, 59, 59, tzinfo=timezone.utc)
+    return int(start_utc.timestamp() * 1000), int(end_utc.timestamp() * 1000)
 
 
 def fetch_today_rsvp_contacts(now_et):
