@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Today's RSVPs</title>
+<link rel="stylesheet" href="pipeline.css">
+<style>
+*{box-sizing:border-box}
+.rsvp-wrap{max-width:900px;margin:0 auto;padding:24px 16px}
+.rsvp-meta{color:var(--text-3);font-size:12px;margin-bottom:18px}
+.rsvp-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);
+  border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(14,20,34,.08)}
+.rsvp-table th{background:var(--surface-2);color:var(--accent-2);font-weight:600;
+  padding:10px 12px;text-align:left;border-bottom:2px solid var(--accent);
+  white-space:nowrap;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.rsvp-table td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.rsvp-table tr:last-child td{border-bottom:none}
+.rsvp-table tr:hover td{background:var(--surface-2)}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div id="pw-gate"><div id="pw-box"><h2>MASTERWORKS PIPELINE</h2>
+<input id="pw-input" type="password" placeholder="Password" autofocus />
+<div id="pw-err"></div>
+<button id="pw-btn" onclick="checkPw()">Enter</button></div></div>
+<script>
+(function(){
+  var PW='banksy',SK='pw_ok';
+  if(localStorage.getItem(SK)==='1')document.getElementById('pw-gate').classList.add('hidden');
+  window.checkPw=function(){
+    if(document.getElementById('pw-input').value===PW){
+      localStorage.setItem(SK,'1');
+      document.getElementById('pw-gate').classList.add('hidden');
+    }else{
+      document.getElementById('pw-err').textContent='Incorrect password';
+      document.getElementById('pw-input').value='';
+    }
+  };
+  document.getElementById('pw-input').addEventListener('keydown',function(e){if(e.key==='Enter')checkPw();});
+})();
+</script>
+<div class="nav"><a href="index.html">Pipeline</a><a href="today_rsvp.html" class="active">Today</a><a href="overview.html">Overview</a><a href="velocity.html">Velocity</a><a href="advisor_assigned_scored.html">Adv Assigned</a><a href="magazine.html">Magazine</a><a href="deliverables.html">Deliverables</a><a href="portfolio.html">Portfolio</a></div>
+<div class="rsvp-wrap">
+  <header class="page-header" style="margin-bottom:20px">
+    <div class="page-header-left">
+      <h1>Today&rsquo;s RSVPs &mdash; 2026-06-08</h1>
+      <div class="meta"><span>0 contacts</span><span>Updated 2026-06-08 12:45 EDT</span></div>
+    </div>
+    <div class="mw-mark">Masterworks<span class="mw-dot">&bull;</span>Advisory</div>
+  </header>
+  <p class="rsvp-meta">Contacts with outbound RSVP = today, excluding guests. Ranked by estimated wealth.</p>
+  <table class="rsvp-table">
+    <thead><tr>
+      <th>Name</th><th>Title / Company</th><th>Wealth Rating</th><th>Links</th>
+    </tr></thead>
+    <tbody>
+<tr><td colspan="4" style="text-align:center;color:#6b7280;padding:32px">No RSVPs for today</td></tr>
+    </tbody>
+  </table>
+  <div class="footer" style="margin-top:24px"><span>Masterworks · Outbound · Gallery Leads · Confidential</span><span>2026-06-08 12:45 EDT</span></div>
+</div>
+</body></html>
