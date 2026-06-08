@@ -1,24 +1,24 @@
 {
   "iso": [
     2026,
-    23
+    24
   ],
-  "updated": "2026-06-01",
+  "updated": "2026-06-08",
   "bullets": [
     {
-      "color": "var(--green)",
-      "title": "Closest to the finish.",
-      "text": "13 deals sit at Recommendation Made, one step from close."
+      "color": "var(--purple)",
+      "title": "Effort is climbing.",
+      "text": "Bringsjord emails ran 129% above baseline this week \u2014 31/day vs 13.5. Activity is the leading indicator and it is pointing up."
     },
     {
       "color": "var(--green)",
       "title": "Pipeline quality is strong.",
-      "text": "Only 9% of 361 active deals lack a value. Nearly every open deal is a real, qualified opportunity."
+      "text": "Only 9% of 362 active deals lack a value. Nearly every open deal is a real, qualified opportunity."
     },
     {
       "color": "var(--green)",
       "title": "Revenue is on the board.",
-      "text": "$1.5M closed year-to-date across 19 deals."
+      "text": "$1.6M closed year-to-date across 21 deals, $50k of it in June."
     }
   ]
 }
